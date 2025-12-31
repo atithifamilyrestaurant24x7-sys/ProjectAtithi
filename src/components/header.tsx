@@ -24,6 +24,8 @@ type HeaderProps = {
   onMouseLeave: () => void;
   onProductSelect: (item: MenuItem) => void;
   isMobile: boolean;
+  isCartOpen: boolean;
+  onCartToggle: (open: boolean) => void;
 };
 
 const Header = ({ 
@@ -36,7 +38,9 @@ const Header = ({
   onMouseEnter,
   onMouseLeave,
   onProductSelect,
-  isMobile
+  isMobile,
+  isCartOpen,
+  onCartToggle,
 }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -123,12 +127,14 @@ const Header = ({
             {/* Right side: Cart */}
             <div className="flex items-center">
               <CartSheet
+                isOpen={isCartOpen}
+                onOpenChange={onCartToggle}
                 cart={cart}
                 onEmptyCart={onEmptyCart}
                 onAddToCart={onAddToCart}
                 onRemoveFromCart={onRemoveFromCart}
               >
-                <Button variant="ghost" size="icon" className={cn("relative", navTextColor)}>
+                <Button variant="ghost" size="icon" className={cn("relative", navTextColor)} onClick={() => onCartToggle(!isCartOpen)}>
                     <ShoppingCart className="h-5 w-5" />
                     {totalCartItems > 0 && (
                         <Badge variant="destructive" className="absolute -top-2 -right-2 h-6 w-6 rounded-full flex items-center justify-center p-2">

@@ -228,6 +228,8 @@ export default function Home() {
           onMouseLeave={hideHeader}
           onProductSelect={handleCardClick}
           isMobile={false}
+          isCartOpen={isCartSheetOpen}
+          onCartToggle={setIsCartSheetOpen}
         />
       </div>
       
