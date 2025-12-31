@@ -293,6 +293,11 @@ export const ProductDetailDialog = ({
                                         <WhatsappIcon className="mr-2 h-5 w-5" /> Order on WhatsApp
                                     </Link>
                                 </Button>
+                                <Button size="lg" variant="outline" className="w-full bg-transparent text-foreground hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary h-14 text-lg border-2 border-primary hover:border-primary" asChild>
+                                  <Link href="tel:8250104315">
+                                      <Phone className="mr-2 h-5 w-5" /> Call to Order
+                                  </Link>
+                                </Button>
                             </div>
                         </div>
                     </ScrollArea>
@@ -717,6 +722,7 @@ export default ProductSection;
     
 
     
+
 
 
 
