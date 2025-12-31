@@ -24,6 +24,7 @@ import MobileSearchHeader from "@/components/mobile-search-header";
 import CartSheet from "@/components/cart-sheet";
 import { MenuDialog } from "@/components/menu-dialog";
 import { WhatsappIcon } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 
 export type CartItem = MenuItem & { quantity: number };
@@ -304,10 +305,13 @@ export default function Home() {
         href="https://wa.me/918250104315"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-4 right-4 z-50 md:hidden bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 transition-transform hover:scale-110"
+        className={cn(
+          "fixed bottom-4 right-4 z-50 md:hidden",
+          "socialContainer containerFour rounded-full shadow-lg"
+        )}
         aria-label="Chat on WhatsApp"
       >
-        <WhatsappIcon className="h-8 w-8" />
+        <WhatsappIcon className="socialSvg" />
       </Link>
     </>
   );
