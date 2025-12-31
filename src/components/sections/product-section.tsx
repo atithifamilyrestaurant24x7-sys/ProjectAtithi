@@ -30,11 +30,12 @@ import {
 import { cn } from '@/lib/utils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
-import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { type CartItem } from '@/app/page';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
+import { WhatsappIcon } from '../icons';
 
 const useSyncCarousel = (apis: (CarouselApi | undefined)[], enabled: boolean) => {
     React.useEffect(() => {
@@ -177,6 +178,7 @@ export const ProductDetailDialog = ({
     
     const imageData = PlaceHolderImages.find(img => img.id === item.name);
     const discount = item.originalPrice ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100) : 0;
+    const whatsappOrderUrl = `https://wa.me/918250104315?text=${encodeURIComponent(`Hello, I would like to order: ${item.name}`)}`;
 
     const handleRatingSubmit = (rating: number) => {
         const newTotalRatingPoints = (currentRating * ratingsCount) + rating;
@@ -287,8 +289,8 @@ export const ProductDetailDialog = ({
                                     View Cart
                                  </Button>
                                 <Button size="lg" variant="outline" className="w-full bg-transparent text-foreground hover:bg-green-500 hover:text-white dark:hover:bg-green-600 h-14 text-lg border-2 border-green-500 hover:border-green-500" asChild>
-                                    <Link href="tel:8250104315">
-                                        <Phone className="mr-2 h-5 w-5" /> Call to Order
+                                    <Link href={whatsappOrderUrl} target="_blank" rel="noopener noreferrer">
+                                        <WhatsappIcon className="mr-2 h-5 w-5" /> Order on WhatsApp
                                     </Link>
                                 </Button>
                             </div>
@@ -715,6 +717,7 @@ export default ProductSection;
     
 
     
+
 
 
 

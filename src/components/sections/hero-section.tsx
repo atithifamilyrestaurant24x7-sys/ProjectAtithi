@@ -8,11 +8,12 @@ import { config, SectionData } from "@/app/config";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Menu, Phone } from "lucide-react";
-import { InstagramIcon, GoogleMapsIcon, CallIcon } from "@/components/icons";
+import { InstagramIcon, GoogleMapsIcon, CallIcon, WhatsappIcon } from "@/components/icons";
 import { ComingSoonDialog } from "@/components/coming-soon-dialog";
 
 const socialLinks = [
     { name: 'Instagram', href: '#', icon: InstagramIcon, isExternal: false },
+    { name: 'WhatsApp', href: 'https://wa.me/918250104315', icon: WhatsappIcon, isExternal: true },
     { name: 'Google Maps', href: 'https://www.google.com/maps/place/Atithi+Family+Restaurant/@24.2027813,87.7959755,17z/data=!4m12!1m5!3m4!2zMjTCsDEyJzEwLjAiTiA4N8KwNDcnNTQuOCJF!8m2!3d24.2027764!4d87.7985504!3m5!1s0x39fa1ec0ffee3159:0x79903c862e585ea1!8m2!3d24.2024486!4d87.7985075!16s%2Fg%2F11c5_nvjc3?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D', icon: GoogleMapsIcon, isExternal: true },
     { name: 'Call', href: 'tel:8250104315', icon: CallIcon, isExternal: true },
 ];

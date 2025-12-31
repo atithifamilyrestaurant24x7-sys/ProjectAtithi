@@ -1,8 +1,9 @@
 
 import Link from 'next/link';
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail, MessageCircle } from 'lucide-react';
 import { ComingSoonDialog } from '@/components/coming-soon-dialog';
 import { Button } from '../ui/button';
+import { WhatsappIcon } from '../icons';
 
 const contactDetails = [
     {
@@ -18,6 +19,13 @@ const contactDetails = [
         href: 'tel:8250104315',
         isExternal: true,
         actionText: 'Call Us'
+    },
+    {
+        icon: WhatsappIcon,
+        title: 'WhatsApp',
+        href: 'https://wa.me/918250104315',
+        isExternal: true,
+        actionText: 'Message Us'
     },
     {
         icon: Mail,
