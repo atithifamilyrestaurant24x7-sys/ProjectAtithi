@@ -43,8 +43,9 @@ const CartSheet = ({
     }, 0);
 
     const generateWhatsAppMessage = () => {
-        const orderDetails = cart.map(item => `${item.name} (x${item.quantity})`).join(', ');
-        return `https://wa.me/918250104315?text=${encodeURIComponent(`Hello, I would like to order: ${orderDetails}`)}`;
+        const orderDetails = cart.map(item => `${item.name} (x${item.quantity}) - Rs. ${item.price * item.quantity}`).join('\n');
+        const message = `Hello, I would like to place the following order:\n\n${orderDetails}\n\nTotal: Rs. ${totalPrice.toFixed(2)}`;
+        return `https://wa.me/918250104315?text=${encodeURIComponent(message)}`;
     };
 
     const content = (
