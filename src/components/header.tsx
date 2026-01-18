@@ -44,19 +44,19 @@ const Header = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (isMobile) return;
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      if (!isDropdownOpen) {
-        if (currentScrollY > lastScrollY && currentScrollY > 100) {
-          setIsHeaderVisible(false);
-        } else {
-          setIsHeaderVisible(true);
-        }
-      } else {
+      // Always show header if the dropdown is open
+      if (isDropdownOpen) {
         setIsHeaderVisible(true);
+      } else {
+        // Determine visibility based on scroll direction
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          setIsHeaderVisible(false); // Scrolling down
+        } else {
+          setIsHeaderVisible(true); // Scrolling up
+        }
       }
       
       setLastScrollY(currentScrollY);
@@ -65,7 +65,7 @@ const Header = ({
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, isDropdownOpen, isMobile]);
+  }, [lastScrollY, isDropdownOpen]);
 
   const desktopNavLinks = config.navbarLinks.filter(link => link.name !== 'Products');
   const mobileNavLinks = config.navbarLinks;
@@ -149,7 +149,7 @@ const Header = ({
                 <Button variant="ghost" size="icon" className={cn("relative", navTextColor)} onClick={() => onCartToggle(!isCartOpen)}>
                     <ShoppingCart className="h-5 w-5" />
                     {totalCartItems > 0 && (
-                        <Badge variant="destructive" className="absolute -top-2 -right-2 h-6 w-6 rounded-full flex items-center justify-center p-2">
+                        <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 rounded-full flex items-center justify-center p-1">
                             {totalCartItems}
                         </Badge>
                     )}

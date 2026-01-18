@@ -88,7 +88,7 @@ const MobileSearchHeader = ({ onSearch, onRecommendClick, onCartClick, onMenuCli
                         <ShoppingCart className="h-5 w-5" />
                         <span className='ml-2'>Cart</span>
                         {cartCount > 0 && (
-                            <Badge variant="destructive" className="absolute -top-2 -right-2 h-6 w-6 rounded-full flex items-center justify-center p-2">
+                            <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 rounded-full flex items-center justify-center p-1">
                                 {cartCount}
                             </Badge>
                         )}
