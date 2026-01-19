@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -175,7 +174,9 @@ export default function Home() {
       </div>
         <div className={`transition-opacity duration-500 ${isAppLoading ? 'opacity-0' : 'opacity-100'}`}>
           <main>
-            <HeroSection />
+            <div className="hidden md:block">
+              <HeroSection />
+            </div>
             <MenuSection />
             <BestSellerSection />
             
