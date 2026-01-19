@@ -30,12 +30,13 @@ import {
 import { cn } from '@/lib/utils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
-import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight, Menu, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { type CartItem } from '@/app/page';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
 import { WhatsappIcon } from '../icons';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 
 const CategoryProductDialog = ({
     isOpen,
@@ -247,7 +248,7 @@ export const ProductDetailDialog = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="p-0 w-full h-full max-w-full rounded-none border-0 flex flex-col top-0 left-0 translate-x-0 translate-y-0 md:flex-row md:h-auto md:max-h-[90vh] md:max-w-4xl md:rounded-lg md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
+            <DialogContent className="p-0 w-full h-full max-w-full rounded-none border-0 flex flex-col top-0 left-0 translate-x-0 translate-y-0 md:flex-row md:h-auto md:max-h-[90vh] md:max-w-4xl md:rounded-lg md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 data-[state=open]:animate-in data-[state=open]:zoom-in-90 data-[state=closed]:zoom-out-90">
                 {/* Image Section */}
                 <div className="w-full md:w-1/2 relative md:min-h-[500px] h-[40%] md:h-auto flex-shrink-0">
                     <div className="absolute inset-0">
@@ -675,7 +676,7 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
     const AddButton = ({isSmall}: {isSmall?: boolean}) => (
         <Button 
             className={cn(
-                "rounded-lg bg-[#B07A3C] h-10 text-sm text-white hover:bg-[#B07A3C]/90",
+                "rounded-md bg-[#B07A3C] h-10 text-sm text-white hover:bg-[#B07A3C]/90",
                 isSmall ? "px-3 h-9" : "px-4"
             )} 
             onClick={(e) => {e.stopPropagation(); onAddToCart(item)}}
@@ -686,7 +687,7 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
 
     const QuantityCounter = ({isSmall}: {isSmall?: boolean}) => (
         <div className={cn(
-            "flex items-center justify-between gap-1 bg-[#B07A3C]/10 rounded-lg",
+            "flex items-center justify-between gap-1 bg-[#B07A3C]/10 rounded-md",
             isSmall ? "h-9 px-1" : "h-10 px-2"
         )}>
             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-[#B07A3C]" onClick={(e) => {e.stopPropagation(); onRemoveFromCart(item.name);}}>
@@ -901,7 +902,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                 </div>
 
                 <div className='block md:hidden'>
-                    <div className="p-4 bg-[#F6EFE8]">
+                     <div className="p-4 bg-[#F6EFE8] sticky top-[88px] z-30">
                         <div className="flex gap-4">
                             <Select onValueChange={(value) => {
                                 const el = document.getElementById(value);
@@ -936,8 +937,8 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                             </Select>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        {allMenuItems.map((category, index) => {
+                     <div className="grid grid-cols-2 gap-4">
+                        {allMenuItems.map((category) => {
                              const firstItem = category.items[0];
                              const imageData = firstItem ? PlaceHolderImages.find(img => img.id === firstItem.name) : null;
                              const itemCount = category.items.length;
@@ -987,6 +988,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
 };
 
 export default ProductSection;
+
 
 
 
