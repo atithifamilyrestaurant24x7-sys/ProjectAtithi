@@ -158,7 +158,7 @@
   position: relative;
 }
 .input {
-  width: 150px;
+  width: 100%;
   padding: 10px 0px 10px 40px;
   border-radius: 9999px;
   border: solid 1px #333;
@@ -176,5 +176,4 @@
 }
 .input:focus {
   opacity: 1;
-  width: 250px;
 }

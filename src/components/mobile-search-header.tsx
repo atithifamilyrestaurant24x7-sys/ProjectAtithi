@@ -3,21 +3,17 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Search, ShoppingCart } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Search } from "lucide-react";
 
 type MobileSearchHeaderProps = {
     onSearch: (query: string) => void;
-    onCartClick: () => void;
-    cartCount: number;
 };
 
-const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHeaderProps) => {
+const MobileSearchHeader = ({ onSearch }: MobileSearchHeaderProps) => {
     return (
         <header className="sticky top-0 z-40 bg-black/50 backdrop-blur-sm pt-[10px] pb-3">
             <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-4">
                     <div className="flex-shrink-0">
                         <Link href="/">
                             <Image
@@ -31,7 +27,7 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
                         </Link>
                     </div>
 
-                    <div className="container-input">
+                    <div className="container-input flex-grow">
                         <Search className="h-5 w-5 text-gray-500" />
                         <input
                             type="search"
@@ -40,18 +36,6 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
                             onChange={(e) => onSearch(e.target.value)}
                             suppressHydrationWarning
                         />
-                    </div>
-                    
-                    <div className="relative flex-shrink-0">
-                        <Button variant="ghost" size="icon" className="relative h-12 w-12" onClick={onCartClick}>
-                            <ShoppingCart className="h-6 w-6 text-white" />
-                            <span className="sr-only">View Cart</span>
-                        </Button>
-                        {cartCount > 0 && (
-                            <Badge variant="default" className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full flex items-center justify-center p-1 text-xs bg-primary text-primary-foreground">
-                                {cartCount}
-                            </Badge>
-                        )}
                     </div>
                 </div>
             </div>

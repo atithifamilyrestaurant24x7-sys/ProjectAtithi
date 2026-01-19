@@ -170,9 +170,7 @@ export default function Home() {
       
       <div className="block md:hidden">
           <MobileSearchHeader 
-              onSearch={setSearchQuery} 
-              onCartClick={() => setIsCartSheetOpen(true)}
-              cartCount={totalCartItems}
+              onSearch={setSearchQuery}
           />
       </div>
         <div className={`transition-opacity duration-500 ${isAppLoading ? 'opacity-0' : 'opacity-100'} pb-16 md:pb-0`}>
