@@ -180,6 +180,15 @@ export default function Home() {
             </div>
             <div className="md:hidden">
               <div className="px-4">
+                  <div className="mt-4">
+                    <Image
+                      src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
+                      alt="Special Offer Banner"
+                      width={600}
+                      height={200}
+                      className="w-full h-auto rounded-lg"
+                    />
+                  </div>
                   <h1 className="text-2xl font-semibold tracking-[0.2px] text-foreground mt-4">Our Best Seller</h1>
                   <MobileHeroCarousel onCardClick={handleCardClick} />
               </div>
