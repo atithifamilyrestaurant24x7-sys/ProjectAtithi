@@ -24,7 +24,7 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
                             <Image
                                 src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/ChatGPT%20Image%20Jan%2020,%202026,%2012_52_38%20AM.png"
                                 alt="Atithi Logo"
-                                width={100}
+                                width={80}
                                 height={34}
                                 className="object-contain"
                                 priority
@@ -37,7 +37,7 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
                         <Input
                             type="search"
                             placeholder="Search"
-                            className="w-full pl-12 pr-4 h-12 rounded-lg bg-white border-none shadow-sm"
+                            className="w-full pl-12 pr-4 h-12 bg-white border-none shadow-sm"
                             onChange={(e) => onSearch(e.target.value)}
                             suppressHydrationWarning
                         />
