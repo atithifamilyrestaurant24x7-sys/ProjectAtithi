@@ -194,3 +194,64 @@
   width: 1rem;
   height: 1rem;
 }
+
+/* Animated Social Icons from user request */
+.animated-social-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  -webkit-box-reflect: below 5px linear-gradient(transparent, #00000020);
+}
+
+.animated-social-container {
+  display: block;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.animated-social-container .icon-wrapper {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.animated-social-container .icon-initial {
+  background-color: hsl(var(--card));
+}
+.animated-social-container .icon-initial svg {
+  stroke: hsl(var(--primary));
+}
+
+.animated-social-container .icon-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(100%);
+}
+.animated-social-container .icon-hover svg {
+  stroke: white;
+  fill: white;
+}
+
+.animated-social-container:hover .icon-initial {
+  transform: translateY(-100%);
+}
+.animated-social-container:hover .icon-hover {
+  transform: translateY(0);
+}
+
+/* Icon-specific hover backgrounds */
+.animated-social-container.location .icon-hover { background: #d44638; }
+.animated-social-container.phone .icon-hover { background: #316ff6; }
+.animated-social-container.whatsapp .icon-hover { background: #25D366; }
+.animated-social-container.email .icon-hover {
+  background: linear-gradient(180deg, rgba(129, 34, 144, 1) 0%, rgba(77, 34, 124, 1) 91%);
+}
