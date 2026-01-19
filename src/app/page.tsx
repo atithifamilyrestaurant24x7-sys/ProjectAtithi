@@ -183,15 +183,7 @@ export default function Home() {
             <div className="md:hidden">
               <div className="px-4">
                   <h1 className="text-2xl font-semibold tracking-[0.2px] text-foreground mt-4 mb-3">Our Best Seller</h1>
-                  <div className="relative aspect-[16/7] w-full rounded-2xl overflow-hidden shadow-hero">
-                      <Image 
-                          src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/food_images/bestseller-butter-chicken.png" 
-                          alt="Today's Special: Butter Chicken" 
-                          layout="fill" 
-                          objectFit="cover" 
-                          priority
-                      />
-                  </div>
+                  <MobileHeroCarousel />
               </div>
               <div className="my-3.5 mx-4 border-b border-border"></div>
             </div>
