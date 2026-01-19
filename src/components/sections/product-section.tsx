@@ -17,6 +17,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogDescription,
+    DialogClose
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -909,14 +910,17 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                      <div className="p-4 bg-[#F6EFE8]">
                         <div className="flex gap-4">
                             <Select onValueChange={(value) => {
-                                if (value === 'all') return;
+                                if (value === 'all') {
+                                    // When 'All Categories' is selected, do nothing, just reset the view.
+                                    return;
+                                }
                                 const category = allMenuItems.find(c => c.name.toLowerCase().replace(/\s+/g, '-') === value);
                                 if (category) {
                                     handleOpenCategoryDialog(category);
                                 }
                             }}>
                                 <SelectTrigger className="w-1/2 rounded-full h-11 bg-white shadow-sm border-stone-200">
-                                    <SelectValue placeholder="All" />
+                                    <SelectValue placeholder="All Categories" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">All Categories</SelectItem>
@@ -948,7 +952,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                              const itemCount = category.items.length;
                         
                             return (
-                                <button key={category.name} onClick={() => handleOpenCategoryDialog(category)} className="border-0 bg-white rounded-xl shadow-product overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-primary ring-offset-2 aspect-square">
+                                <button key={category.name} onClick={() => handleOpenCategoryDialog(category)} className="border-0 bg-white rounded-xl shadow-product overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-primary ring-offset-2 aspect-square" suppressHydrationWarning>
                                     <div className="relative w-full h-full">
                                         <div className="absolute inset-0">
                                             {imageData ? (
