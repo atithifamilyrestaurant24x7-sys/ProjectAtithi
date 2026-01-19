@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ShoppingCart } from "lucide-react";
@@ -16,10 +17,16 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
     return (
         <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm pt-[10px] pb-3">
             <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center justify-between gap-2">
                     <div className="flex-shrink-0">
-                        <a href="/" className="font-logo text-[28px] font-bold text-foreground no-underline">
-                           atithi
+                        <a href="/" className="relative block h-8 w-20">
+                            <Image
+                                src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/ChatGPT%20Image%20Jan%2020,%202026,%2012_52_38%20AM.png"
+                                alt="atithi logo"
+                                fill
+                                className="object-contain"
+                                priority
+                            />
                         </a>
                     </div>
                     
@@ -28,7 +35,7 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
                         <Input
                             type="search"
                             placeholder="Search"
-                            className="w-full pl-12 pr-4 h-12 rounded-full bg-white border-none shadow-search text-sm"
+                            className="w-full pl-12 pr-4 h-12 rounded-lg bg-white border-none shadow-search"
                             onChange={(e) => onSearch(e.target.value)}
                             suppressHydrationWarning
                         />
