@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from 'next/link';
 import Image from 'next/image';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,16 +19,16 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
             <div className="container mx-auto px-4">
                 <div className="flex h-20 items-center justify-between gap-4">
                     <div className="flex-shrink-0">
-                        <Link href="/">
+                        <a href="/">
                             <Image
                                 src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/ChatGPT%20Image%20Jan%2020,%202026,%2012_52_38%20AM.png"
                                 alt="Atithi Logo"
-                                width={80}
+                                width={60}
                                 height={34}
                                 className="object-contain"
                                 priority
                             />
-                        </Link>
+                        </a>
                     </div>
                     
                     <div className="relative flex-grow">
@@ -37,7 +36,7 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
                         <Input
                             type="search"
                             placeholder="Search"
-                            className="w-full pl-12 pr-4 h-12 bg-white border-none shadow-sm"
+                            className="w-full pl-12 pr-4 h-12 rounded-none bg-white border-none shadow-sm"
                             onChange={(e) => onSearch(e.target.value)}
                             suppressHydrationWarning
                         />
