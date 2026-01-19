@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import * as React from 'react';
@@ -36,6 +35,7 @@ import { type CartItem } from '@/app/page';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
 import { WhatsappIcon } from '../icons';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const useSyncCarousel = (apis: (CarouselApi | undefined)[], enabled: boolean) => {
     React.useEffect(() => {
@@ -239,7 +239,7 @@ export const ProductDetailDialog = ({
                                     <div className="flex items-center gap-2">
                                         <div className="flex items-center">
                                             {Array.from({ length: 5 }).map((_, i) => (
-                                                <Star key={i} className={cn("h-5 w-5", i < Math.round(currentRating) ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground/50")} />
+                                                <Star key={i} className={cn("h-5 w-5", i < Math.round(currentRating) ? "text-accent fill-accent" : "text-muted-foreground/50")} />
                                             ))}
                                         </div>
                                         <span className="text-sm text-muted-foreground">
@@ -257,8 +257,8 @@ export const ProductDetailDialog = ({
                                                 className={cn(
                                                     "h-8 w-8 cursor-pointer transition-all",
                                                     (hoveredRating > 0 ? i < hoveredRating : i < Math.round(currentRating))
-                                                        ? "text-yellow-400 fill-yellow-400 scale-110"
-                                                        : "text-muted-foreground/50 hover:text-yellow-400/50"
+                                                        ? "text-accent fill-accent scale-110"
+                                                        : "text-muted-foreground/50 hover:text-accent/50"
                                                 )}
                                                 onMouseEnter={() => setHoveredRating(i + 1)}
                                                 onClick={() => handleRatingSubmit(i + 1)}
@@ -410,7 +410,7 @@ const ProductRow = React.memo(({
                                                     {Array.from({ length: 5 }).map((_, i) => (
                                                         <Star key={i} className={cn(
                                                             "h-4 w-4",
-                                                            i < item.rating ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground"
+                                                            i < item.rating ? "text-accent fill-accent" : "text-muted-foreground"
                                                         )} />
                                                     ))}
                                                   </div>
@@ -566,7 +566,7 @@ const ProductCategory = ({
     return (
         <div>
             <div className="flex flex-col md:flex-row justify-between md:items-center mb-6">
-                <h3 id={category.name.toLowerCase().replace(/\s+/g, '-')} className="text-2xl md:text-3xl font-bold flex items-center gap-4 mb-4 md:mb-0 text-black scroll-mt-24">
+                <h3 id={category.name.toLowerCase().replace(/\s+/g, '-')} className="text-2xl md:text-3xl font-bold flex items-center gap-4 mb-4 md:mb-0 text-foreground scroll-mt-24">
                     {category.name}
                 </h3>
                 <div className='flex items-center gap-4'>
@@ -578,7 +578,7 @@ const ProductCategory = ({
                         <SelectContent>
                             <SelectItem value="default">Default</SelectItem>
                             <SelectItem value="low-to-high">Price: Low to High</SelectItem>
-                            <SelectItem value="rating">High to Low</SelectItem>
+                            <SelectItem value="rating">Rating: High to Low</SelectItem>
                             <SelectItem value="offers">Only Offers</SelectItem>
                         </SelectContent>
                     </Select>
@@ -617,6 +617,72 @@ const ProductCategory = ({
     )
 }
 
+const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCardClick }: {
+    item: MenuItem;
+    cartItem?: CartItem;
+    onAddToCart: (item: MenuItem) => void;
+    onRemoveFromCart: (itemName: string) => void;
+    onCardClick: (item: MenuItem) => void;
+}) => {
+    const imageData = PlaceHolderImages.find(img => img.id === item.name);
+
+    return (
+        <div 
+            className="bg-card rounded-2xl shadow-sm overflow-hidden border border-border/50"
+            onClick={() => onCardClick(item)}
+        >
+            <div className="relative aspect-video w-full">
+                {imageData ? (
+                    <Image
+                        src={imageData.imageUrl}
+                        alt={item.description}
+                        fill
+                        data-ai-hint={imageData.imageHint}
+                        className="object-cover"
+                    />
+                ) : (
+                    <div className="w-full h-full bg-secondary flex items-center justify-center">
+                        <span className="text-muted-foreground text-xs">No Image</span>
+                    </div>
+                )}
+            </div>
+            <div className="p-4">
+                <div className="flex justify-between items-start">
+                    <div className='flex-1'>
+                        <h3 className="font-semibold text-foreground text-lg leading-tight">{item.name}</h3>
+                        <div className="mt-1 flex items-center gap-2">
+                             <div className="flex items-center gap-0.5">
+                                <Star className="h-4 w-4 text-accent fill-accent" />
+                                <span className="text-sm font-bold text-foreground/80">{item.rating.toFixed(1)}</span>
+                            </div>
+                            <span className="text-xs text-muted-foreground">({item.ratingsCount} reviews)</span>
+                        </div>
+                    </div>
+                    <span className="font-bold text-xl text-foreground ml-2">Rs. {item.price}</span>
+                </div>
+                 <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{item.description}</p>
+                 <div className="mt-4 flex justify-end">
+                      {cartItem ? (
+                           <div className="flex items-center justify-between gap-2 bg-primary/10 rounded-full">
+                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-primary" onClick={(e) => {e.stopPropagation(); onRemoveFromCart(item.name);}}>
+                                    <Minus className="h-5 w-5" />
+                                </Button>
+                                <span className="font-bold w-6 text-center text-primary text-lg">{cartItem.quantity}</span>
+                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-primary" onClick={(e) => {e.stopPropagation(); onAddToCart(item);}}>
+                                    <Plus className="h-5 w-5" />
+                                </Button>
+                            </div>
+                      ) : (
+                        <Button className="rounded-full bg-primary h-10 px-6" onClick={(e) => {e.stopPropagation(); onAddToCart(item)}}>
+                            <ShoppingCart className="mr-2 h-4 w-4" /> Add
+                        </Button>
+                      )}
+                 </div>
+            </div>
+        </div>
+    );
+}
+
 const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onCardClick, onRate, searchQuery }: {
   allMenuItems: { name: string, items: MenuItem[] }[];
   cart: CartItem[];
@@ -633,17 +699,13 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
         if (!searchQuery) return [];
         const lowerCaseQuery = searchQuery.toLowerCase();
 
-        // 1. Category Search
         let categoryResults: MenuItem[] = [];
-
-        // Special case for "non veg"
         if (lowerCaseQuery.includes('non veg')) {
             const chickenCategory = allMenuItems.find(cat => cat.name.toLowerCase().includes('chicken'));
             const muttonCategory = allMenuItems.find(cat => cat.name.toLowerCase().includes('mutton'));
             if (chickenCategory) categoryResults.push(...chickenCategory.items);
             if (muttonCategory) categoryResults.push(...muttonCategory.items);
         } else {
-             // General category search
             const matchedCategory = allMenuItems.find(cat => cat.name.toLowerCase().includes(lowerCaseQuery));
             if (matchedCategory) {
                 categoryResults = matchedCategory.items;
@@ -654,7 +716,6 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
             return categoryResults;
         }
 
-        // 2. Item Name/Description Search (if no category matched)
         return flatMenuItems.filter(item =>
             item.name.toLowerCase().includes(lowerCaseQuery) ||
             item.description.toLowerCase().includes(lowerCaseQuery)
@@ -663,13 +724,34 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
 
 
   return (
-    <section id="products" className="py-12 md:py-32 bg-background overflow-hidden relative">
+    <section id="products" className="py-6 md:py-32 bg-background overflow-hidden relative">
       <div className="container mx-auto px-4">
         
         {searchQuery ? (
              <div>
-                <h2 className="text-2xl font-bold text-black mb-6">Search Results for "{searchQuery}"</h2>
-                <ScrollArea className="h-[70vh]">
+                <div className='md:hidden'>
+                    <h2 className="text-xl font-bold text-foreground mb-4">Search Results for "{searchQuery}"</h2>
+                    <ScrollArea className="h-[70vh]">
+                        <div className="space-y-4 pr-4">
+                            {searchResults.length > 0 ? (
+                                searchResults.map(item => (
+                                    <MobileProductCard 
+                                        key={item.name}
+                                        item={item}
+                                        cartItem={cart.find(ci => ci.name === item.name)}
+                                        onAddToCart={onAddToCart}
+                                        onRemoveFromCart={onRemoveFromCart}
+                                        onCardClick={onCardClick}
+                                    />
+                                ))
+                            ) : (
+                                <p className="text-muted-foreground text-center py-10">No products found matching your search.</p>
+                            )}
+                        </div>
+                    </ScrollArea>
+                </div>
+                 <div className="hidden md:block">
+                    <h2 className="text-2xl font-bold text-foreground mb-6">Search Results for "{searchQuery}"</h2>
                     <div className="space-y-4">
                         {searchResults.length > 0 ? (
                             searchResults.map(item => (
@@ -700,31 +782,93 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                             <p className="text-muted-foreground text-center py-10">No products found matching your search.</p>
                         )}
                     </div>
-                </ScrollArea>
+                 </div>
              </div>
         ) : (
             <>
-                <div className="text-center mb-12 hidden md:block">
-                  <h2 className="text-3xl md:text-4xl font-bold text-black">
-                    Explore Our Menu
-                  </h2>
-                  <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-                    A wide variety of dishes to satisfy every craving, from
-                    traditional flavors to modern delights.
-                  </p>
+                <div className="hidden md:block">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+                            Explore Our Menu
+                        </h2>
+                        <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+                            A wide variety of dishes to satisfy every craving, from
+                            traditional flavors to modern delights.
+                        </p>
+                    </div>
+
+                    <div className="space-y-12">
+                    {allMenuItems.map((category) => (
+                        <ProductCategory 
+                            key={category.name} 
+                            category={{...category, items: category.items}}
+                            cart={cart} 
+                            onAddToCart={onAddToCart} 
+                            onRemoveFromCart={onRemoveFromCart}
+                            onCardClick={onCardClick}
+                        />
+                    ))}
+                    </div>
                 </div>
 
-                <div className="space-y-12">
-                  {allMenuItems.map((category) => (
-                    <ProductCategory 
-                        key={category.name} 
-                        category={{...category, items: category.items}}
-                        cart={cart} 
-                        onAddToCart={onAddToCart} 
-                        onRemoveFromCart={onRemoveFromCart}
-                        onCardClick={onCardClick}
-                    />
-                  ))}
+                <div className='block md:hidden'>
+                    <div className="p-4 bg-background border-b border-border/50">
+                        <div className="flex gap-4">
+                            <Select onValueChange={(value) => {
+                                const el = document.getElementById(value);
+                                if (el) {
+                                    const y = el.getBoundingClientRect().top + window.scrollY - 100;
+                                    window.scrollTo({ top: y, behavior: 'smooth' });
+                                }
+                            }}>
+                                <SelectTrigger className="w-1/2 rounded-full h-11">
+                                    <SelectValue placeholder="All Categories" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {allMenuItems.map(category => (
+                                        <SelectItem 
+                                            key={category.name} 
+                                            value={category.name.toLowerCase().replace(/\s+/g, '-')}
+                                        >
+                                            {category.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Select defaultValue="popular">
+                                <SelectTrigger className="w-1/2 rounded-full h-11">
+                                    <SelectValue placeholder="Sort by" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="popular">Sort by: Popular</SelectItem>
+                                    <SelectItem value="rating">Sort by: Rating</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
+                        {allMenuItems.map((category, index) => (
+                            <AccordionItem value={`item-${index}`} key={category.name} id={category.name.toLowerCase().replace(/\s+/g, '-')} className="border-b-0 mb-2 scroll-mt-32">
+                                <AccordionTrigger className="py-4 text-xl font-bold hover:no-underline text-foreground">
+                                    {category.name}
+                                </AccordionTrigger>
+                                <AccordionContent className="pt-2 pb-6">
+                                     <div className="space-y-4">
+                                        {category.items.map(item => (
+                                            <MobileProductCard
+                                                key={item.name}
+                                                item={item}
+                                                cartItem={cart.find(ci => ci.name === item.name)}
+                                                onAddToCart={onAddToCart}
+                                                onRemoveFromCart={onRemoveFromCart}
+                                                onCardClick={onCardClick}
+                                            />
+                                        ))}
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
                 </div>
             </>
         )}
@@ -734,15 +878,3 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
 };
 
 export default ProductSection;
-
-    
-
-    
-
-
-
-
-
-
-
-

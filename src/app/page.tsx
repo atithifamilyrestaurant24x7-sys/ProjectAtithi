@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import Header from "@/components/header";
 import HeroSection from "@/components/sections/hero-section";
 import LoadingScreen from "@/components/loading-screen";
@@ -21,9 +20,6 @@ import ContactSection from "@/components/sections/contact-section";
 import MobileSearchHeader from "@/components/mobile-search-header";
 import CartSheet from "@/components/cart-sheet";
 import { MenuDialog } from "@/components/menu-dialog";
-import { WhatsappIcon } from "@/components/icons";
-import { cn } from "@/lib/utils";
-
 
 export type CartItem = MenuItem & { quantity: number };
 
@@ -37,7 +33,6 @@ export default function Home() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
   const [isCartSheetOpen, setIsCartSheetOpen] = useState(false);
-  const [isMenuDialogOpen, setIsMenuDialogOpen] = useState(false);
   const [reviews, setReviews] = useState<Review[]>(config.reviews);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -174,19 +169,15 @@ export default function Home() {
       <div className="block md:hidden">
           <MobileSearchHeader 
               onSearch={setSearchQuery} 
-              onRecommendClick={() => document.getElementById('recommendation')?.scrollIntoView({ behavior: 'smooth' })}
               onCartClick={() => setIsCartSheetOpen(true)}
-              onMenuClick={() => setIsMenuDialogOpen(true)}
               cartCount={totalCartItems}
           />
       </div>
         <div className={`transition-opacity duration-500 ${isAppLoading ? 'opacity-0' : 'opacity-100'}`}>
           <main>
-            <div className='hidden md:block'>
-              <HeroSection />
-              <MenuSection />
-              <BestSellerSection />
-            </div>
+            <HeroSection />
+            <MenuSection />
+            <BestSellerSection />
             
             <ProductSection 
                 allMenuItems={allMenuItems}
@@ -198,11 +189,8 @@ export default function Home() {
                 searchQuery={searchQuery}
             />
 
-            <div className='hidden md:block'>
-              <ReviewsSection reviews={reviews} />
-              <WriteReviewSection onReviewSubmit={handleReviewSubmit} />
-            </div>
-
+            <ReviewsSection reviews={reviews} />
+            <WriteReviewSection onReviewSubmit={handleReviewSubmit} />
             <ContactSection />
             <RecommendationSection />
           </main>
@@ -217,11 +205,6 @@ export default function Home() {
             onEmptyCart={handleEmptyCart}
             onAddToCart={handleAddToCart}
             onRemoveFromCart={handleRemoveFromCart}
-        />
-
-        <MenuDialog 
-            isOpen={isMenuDialogOpen}
-            onOpenChange={setIsMenuDialogOpen}
         />
 
         {selectedItem && (

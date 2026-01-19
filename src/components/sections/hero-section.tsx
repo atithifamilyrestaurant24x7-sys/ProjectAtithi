@@ -2,12 +2,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { config, SectionData } from "@/app/config";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Menu, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { InstagramIcon, GoogleMapsIcon, CallIcon, WhatsappIcon } from "@/components/icons";
 import { ComingSoonDialog } from "@/components/coming-soon-dialog";
 
@@ -22,7 +20,6 @@ type HeroSectionProps = {};
 
 const HeroSection = ({}: HeroSectionProps) => {
   const [currentSection] = useState<SectionData>(config.sections[0]);
-  
 
   return (
     <section id="home" className="relative h-screen w-full overflow-hidden">
@@ -42,10 +39,10 @@ const HeroSection = ({}: HeroSectionProps) => {
       
       <div className="container mx-auto px-4 h-full">
         <div className="relative z-10 flex h-full items-center justify-center text-white">
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-6 w-full px-4">
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-6 w-full px-4">
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                 <Button size="lg" variant="outline" className="border-2 border-white/50 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm" asChild>
-                  <Link href="#menu">Explore Menu</Link>
+                  <Link href="#products">Explore Menu</Link>
                 </Button>
                 <Button size="lg" className="text-white backdrop-blur-sm bg-black/20 hover:bg-black/30" style={{backgroundColor: currentSection.themeColor}} asChild>
                   <Link href="tel:8250104315">
@@ -74,10 +71,10 @@ const HeroSection = ({}: HeroSectionProps) => {
 
                   return (
                     <ComingSoonDialog key={social.name}>
-                      <button className="text-white/80 hover:text-white transition-colors">
-                        <social.icon className="h-6 w-6" />
-                        <span className="sr-only">{social.name}</span>
-                      </button>
+                       <button className="text-white/80 hover:text-white transition-colors">
+                         <social.icon className="h-6 w-6" />
+                         <span className="sr-only">{social.name}</span>
+                       </button>
                     </ComingSoonDialog>
                   );
                 })}
