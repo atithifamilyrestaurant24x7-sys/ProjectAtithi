@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ShoppingCart } from "lucide-react";
@@ -17,6 +19,19 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
         <header className="sticky top-0 z-40 bg-black/50 backdrop-blur-sm pt-[10px] pb-3">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between gap-2">
+                    <div className="flex-shrink-0">
+                        <Link href="/">
+                            <Image
+                                src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/ChatGPT%20Image%20Jan%2020,%202026,%2012_52_38%20AM.png"
+                                alt="Atithi Logo"
+                                width={80}
+                                height={40}
+                                className="h-10 w-auto"
+                                priority
+                            />
+                        </Link>
+                    </div>
+
                     <div className="relative flex-grow">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/70" />
                         <Input
