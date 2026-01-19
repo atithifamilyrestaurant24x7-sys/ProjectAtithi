@@ -625,63 +625,88 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
     onCardClick: (item: MenuItem) => void;
 }) => {
     const imageData = PlaceHolderImages.find(img => img.id === item.name);
+    const isFeatured = item.name === 'Paneer Tikka (6 pcs)';
 
-    return (
-        <div 
-            className="bg-card rounded-2xl shadow-sm overflow-hidden border border-border/50"
-            onClick={() => onCardClick(item)}
+    const AddButton = ({isSmall}: {isSmall?: boolean}) => (
+        <Button 
+            className={cn(
+                "rounded-lg bg-primary h-10 text-sm text-primary-foreground",
+                isSmall ? "px-3 h-9" : "px-4"
+            )} 
+            onClick={(e) => {e.stopPropagation(); onAddToCart(item)}}
         >
-            <div className="relative aspect-video w-full">
-                {imageData ? (
-                    <Image
-                        src={imageData.imageUrl}
-                        alt={item.description}
-                        fill
-                        data-ai-hint={imageData.imageHint}
-                        className="object-cover"
-                    />
-                ) : (
-                    <div className="w-full h-full bg-secondary flex items-center justify-center">
-                        <span className="text-muted-foreground text-xs">No Image</span>
-                    </div>
-                )}
-            </div>
-            <div className="p-4">
-                <div className="flex justify-between items-start">
-                    <div className='flex-1'>
-                        <h3 className="font-semibold text-foreground text-lg leading-tight">{item.name}</h3>
-                        <div className="mt-1 flex items-center gap-2">
-                             <div className="flex items-center gap-0.5">
-                                <Star className="h-4 w-4 text-accent fill-accent" />
-                                <span className="text-sm font-bold text-foreground/80">{item.rating.toFixed(1)}</span>
-                            </div>
-                            <span className="text-xs text-muted-foreground">({item.ratingsCount} reviews)</span>
-                        </div>
-                    </div>
-                    <span className="font-bold text-xl text-foreground ml-2">Rs. {item.price}</span>
+            <ShoppingCart className="mr-2 h-4 w-4" /> Add
+        </Button>
+    );
+
+    const QuantityCounter = ({isSmall}: {isSmall?: boolean}) => (
+        <div className={cn(
+            "flex items-center justify-between gap-1 bg-primary/10 rounded-lg",
+            isSmall ? "h-9 px-1" : "h-10 px-2"
+        )}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-primary" onClick={(e) => {e.stopPropagation(); onRemoveFromCart(item.name);}}>
+                <Minus className="h-5 w-5" />
+            </Button>
+            <span className={cn("font-bold text-center text-primary", isSmall ? "w-4 text-sm" : "w-6 text-base" )}>{cartItem?.quantity}</span>
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-primary" onClick={(e) => {e.stopPropagation(); onAddToCart(item);}}>
+                <Plus className="h-5 w-5" />
+            </Button>
+        </div>
+    );
+
+    if (isFeatured) {
+        // Large Card Layout (like Paneer Tikka)
+        return (
+            <div className="bg-white rounded-xl shadow-product" onClick={() => onCardClick(item)}>
+                <div className="relative aspect-video w-full">
+                    {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-t-xl" /> : <div className="bg-muted w-full h-full rounded-t-xl"/>}
                 </div>
-                 <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{item.description}</p>
-                 <div className="mt-4 flex justify-end">
-                      {cartItem ? (
-                           <div className="flex items-center justify-between gap-2 bg-primary/10 rounded-full">
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-primary" onClick={(e) => {e.stopPropagation(); onRemoveFromCart(item.name);}}>
-                                    <Minus className="h-5 w-5" />
-                                </Button>
-                                <span className="font-bold w-6 text-center text-primary text-lg">{cartItem.quantity}</span>
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full text-primary" onClick={(e) => {e.stopPropagation(); onAddToCart(item);}}>
-                                    <Plus className="h-5 w-5" />
-                                </Button>
-                            </div>
-                      ) : (
-                        <Button className="rounded-full bg-primary h-10 px-6" onClick={(e) => {e.stopPropagation(); onAddToCart(item)}}>
-                            <ShoppingCart className="mr-2 h-4 w-4" /> Add
-                        </Button>
-                      )}
-                 </div>
+                <div className="p-4">
+                    <div className="flex justify-between items-start mb-1">
+                        <h3 className="font-semibold text-lg text-foreground">{item.name}</h3>
+                        <p className="font-bold text-lg text-foreground ml-2">Rs. {item.price}</p>
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-0.5">
+                            <Star className="h-4 w-4 text-accent fill-accent" />
+                            <span className="text-sm font-medium text-foreground">{item.rating.toFixed(1)}</span>
+                        </div>
+                        <span className="text-sm text-muted-foreground">({item.ratingsCount})</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-1">{item.description}</p>
+                    <div className="flex justify-end">
+                        {cartItem ? <QuantityCounter /> : <AddButton />}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Standard Card Layout
+    return (
+        <div className="bg-white rounded-xl shadow-product p-3 flex gap-3" onClick={() => onCardClick(item)}>
+            <div className="relative w-24 h-24 flex-shrink-0">
+                {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-lg" /> : <div className="bg-muted w-full h-full rounded-lg"/>}
+            </div>
+            <div className="flex-grow flex flex-col min-w-0">
+                <h3 className="font-semibold text-base text-foreground truncate">{item.name}</h3>
+                <div className="flex items-center gap-2 my-1">
+                    <div className="flex items-center gap-0.5">
+                        <Star className="h-4 w-4 text-accent fill-accent" />
+                        <span className="text-xs font-bold text-foreground">{item.rating.toFixed(1)}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">({item.ratingsCount})</span>
+                </div>
+                <p className="text-xs text-muted-foreground line-clamp-1 flex-grow">{item.description}</p>
+                <div className="flex justify-between items-end mt-2">
+                    <p className="font-bold text-base text-foreground">Rs. {item.price}</p>
+                    {cartItem ? <QuantityCounter isSmall /> : <AddButton isSmall />}
+                </div>
             </div>
         </div>
     );
-}
+};
+
 
 const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onCardClick, onRate, searchQuery }: {
   allMenuItems: { name: string, items: MenuItem[] }[];
@@ -812,7 +837,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                 </div>
 
                 <div className='block md:hidden'>
-                    <div className="p-4 bg-background border-b border-border/50">
+                    <div className="p-4 bg-background">
                         <div className="flex gap-4">
                             <Select onValueChange={(value) => {
                                 const el = document.getElementById(value);
@@ -821,10 +846,11 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                                     window.scrollTo({ top: y, behavior: 'smooth' });
                                 }
                             }}>
-                                <SelectTrigger className="w-1/2 rounded-full h-11">
-                                    <SelectValue placeholder="All Categories" />
+                                <SelectTrigger className="w-1/2 rounded-full h-11 bg-white shadow-sm border-stone-200">
+                                    <SelectValue placeholder="All" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value="all">All Categories</SelectItem>
                                     {allMenuItems.map(category => (
                                         <SelectItem 
                                             key={category.name} 
@@ -836,8 +862,8 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                                 </SelectContent>
                             </Select>
                             <Select defaultValue="popular">
-                                <SelectTrigger className="w-1/2 rounded-full h-11">
-                                    <SelectValue placeholder="Sort by" />
+                                <SelectTrigger className="w-1/2 rounded-full h-11 bg-white shadow-sm border-stone-200">
+                                    <SelectValue placeholder="Sort by: Popular" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="popular">Sort by: Popular</SelectItem>
@@ -846,13 +872,13 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                             </Select>
                         </div>
                     </div>
-                    <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
+                    <Accordion type="single" collapsible className="w-full space-y-4" defaultValue="item-0">
                         {allMenuItems.map((category, index) => (
-                            <AccordionItem value={`item-${index}`} key={category.name} id={category.name.toLowerCase().replace(/\s+/g, '-')} className="border-b-0 mb-2 scroll-mt-32">
-                                <AccordionTrigger className="py-4 text-xl font-bold hover:no-underline text-foreground">
+                            <AccordionItem value={`item-${index}`} key={category.name} id={category.name.toLowerCase().replace(/\s+/g, '-')} className="border-b-0 scroll-mt-32">
+                                <AccordionTrigger className="py-3 text-lg font-bold hover:no-underline text-foreground border-b border-stone-200">
                                     {category.name}
                                 </AccordionTrigger>
-                                <AccordionContent className="pt-2 pb-6">
+                                <AccordionContent className="pt-4">
                                      <div className="space-y-4">
                                         {category.items.map(item => (
                                             <MobileProductCard

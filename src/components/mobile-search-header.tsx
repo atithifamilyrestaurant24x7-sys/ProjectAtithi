@@ -17,30 +17,30 @@ type MobileSearchHeaderProps = {
 
 const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHeaderProps) => {
     return (
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/50 shadow-sm">
+        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm pb-3">
             <div className="container mx-auto px-4">
                 <div className="flex h-20 items-center justify-between gap-4">
-                    <div className="text-2xl font-bold text-foreground">
-                        <Link href="/">{config.brandName}</Link>
+                    <div className="text-2xl font-bold text-foreground font-logo">
+                        <Link href="/">Logo</Link>
                     </div>
                     
                     <div className="relative flex-grow">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         <Input
                             type="search"
-                            placeholder="Search dishes..."
-                            className="w-full pl-12 pr-4 h-12 rounded-full bg-secondary border-none focus-visible:ring-2 focus-visible:ring-primary"
+                            placeholder="Search"
+                            className="w-full pl-12 pr-4 h-12 rounded-full bg-white border-none shadow-sm"
                             onChange={(e) => onSearch(e.target.value)}
                         />
                     </div>
                     
                     <div className="relative">
-                        <Button variant="ghost" size="icon" className="relative" onClick={onCartClick}>
+                        <Button variant="ghost" size="icon" className="relative h-12 w-12" onClick={onCartClick}>
                             <ShoppingCart className="h-6 w-6" />
                             <span className="sr-only">View Cart</span>
                         </Button>
                         {cartCount > 0 && (
-                            <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 rounded-full flex items-center justify-center p-1 text-xs">
+                            <Badge variant="default" className="absolute top-2 right-2 h-6 w-6 rounded-full flex items-center justify-center p-1 text-xs bg-primary text-primary-foreground">
                                 {cartCount}
                             </Badge>
                         )}

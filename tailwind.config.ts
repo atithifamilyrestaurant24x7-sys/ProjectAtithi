@@ -11,7 +11,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['Poppins', 'sans-serif'],
-        headline: ['Poppins', 'sans-serif'],
+        logo: ['Playfair Display', 'serif'],
         code: ['monospace'],
       },
       colors: {
@@ -86,6 +86,7 @@ export default {
       boxShadow: {
         'neumorphic-light': '15px 15px 30px #bebebe, -15px -15px 30px #ffffff',
         'neumorphic-dark': '15px 15px 30px #111111, -15px -15px 30px #151515',
+        'product': '0 8px 20px rgba(0,0,0,0.06)',
       }
     },
   },
