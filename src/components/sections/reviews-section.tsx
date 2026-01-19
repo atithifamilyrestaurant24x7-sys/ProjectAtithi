@@ -31,7 +31,7 @@ const ReviewsSection = ({ reviews }: { reviews: Review[] }) => {
                                     <div key={`${review.name}-${index}`} className="flex-[0_0_280px] min-w-0 pl-8 flex items-center justify-center">
                                         <div className="book">
                                             <div className="inner">
-                                                <p className="text-sm text-muted-foreground italic p-4">"{review.review}"</p>
+                                                <p className="text-sm text-muted-foreground p-4">"{review.review}"</p>
                                             </div>
                                             <div className="cover">
                                                 <div className="text-center p-4">

@@ -98,6 +98,8 @@
   transform: rotatey(85deg);
   z-index: -1;
   overflow-y: auto;
+  align-items: stretch;
+  text-align: left;
 }
 
 .book:hover {
