@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -12,7 +11,7 @@ type MobileSearchHeaderProps = {
 
 const MobileSearchHeader = ({ onSearch }: MobileSearchHeaderProps) => {
     return (
-        <header className="sticky top-0 z-40 bg-black/50 backdrop-blur-sm pt-[10px] pb-3">
+        <header className="sticky top-0 z-40 bg-[#fcf7f3] pt-[10px] pb-3 border-b border-border">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex-shrink-0">
