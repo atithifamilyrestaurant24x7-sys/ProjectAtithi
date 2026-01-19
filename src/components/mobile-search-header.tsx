@@ -19,7 +19,7 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex-shrink-0">
-                        <a href="/" className="relative block h-8 w-20">
+                        <a href="/" className="relative block h-8 w-24">
                             <Image
                                 src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/ChatGPT%20Image%20Jan%2020,%202026,%2012_52_38%20AM.png"
                                 alt="atithi logo"
