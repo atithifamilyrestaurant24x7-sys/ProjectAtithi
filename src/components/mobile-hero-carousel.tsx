@@ -43,16 +43,16 @@ const MobileHeroCarousel = () => {
           loop: true,
         }}
       >
-        <CarouselContent className="-ml-4">
+        <CarouselContent>
           {carouselImages.map((img, index) => (
-            <CarouselItem key={index} className="basis-2/3 pl-4">
+            <CarouselItem key={index} className="basis-full">
               <div className="overflow-hidden rounded-xl aspect-[191/100] relative">
                 {img && (
                   <Image
                     src={img.imageUrl}
                     alt={img.description}
                     fill
-                    sizes="(max-width: 768px) 70vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
                     priority={index === 0}
                   />
