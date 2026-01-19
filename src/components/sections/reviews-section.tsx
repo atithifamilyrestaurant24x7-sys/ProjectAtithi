@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { type Review } from "@/app/config";
+import { type Review } from "@/lib/utils";
 import useEmblaCarousel from 'embla-carousel-react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
