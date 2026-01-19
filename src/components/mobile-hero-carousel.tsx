@@ -9,6 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
+import { type MenuItem, menuData } from '@/lib/menu';
 
 const carouselImageIds = [
   'bestseller-butter-chicken',
@@ -18,14 +19,25 @@ const carouselImageIds = [
   'Mutton Kasa',
 ];
 
-const MobileHeroCarousel = () => {
+type MobileHeroCarouselProps = {
+  onCardClick: (item: MenuItem) => void;
+  onAddToCart: (item: MenuItem) => void;
+};
+
+
+const MobileHeroCarousel = ({ onCardClick, onAddToCart }: MobileHeroCarouselProps) => {
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
 
   const carouselImages = carouselImageIds
-    .map(id => PlaceHolderImages.find(img => img.id === id))
-    .filter(Boolean);
+    .map(id => {
+        const img = PlaceHolderImages.find(img => img.id === id);
+        // This is a hack. The item might not be in menuData.
+        const menuItem = menuData.flatMap(c => c.items).find(i => i.name === id);
+        return { img, menuItem };
+    })
+    .filter(({img, menuItem}) => img && menuItem);
 
   if (carouselImages.length === 0) {
     return null;
@@ -44,8 +56,8 @@ const MobileHeroCarousel = () => {
         }}
       >
         <CarouselContent>
-          {carouselImages.map((img, index) => (
-            <CarouselItem key={index} className="basis-full">
+          {carouselImages.map(({ img, menuItem }, index) => (
+            <CarouselItem key={index} className="basis-full" onClick={() => menuItem && onCardClick(menuItem)}>
               <div className="overflow-hidden rounded-xl aspect-[191/100] relative">
                 {img && (
                   <Image

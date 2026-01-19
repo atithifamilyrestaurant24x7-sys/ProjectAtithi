@@ -180,10 +180,10 @@ export default function Home() {
             </div>
             <div className="md:hidden">
               <div className="px-4">
-                  <h1 className="text-2xl font-semibold tracking-[0.2px] text-foreground mt-4 mb-3">Our Best Seller</h1>
-                  <MobileHeroCarousel />
+                  <h1 className="text-2xl font-semibold tracking-[0.2px] text-foreground mt-4">Our Best Seller</h1>
+                  <MobileHeroCarousel onAddToCart={handleAddToCart} onCardClick={handleCardClick} />
               </div>
-              <div className="my-3.5 mx-4 border-b border-border"></div>
+              <div className="mx-4 mt-0 mb-4 border-b border-border"></div>
             </div>
             <div className="hidden md:block">
               <MenuSection />

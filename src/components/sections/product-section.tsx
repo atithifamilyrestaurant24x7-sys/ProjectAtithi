@@ -824,7 +824,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
 
 
   return (
-    <section id="products" className="py-6 md:py-32 bg-background overflow-hidden relative">
+    <section id="products" className="pb-6 md:py-32 bg-background overflow-hidden relative">
       <div className="container mx-auto px-0 md:px-4">
         
         {searchQuery ? (
