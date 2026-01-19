@@ -8,28 +8,28 @@ const contactDetails = [
     {
         icon: MapPin,
         title: 'Location',
-        className: 'location',
+        containerClass: 'containerOne',
         href: 'https://www.google.com/maps/place/Atithi+Family+Restaurant/@24.2027813,87.7959755,17z/data=!4m12!1m5!3m4!2zMjTCsDEyJzEwLjAiTiA4N8KwNDcnNTQuOCJF!8m2!3d24.2027764!4d87.7985504!3m5!1s0x39fa1ec0ffee3159:0x79903c862e585ea1!8m2!3d24.2024486!4d87.7985075!16s%2Fg%2F11c5_nvjc3?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D',
         isExternal: true,
     },
     {
         icon: Phone,
         title: 'Phone',
-        className: 'phone',
+        containerClass: 'containerTwo',
         href: 'tel:8250104315',
         isExternal: true,
     },
     {
         icon: WhatsappIcon,
         title: 'WhatsApp',
-        className: 'whatsapp',
+        containerClass: 'containerFour',
         href: 'https://wa.me/918250104315',
         isExternal: true,
     },
     {
         icon: Mail,
         title: 'Email',
-        className: 'email',
+        containerClass: 'containerThree',
         href: '#',
         isExternal: false,
     }
@@ -58,23 +58,17 @@ const ContactSection = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label={detail.title}
-                                    className={`Btn ${detail.className}`}
+                                    className={`socialContainer ${detail.containerClass}`}
                                 >
-                                    <div className="svgContainer">
-                                        <Icon className="h-6 w-6" />
-                                    </div>
-                                    <div className="BG" />
+                                    <Icon className="socialSvg" />
                                 </Link>
                             );
                         }
 
                         return (
                             <ComingSoonDialog key={index}>
-                                <button className={`Btn ${detail.className}`}>
-                                    <div className="svgContainer">
-                                        <Icon className="h-6 w-6" />
-                                    </div>
-                                    <div className="BG" />
+                                <button className={`socialContainer ${detail.containerClass}`}>
+                                    <Icon className="socialSvg" />
                                 </button>
                             </ComingSoonDialog>
                         )
