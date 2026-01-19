@@ -877,7 +877,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                 </div>
 
                 <div className='block md:hidden'>
-                    <div className="mx-4 mb-[18px]">
+                    <div className="mx-4">
                         <div className="bg-white rounded-xl shadow-filters p-2">
                              <div className="grid grid-cols-2 gap-2">
                                 <Select onValueChange={(value) => {
