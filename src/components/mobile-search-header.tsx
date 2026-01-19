@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ShoppingCart } from "lucide-react";
@@ -15,15 +14,15 @@ type MobileSearchHeaderProps = {
 
 const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHeaderProps) => {
     return (
-        <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm pt-[10px] pb-3">
+        <header className="sticky top-0 z-40 bg-black/50 backdrop-blur-sm pt-[10px] pb-3">
             <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center justify-between gap-2">
                     <div className="relative flex-grow">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/70" />
                         <Input
                             type="search"
                             placeholder="Search"
-                            className="w-full pl-12 pr-4 h-12 bg-white border-none shadow-search rounded-lg"
+                            className="w-full pl-12 pr-4 h-12 bg-white border-none shadow-search"
                             onChange={(e) => onSearch(e.target.value)}
                             suppressHydrationWarning
                         />
@@ -31,7 +30,7 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
                     
                     <div className="relative flex-shrink-0">
                         <Button variant="ghost" size="icon" className="relative h-12 w-12" onClick={onCartClick}>
-                            <ShoppingCart className="h-6 w-6 text-foreground" />
+                            <ShoppingCart className="h-6 w-6 text-white" />
                             <span className="sr-only">View Cart</span>
                         </Button>
                         {cartCount > 0 && (
