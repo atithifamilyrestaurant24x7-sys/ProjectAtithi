@@ -192,6 +192,7 @@ export default function Home() {
                     </div>
                   <h1 className="text-2xl font-semibold tracking-[0.2px] text-foreground mt-4">Our Best Seller</h1>
                   <MobileHeroCarousel onCardClick={handleCardClick} onAddToCart={handleAddToCart} />
+                  <p className="text-center text-xs text-muted-foreground mt-2">Bulk order is acceptable</p>
               </div>
               <div className="mx-4 mt-8 mb-4 border-b border-border"></div>
             </div>
