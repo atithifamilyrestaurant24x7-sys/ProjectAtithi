@@ -30,13 +30,57 @@ import {
 import { cn } from '@/lib/utils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
-import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight, MessageCircle, Menu } from 'lucide-react';
+import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { type CartItem } from '@/app/page';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
 import { WhatsappIcon } from '../icons';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+const CategoryProductDialog = ({
+    isOpen,
+    onOpenChange,
+    category,
+    cart,
+    onAddToCart,
+    onRemoveFromCart,
+    onCardClick,
+}: {
+    isOpen: boolean;
+    onOpenChange: (open: boolean) => void;
+    category: { name: string; items: MenuItem[] } | null;
+    cart: CartItem[];
+    onAddToCart: (item: MenuItem) => void;
+    onRemoveFromCart: (itemName: string) => void;
+    onCardClick: (item: MenuItem) => void;
+}) => {
+    if (!category) return null;
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent className="p-0 w-full h-full max-w-full rounded-none border-0 flex flex-col top-0 left-0 translate-x-0 translate-y-0 data-[state=open]:animate-in data-[state=open]:zoom-in-90 data-[state=closed]:zoom-out-90">
+                <DialogHeader className="p-4 border-b flex-row items-center sticky top-0 bg-background/95 backdrop-blur-sm z-10">
+                    <DialogTitle className="text-xl">{category.name}</DialogTitle>
+                </DialogHeader>
+                <ScrollArea className="flex-grow bg-[#F6EFE8]">
+                    <div className="p-4 space-y-4">
+                        {category.items.map(item => (
+                            <MobileProductCard
+                                key={item.name}
+                                item={item}
+                                cartItem={cart.find(ci => ci.name === item.name)}
+                                onAddToCart={onAddToCart}
+                                onRemoveFromCart={onRemoveFromCart}
+                                onCardClick={onCardClick}
+                            />
+                        ))}
+                    </div>
+                </ScrollArea>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
 
 const useSyncCarousel = (apis: (CarouselApi | undefined)[], enabled: boolean) => {
     React.useEffect(() => {
@@ -631,7 +675,7 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
     const AddButton = ({isSmall}: {isSmall?: boolean}) => (
         <Button 
             className={cn(
-                "rounded-lg bg-primary h-10 text-sm text-primary-foreground",
+                "rounded-lg bg-[#B07A3C] h-10 text-sm text-white hover:bg-[#B07A3C]/90",
                 isSmall ? "px-3 h-9" : "px-4"
             )} 
             onClick={(e) => {e.stopPropagation(); onAddToCart(item)}}
@@ -642,14 +686,14 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
 
     const QuantityCounter = ({isSmall}: {isSmall?: boolean}) => (
         <div className={cn(
-            "flex items-center justify-between gap-1 bg-primary/10 rounded-lg",
+            "flex items-center justify-between gap-1 bg-[#B07A3C]/10 rounded-lg",
             isSmall ? "h-9 px-1" : "h-10 px-2"
         )}>
-            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-primary" onClick={(e) => {e.stopPropagation(); onRemoveFromCart(item.name);}}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-[#B07A3C]" onClick={(e) => {e.stopPropagation(); onRemoveFromCart(item.name);}}>
                 <Minus className="h-5 w-5" />
             </Button>
-            <span className={cn("font-bold text-center text-primary", isSmall ? "w-4 text-sm" : "w-6 text-base" )}>{cartItem?.quantity}</span>
-            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-primary" onClick={(e) => {e.stopPropagation(); onAddToCart(item);}}>
+            <span className={cn("font-bold text-center text-[#B07A3C]", isSmall ? "w-4 text-sm" : "w-6 text-base" )}>{cartItem?.quantity}</span>
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-[#B07A3C]" onClick={(e) => {e.stopPropagation(); onAddToCart(item);}}>
                 <Plus className="h-5 w-5" />
             </Button>
         </div>
@@ -664,17 +708,17 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
                 </div>
                 <div className="p-4">
                     <div className="flex justify-between items-start mb-1">
-                        <h3 className="font-semibold text-lg text-foreground">{item.name}</h3>
-                        <p className="font-bold text-lg text-foreground ml-2">Rs. {item.price}</p>
+                        <h3 className="font-semibold text-lg text-[#2A2A2A]">{item.name}</h3>
+                        <p className="font-bold text-lg text-[#2A2A2A] ml-2">Rs. {item.price}</p>
                     </div>
                     <div className="flex items-center gap-2 mb-2">
                         <div className="flex items-center gap-0.5">
-                            <Star className="h-4 w-4 text-accent fill-accent" />
-                            <span className="text-sm font-medium text-foreground">{item.rating.toFixed(1)}</span>
+                            <Star className="h-4 w-4 text-[#F2C94C] fill-[#F2C94C]" />
+                            <span className="text-sm font-medium text-[#2A2A2A]">{item.rating.toFixed(1)}</span>
                         </div>
-                        <span className="text-sm text-muted-foreground">({item.ratingsCount})</span>
+                        <span className="text-sm text-[#6E6E6E]">({item.ratingsCount})</span>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-1">{item.description}</p>
+                    <p className="text-sm text-[#6E6E6E] mb-4 line-clamp-1">{item.description}</p>
                     <div className="flex justify-end items-center gap-2">
                         <Button asChild variant="outline" className="h-10">
                             <Link href="tel:8250104315" onClick={(e) => e.stopPropagation()}>
@@ -695,17 +739,17 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
                 {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-lg" /> : <div className="bg-muted w-full h-full rounded-lg"/>}
             </div>
             <div className="flex-grow flex flex-col min-w-0">
-                <h3 className="font-semibold text-base text-foreground truncate">{item.name}</h3>
+                <h3 className="font-semibold text-base text-[#2A2A2A] truncate">{item.name}</h3>
                 <div className="flex items-center gap-2 my-1">
                     <div className="flex items-center gap-0.5">
-                        <Star className="h-4 w-4 text-accent fill-accent" />
-                        <span className="text-xs font-bold text-foreground">{item.rating.toFixed(1)}</span>
+                        <Star className="h-4 w-4 text-[#F2C94C] fill-[#F2C94C]" />
+                        <span className="text-xs font-bold text-[#2A2A2A]">{item.rating.toFixed(1)}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">({item.ratingsCount})</span>
+                    <span className="text-xs text-[#6E6E6E]">({item.ratingsCount})</span>
                 </div>
-                <p className="text-xs text-muted-foreground line-clamp-1 flex-grow">{item.description}</p>
+                <p className="text-xs text-[#6E6E6E] line-clamp-1 flex-grow">{item.description}</p>
                 <div className="flex justify-between items-end mt-2">
-                    <p className="font-bold text-base text-foreground">Rs. {item.price}</p>
+                    <p className="font-bold text-base text-[#2A2A2A]">Rs. {item.price}</p>
                     <div className="flex items-center gap-2">
                         <Button asChild variant="outline" size="icon" className="h-9 w-9">
                            <Link href="tel:8250104315" onClick={(e) => e.stopPropagation()}>
@@ -730,6 +774,13 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
   onRate: (itemName: string, rating: number) => void;
   searchQuery?: string;
 }) => {
+    const [selectedCategory, setSelectedCategory] = React.useState<{ name: string; items: MenuItem[] } | null>(null);
+    const [isCategoryDialogOpen, setIsCategoryDialogOpen] = React.useState(false);
+
+    const handleOpenCategoryDialog = (category: { name: string, items: MenuItem[] }) => {
+        setSelectedCategory(category);
+        setIsCategoryDialogOpen(true);
+    };
 
     const flatMenuItems = React.useMemo(() => allMenuItems.flatMap(c => c.items), [allMenuItems]);
 
@@ -762,7 +813,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
 
 
   return (
-    <section id="products" className="py-6 md:py-32 bg-background overflow-hidden relative">
+    <section id="products" className="py-6 md:py-32 bg-[#F6EFE8] overflow-hidden relative">
       <div className="container mx-auto px-4">
         
         {searchQuery ? (
@@ -850,7 +901,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                 </div>
 
                 <div className='block md:hidden'>
-                    <div className="p-4 bg-background">
+                    <div className="p-4 bg-[#F6EFE8]">
                         <div className="flex gap-4">
                             <Select onValueChange={(value) => {
                                 const el = document.getElementById(value);
@@ -885,55 +936,48 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                             </Select>
                         </div>
                     </div>
-                    <Accordion type="single" collapsible className="grid grid-cols-2 gap-4" defaultValue="item-0">
+                    <div className="grid grid-cols-2 gap-4">
                         {allMenuItems.map((category, index) => {
                              const firstItem = category.items[0];
                              const imageData = firstItem ? PlaceHolderImages.find(img => img.id === firstItem.name) : null;
                              const itemCount = category.items.length;
                         
                             return (
-                                <AccordionItem value={`item-${index}`} key={category.name} id={category.name.toLowerCase().replace(/\s+/g, '-')} className="border-0 bg-white rounded-xl shadow-product overflow-hidden">
-                                     <AccordionTrigger className="p-0 text-lg font-bold hover:no-underline w-full [&[data-state=open]>svg]:rotate-180 [&>svg]:h-5 [&>svg]:w-5 [&>svg]:absolute [&>svg]:top-2 [&>svg]:right-2 [&>svg]:text-white [&>svg]:z-10">
-                                        <div className="relative w-full aspect-square text-left">
-                                            <div className="absolute inset-0">
-                                                {imageData ? (
-                                                    <Image
-                                                        src={imageData.imageUrl}
-                                                        alt={`Preview of ${category.name}`}
-                                                        fill
-                                                        className="object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full bg-secondary flex items-center justify-center">
-                                                        <Menu className="w-8 h-8 text-muted-foreground/50"/>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                            <div className="relative h-full flex flex-col justify-end p-3">
-                                                <h3 className="font-semibold text-base text-white drop-shadow-md">{category.name}</h3>
-                                                <p className="text-xs text-white/90 drop-shadow-md">{itemCount} items</p>
-                                            </div>
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent className="p-4">
-                                        <div className="space-y-4">
-                                            {category.items.map(item => (
-                                                <MobileProductCard
-                                                    key={item.name}
-                                                    item={item}
-                                                    cartItem={cart.find(ci => ci.name === item.name)}
-                                                    onAddToCart={onAddToCart}
-                                                    onRemoveFromCart={onRemoveFromCart}
-                                                    onCardClick={onCardClick}
+                                <button key={category.name} onClick={() => handleOpenCategoryDialog(category)} className="border-0 bg-white rounded-xl shadow-product overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-primary ring-offset-2">
+                                    <div className="relative w-full aspect-square">
+                                        <div className="absolute inset-0">
+                                            {imageData ? (
+                                                <Image
+                                                    src={imageData.imageUrl}
+                                                    alt={`Preview of ${category.name}`}
+                                                    fill
+                                                    className="object-cover"
                                                 />
-                                            ))}
+                                            ) : (
+                                                <div className="w-full h-full bg-secondary flex items-center justify-center">
+                                                    <Menu className="w-8 h-8 text-muted-foreground/50"/>
+                                                </div>
+                                            )}
                                         </div>
-                                    </AccordionContent>
-                                </AccordionItem>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                        <div className="relative h-full flex flex-col justify-end p-3">
+                                            <h3 className="font-semibold text-base text-white drop-shadow-md">{category.name}</h3>
+                                            <p className="text-xs text-white/90 drop-shadow-md">{itemCount} items</p>
+                                        </div>
+                                    </div>
+                                </button>
                             )
                         })}
-                    </Accordion>
+                    </div>
+                    <CategoryProductDialog
+                        isOpen={isCategoryDialogOpen}
+                        onOpenChange={setIsCategoryDialogOpen}
+                        category={selectedCategory}
+                        cart={cart}
+                        onAddToCart={onAddToCart}
+                        onRemoveFromCart={onRemoveFromCart}
+                        onCardClick={onCardClick}
+                    />
                 </div>
             </>
         )}
@@ -943,5 +987,6 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
 };
 
 export default ProductSection;
+
 
 

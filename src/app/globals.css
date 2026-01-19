@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 33 43% 94%;
+    --background: 30 50% 96%;
     --foreground: 0 0% 16%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 16%;
@@ -16,8 +16,8 @@
     --secondary-foreground: 0 0% 43%;
     --muted: 30 10% 95%;
     --muted-foreground: 0 0% 43%;
-    --accent: 45 88% 62%;
-    --accent-foreground: 0 0% 16%;
+    --accent: 30 63% 45%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 90%;
@@ -28,7 +28,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.75rem;
+    --radius: 1rem;
   }
 }
 
@@ -37,7 +37,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#F6EFE8] text-foreground;
   }
   html {
     scroll-behavior: smooth;
