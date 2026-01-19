@@ -37,7 +37,7 @@ const MobileSearchHeader = ({ onSearch, onCartClick, cartCount }: MobileSearchHe
                         <Input
                             type="search"
                             placeholder="Search"
-                            className="w-full pl-12 pr-4 h-12 rounded-full bg-white border-none shadow-sm"
+                            className="w-full pl-12 pr-4 h-12 rounded-lg bg-white border-none shadow-sm"
                             onChange={(e) => onSearch(e.target.value)}
                             suppressHydrationWarning
                         />
