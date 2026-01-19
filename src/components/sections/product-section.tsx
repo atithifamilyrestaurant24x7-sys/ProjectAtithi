@@ -829,28 +829,26 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
       <div className="container mx-auto px-4">
         
         {searchQuery ? (
-             <div className="md:hidden">
-                <div className='p-4'>
-                    <h2 className="text-xl font-bold text-foreground mb-4">Search Results for "{searchQuery}"</h2>
-                    <ScrollArea className="h-[70vh]">
-                        <div className="space-y-4">
-                            {searchResults.length > 0 ? (
-                                searchResults.map(item => (
-                                    <MobileProductCard 
-                                        key={item.name}
-                                        item={item}
-                                        cartItem={cart.find(ci => ci.name === item.name)}
-                                        onAddToCart={onAddToCart}
-                                        onRemoveFromCart={onRemoveFromCart}
-                                        onCardClick={onCardClick}
-                                    />
-                                ))
-                            ) : (
-                                <p className="text-muted-foreground text-center py-10">No products found matching your search.</p>
-                            )}
-                        </div>
-                    </ScrollArea>
-                </div>
+             <div className="md:hidden p-4">
+                <h2 className="text-xl font-bold text-foreground mb-4">Search Results for "{searchQuery}"</h2>
+                <ScrollArea className="h-[70vh]">
+                    <div className="space-y-4">
+                        {searchResults.length > 0 ? (
+                            searchResults.map(item => (
+                                <MobileProductCard 
+                                    key={item.name}
+                                    item={item}
+                                    cartItem={cart.find(ci => ci.name === item.name)}
+                                    onAddToCart={onAddToCart}
+                                    onRemoveFromCart={onRemoveFromCart}
+                                    onCardClick={onCardClick}
+                                />
+                            ))
+                        ) : (
+                            <p className="text-muted-foreground text-center py-10">No products found matching your search.</p>
+                        )}
+                    </div>
+                </ScrollArea>
              </div>
         ) : (
             <>
@@ -891,9 +889,9 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                                     handleOpenCategoryDialog(category);
                                 }
                             }}
-                            suppressHydrationWarning
+                            suppressHydrationWarning={true}
                             >
-                                <SelectTrigger className="rounded-full h-auto min-h-11 bg-white shadow-sm border-stone-200 [&>span]:line-clamp-none [&>span]:text-left" suppressHydrationWarning>
+                                <SelectTrigger className="rounded-full h-auto min-h-11 bg-white shadow-sm border-stone-200 text-xs [&>span]:whitespace-nowrap" suppressHydrationWarning={true}>
                                     <SelectValue placeholder="All Categories" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -908,8 +906,8 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                                     ))}
                                 </SelectContent>
                             </Select>
-                            <Select defaultValue="popular" suppressHydrationWarning>
-                                <SelectTrigger className="rounded-full h-auto min-h-11 bg-white shadow-sm border-stone-200 [&>span]:line-clamp-none [&>span]:text-left" suppressHydrationWarning>
+                            <Select defaultValue="popular" suppressHydrationWarning={true}>
+                                <SelectTrigger className="rounded-full h-auto min-h-11 bg-white shadow-sm border-stone-200 text-xs [&>span]:whitespace-nowrap" suppressHydrationWarning={true}>
                                     <SelectValue placeholder="Sort by: Popular" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -926,7 +924,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                              const itemCount = category.items.length;
                         
                             return (
-                                <button key={category.name} onClick={() => handleOpenCategoryDialog(category)} className="border-0 bg-white rounded-xl shadow-product overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-primary ring-offset-2 aspect-square" suppressHydrationWarning>
+                                <button key={category.name} onClick={() => handleOpenCategoryDialog(category)} className="border-0 bg-white rounded-xl shadow-product overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-primary ring-offset-2 aspect-square" suppressHydrationWarning={true}>
                                     <div className="relative w-full h-full">
                                         <div className="absolute inset-0">
                                             {imageData ? (
@@ -974,5 +972,6 @@ export default ProductSection;
     
 
     
+
 
 
