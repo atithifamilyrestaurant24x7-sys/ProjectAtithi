@@ -261,7 +261,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  aspect-ratio: 600 / 200;
+  aspect-ratio: 2 / 1;
 }
 
 .banner-fade-carousel__container {

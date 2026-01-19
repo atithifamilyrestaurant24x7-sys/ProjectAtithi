@@ -12,7 +12,7 @@ const bannerImages = [
 
 const BannerCarousel = () => {
     const autoplayPlugin = React.useRef(
-        Autoplay({ delay: 4000, stopOnInteraction: false })
+        Autoplay({ delay: 3000, stopOnInteraction: false })
     );
 
     const [emblaRef] = useEmblaCarousel({ loop: true }, [autoplayPlugin.current]);
@@ -27,7 +27,7 @@ const BannerCarousel = () => {
                             alt={`Special Offer Banner ${index + 1}`}
                             fill
                             className="object-cover rounded-lg"
-                            priority={index === 0}
+                            priority
                         />
                     </div>
                 ))}
