@@ -146,72 +146,106 @@
   height: 1rem;
 }
 
-/* From Uiverse.io by faxriddin20 */
-.animated-social-links {
+/* From Uiverse.io by wilsondesouza - Customized for Atithi */
+.example-2 {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 20px;
+  align-items: center;
+  list-style: none;
+  padding: 0;
 }
-/* for all social containers*/
-.socialContainer {
-  width: 52px;
-  height: 52px;
+.example-2 .icon-content {
+  margin: 0 10px;
+  position: relative;
+}
+.example-2 .icon-content .tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  padding: 6px 10px;
   border-radius: 5px;
-  background-color: rgb(44, 44, 44);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.example-2 .icon-content:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  top: -50px;
+}
+.example-2 .icon-content a {
+  position: relative;
   overflow: hidden;
-  transition-duration: 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--card));
+  transition: all 0.3s ease-in-out;
+  border: 1px solid hsl(var(--border));
 }
-/* instagram*/
-.containerOne:hover {
-  background-color: #d62976;
-  transition-duration: 0.3s;
+.example-2 .icon-content a:hover {
+  box-shadow: 3px 2px 45px 0px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
 }
-/* twitter*/
-.containerTwo:hover {
-  background-color: #00acee;
-  transition-duration: 0.3s;
+.example-2 .icon-content a svg {
+  position: relative;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
 }
-/* linkdin*/
-.containerThree:hover {
-  background-color: #0072b1;
-  transition-duration: 0.3s;
-}
-/* Whatsapp*/
-.containerFour:hover {
-  background-color: green;
-  transition-duration: 0.3s;
-}
-
-.socialContainer:active {
-  transform: scale(0.9);
-  transition-duration: 0.3s;
-}
-
-.socialSvg {
-  width: 17px;
+.example-2 .icon-content a:hover {
   color: white;
 }
-
-.socialSvg path {
-  fill: rgb(255, 255, 255);
+.example-2 .icon-content a .filled {
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  transition: all 0.3s ease-in-out;
+}
+.example-2 .icon-content a:hover .filled {
+  height: 100%;
 }
 
-.socialContainer:hover .socialSvg {
-  animation: slide-in-top 0.3s both;
+.example-2 .icon-content a[data-social="instagram"] .filled,
+.example-2 .icon-content a[data-social="instagram"] ~ .tooltip {
+  background: linear-gradient(
+    45deg,
+    #405de6,
+    #5b51db,
+    #b33ab4,
+    #c135b4,
+    #e1306c,
+    #fd1f1f
+  );
 }
 
-@keyframes slide-in-top {
-  0% {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
+.example-2 .icon-content a[data-social="whatsapp"] .filled,
+.example-2 .icon-content a[data-social="whatsapp"] ~ .tooltip {
+  background-color: #25d366;
+}
 
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.example-2 .icon-content a[data-social="google-maps"] .filled,
+.example-2 .icon-content a[data-social="google-maps"] ~ .tooltip {
+  background-color: #4285f4;
+}
+
+.example-2 .icon-content a[data-social="call"] .filled,
+.example-2 .icon-content a[data-social="call"] ~ .tooltip {
+  background-color: #34b7f1;
+}
+
+.example-2 .icon-content a[data-social="mail"] .filled,
+.example-2 .icon-content a[data-social="mail"] ~ .tooltip {
+  background-color: #7f8c8d;
 }

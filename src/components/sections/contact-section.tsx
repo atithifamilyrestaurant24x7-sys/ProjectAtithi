@@ -8,28 +8,28 @@ const contactDetails = [
     {
         icon: MapPin,
         title: 'Location',
-        containerClass: 'containerOne',
+        dataSocial: 'google-maps',
         href: 'https://www.google.com/maps/place/Atithi+Family+Restaurant/@24.2027813,87.7959755,17z/data=!4m12!1m5!3m4!2zMjTCsDEyJzEwLjAiTiA4N8KwNDcnNTQuOCJF!8m2!3d24.2027764!4d87.7985504!3m5!1s0x39fa1ec0ffee3159:0x79903c862e585ea1!8m2!3d24.2024486!4d87.7985075!16s%2Fg%2F11c5_nvjc3?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D',
         isExternal: true,
     },
     {
         icon: Phone,
         title: 'Phone',
-        containerClass: 'containerTwo',
+        dataSocial: 'call',
         href: 'tel:8250104315',
         isExternal: true,
     },
     {
         icon: WhatsappIcon,
         title: 'WhatsApp',
-        containerClass: 'containerFour',
+        dataSocial: 'whatsapp',
         href: 'https://wa.me/918250104315',
         isExternal: true,
     },
     {
         icon: Mail,
         title: 'Email',
-        containerClass: 'containerThree',
+        dataSocial: 'mail',
         href: '#',
         isExternal: false,
     }
@@ -46,34 +46,34 @@ const ContactSection = () => {
                     </p>
                 </div>
 
-                <div className="animated-social-links">
-                    {contactDetails.map((detail, index) => {
+                <ul className="example-2">
+                    {contactDetails.map((detail) => {
                         const Icon = detail.icon;
                         
-                        if (detail.isExternal) {
-                            return (
-                                <Link
-                                    key={index}
-                                    href={detail.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={detail.title}
-                                    className={`socialContainer ${detail.containerClass}`}
-                                >
-                                    <Icon className="socialSvg" />
-                                </Link>
-                            );
-                        }
+                        const iconLink = (
+                            <a
+                                href={detail.href}
+                                data-social={detail.dataSocial}
+                                target={detail.isExternal ? "_blank" : undefined}
+                                rel={detail.isExternal ? "noopener noreferrer" : undefined}
+                                aria-label={detail.title}
+                                onClick={!detail.isExternal ? (e) => e.preventDefault() : undefined}
+                            >
+                                <div className="filled"></div>
+                                <Icon />
+                            </a>
+                        );
 
                         return (
-                            <ComingSoonDialog key={index}>
-                                <button className={`socialContainer ${detail.containerClass}`} suppressHydrationWarning>
-                                    <Icon className="socialSvg" />
-                                </button>
-                            </ComingSoonDialog>
-                        )
+                            <li key={detail.title}>
+                                <div className="icon-content">
+                                    {detail.isExternal ? iconLink : <ComingSoonDialog>{iconLink}</ComingSoonDialog>}
+                                    <div className="tooltip">{detail.title}</div>
+                                </div>
+                            </li>
+                        );
                     })}
-                </div>
+                </ul>
             </div>
         </section>
     );
