@@ -234,13 +234,13 @@ export default function Home() {
               />
             </div>
 
-            <div className="md:hidden px-4 my-8">
+            <div className="md:hidden my-8">
                 <Image
                     src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
                     alt="Special Offer Banner"
                     width={1200}
                     height={400}
-                    className="object-cover w-full rounded-lg"
+                    className="object-cover w-full"
                 />
             </div>
             
