@@ -179,7 +179,7 @@ export default function Home() {
               <HeroSection />
             </div>
             <div className="md:hidden">
-              <div>
+              <div className="mt-[-12px]">
                   <Image
                       src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
                       alt="Special Offer Banner"
@@ -198,6 +198,17 @@ export default function Home() {
             <div className="hidden md:block">
               <MenuSection />
             </div>
+
+            <div className="hidden md:block">
+              <Image
+                src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
+                alt="Special Offer Banner"
+                width={1920}
+                height={400}
+                className="object-cover w-full"
+              />
+            </div>
+            
             <div className="hidden md:block">
               <BestSellerSection />
             </div>
@@ -245,7 +256,7 @@ export default function Home() {
               item={selectedItem}
               cartItem={cart.find(ci => ci.name === selectedItem.name)}
               onAddToCart={handleAddToCart}
-              onRemoveFromCart={onRemoveFromCart}
+              onRemoveFromCart={handleRemoveFromCart}
               onRate={handleRatingChange}
               onCartClick={() => {
                 setIsDetailViewOpen(false);
