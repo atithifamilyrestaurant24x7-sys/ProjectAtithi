@@ -17,7 +17,7 @@ const ReviewsSection = ({ reviews }: { reviews: Review[] }) => {
         <section id="reviews" className="py-20 md:py-32 bg-secondary/30 review-card-section">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-foreground">Words from Our Guests</h2>
+                    <h2 className="text-2xl md:text-4xl font-bold text-foreground">Words from Our Guests</h2>
                     <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
                         We are proud to be a part of so many wonderful journeys. Here's what our valued customers have to say.
                     </p>
