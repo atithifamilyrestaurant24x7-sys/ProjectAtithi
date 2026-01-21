@@ -67,7 +67,7 @@ const MobileHeroCarousel = ({ onCardClick }: MobileHeroCarouselProps) => {
                   />
                 )}
                 {menuItem && (
-                  <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs font-semibold px-2 py-1 rounded-md">
+                  <div className="absolute bottom-4 left-4 text-white text-lg font-bold drop-shadow-md">
                     {menuItem.name}
                   </div>
                 )}
