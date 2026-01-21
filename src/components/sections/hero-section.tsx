@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -27,8 +26,8 @@ const HeroSection = ({}: HeroSectionProps) => {
       {/* Background Animation */}
       <div className="absolute inset-0 z-[-1] bg-black">
         <Image
-          src="https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/HeroSec2.webp"
-          alt="A serene and luxurious dining space at Atithi Family Restaurant."
+          src="https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/ezgif.com-video-to-webp-converter%20(1).webp"
+          alt="An animated view of the luxurious dining space at Atithi Family Restaurant."
           fill
           className="object-cover"
           priority
