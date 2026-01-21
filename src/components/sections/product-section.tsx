@@ -451,7 +451,7 @@ const ProductRow = React.memo(({
                                 <div className="p-1 transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer h-full"
                                 onClick={() => onCardClick(item)}
                                 >
-                                  <div className="w-full bg-card rounded-[30px] border flex flex-col group h-full">
+                                  <div className="w-full h-full bg-card rounded-[30px] border flex flex-col group">
                                       <div className="relative w-full aspect-[4/3]">
                                           {imageData ? (
                                               <Image
@@ -470,8 +470,8 @@ const ProductRow = React.memo(({
                                           {discount > 0 && <Badge variant="destructive" className="absolute top-2 right-2 sm:top-4 sm:right-4">{discount}% OFF</Badge>}
                                       </div>
                                       <div className="p-3 sm:p-5 flex flex-col flex-grow">
-                                          <div className='min-w-0'>
-                                              <h3 className="font-['Lucida_Sans'] text-sm sm:text-base font-semibold text-foreground truncate">{item.name}</h3>
+                                          <div className='min-w-0 flex-grow'>
+                                              <h3 className="font-['Lucida_Sans'] text-sm sm:text-base font-semibold text-foreground">{item.name}</h3>
                                               <p className="font-['Lucida_Sans'] text-[#999999] text-xs mt-1 min-h-[2rem]">{item.description}</p>
                                               <div className="mt-2 flex items-center gap-2">
                                                   <div className="flex items-center">
@@ -843,10 +843,9 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
 
   return (
     <section id="products" className="pb-6 md:py-32 bg-background overflow-hidden relative">
-      <div className="container mx-auto px-0 md:px-4">
         
         {searchQuery ? (
-             <div className="md:hidden px-4">
+             <div className="md:hidden px-4 container mx-auto">
                 <h2 className="text-xl font-bold text-foreground mb-4">Search Results for "{searchQuery}"</h2>
                 <ScrollArea className="h-[70vh]">
                     <div className="space-y-4">
@@ -870,32 +869,35 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
         ) : (
             <>
                 <div className="hidden md:block">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                            Explore Our Menu
-                        </h2>
-                        <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-                            A wide variety of dishes to satisfy every craving, from
-                            traditional flavors to modern delights.
-                        </p>
+                    <div className="container mx-auto px-4">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+                                Explore Our Menu
+                            </h2>
+                            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+                                A wide variety of dishes to satisfy every craving, from
+                                traditional flavors to modern delights.
+                            </p>
+                        </div>
                     </div>
 
                     <div className="space-y-12">
                     {allMenuItems.flatMap((category) => {
                         const categoryComponent = (
-                            <ProductCategory 
-                                key={category.name} 
-                                category={{...category, items: category.items}}
-                                cart={cart} 
-                                onAddToCart={onAddToCart} 
-                                onRemoveFromCart={onRemoveFromCart}
-                                onCardClick={onCardClick}
-                            />
+                            <div className='container mx-auto px-4' key={category.name}>
+                                <ProductCategory 
+                                    category={{...category, items: category.items}}
+                                    cart={cart} 
+                                    onAddToCart={onAddToCart} 
+                                    onRemoveFromCart={onRemoveFromCart}
+                                    onCardClick={onCardClick}
+                                />
+                            </div>
                         );
 
                         if (category.name === 'Rolls') {
                             const bannerComponent = (
-                                <div key="banner-rolls" className="hidden md:block">
+                                <div key="banner-rolls" className="my-12">
                                     <Image
                                         src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
                                         alt="Special Offer Banner"
@@ -1005,7 +1007,6 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                 </div>
             </>
         )}
-      </div>
     </section>
   );
 };
