@@ -21,22 +21,34 @@ const carouselImageIds = [
 
 type MobileHeroCarouselProps = {
   onCardClick: (item: MenuItem) => void;
+  onAddToCart: (item: MenuItem) => void;
 };
 
 
-const MobileHeroCarousel = ({ onCardClick }: MobileHeroCarouselProps) => {
+const MobileHeroCarousel = ({ onCardClick, onAddToCart }: MobileHeroCarouselProps) => {
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: false })
   );
 
+  const allItems = menuData.flatMap(c => c.items);
   const carouselImages = carouselImageIds
     .map(id => {
-        const img = PlaceHolderImages.find(img => img.id === id);
-        // This is a hack. The item might not be in menuData.
-        const menuItem = menuData.flatMap(c => c.items).find(i => i.name === id);
+        const img = PlaceHolderImages.find(pImg => pImg.id === id);
+        if (!img) return { img: null, menuItem: null };
+        
+        let menuItem = allItems.find(item => item.name === id);
+        if (!menuItem) {
+            // For bestseller items, the ID is different from the name.
+            // We can match them using the image description.
+            if (id.startsWith('bestseller-')) {
+                menuItem = allItems.find(item => item.name === img.description);
+            }
+        }
+        
         return { img, menuItem };
     })
-    .filter(({img, menuItem}) => img && menuItem);
+    .filter((item): item is { img: NonNullable<typeof item.img>, menuItem: NonNullable<typeof item.menuItem> } => !!item.img && !!item.menuItem);
+
 
   if (carouselImages.length === 0) {
     return null;
@@ -54,7 +66,7 @@ const MobileHeroCarousel = ({ onCardClick }: MobileHeroCarouselProps) => {
       >
         <CarouselContent>
           {carouselImages.map(({ img, menuItem }, index) => (
-            <CarouselItem key={index} className="basis-full" onClick={() => menuItem && onCardClick(menuItem)}>
+            <CarouselItem key={index} className="basis-full" onClick={() => onCardClick(menuItem)}>
               <div className="overflow-hidden rounded-xl aspect-[191/100] relative">
                 {img && (
                   <Image
