@@ -285,21 +285,21 @@ export const ProductDetailDialog = ({
 
                 {/* Details Section */}
                 <div className="w-full md:w-1/2 bg-background md:rounded-r-lg flex flex-col flex-grow min-h-0">
-                    <div className="flex-grow p-6 md:p-8 flex flex-col min-h-0">
-                        <DialogHeader className="text-left mb-4">
-                            <DialogTitle className="text-3xl md:text-4xl font-extrabold tracking-tight">{item.name}</DialogTitle>
-                            <DialogDescription className="text-base text-muted-foreground pt-2">{item.description}</DialogDescription>
-                        </DialogHeader>
+                    <ScrollArea className="h-full">
+                        <div className="p-6 md:p-8">
+                            <DialogHeader className="text-left mb-4">
+                                <DialogTitle className="text-3xl md:text-4xl font-extrabold tracking-tight">{item.name}</DialogTitle>
+                                <DialogDescription className="text-base text-muted-foreground pt-2">{item.description}</DialogDescription>
+                            </DialogHeader>
 
-                        <div className="flex items-baseline gap-3 mb-6">
-                            <span className="font-bold text-4xl text-primary">Rs. {item.price}</span>
-                            {item.originalPrice && <del className="text-xl text-muted-foreground">Rs. {item.originalPrice}</del>}
-                        </div>
+                            <div className="flex items-baseline gap-3 mb-6">
+                                <span className="font-bold text-4xl text-primary">Rs. {item.price}</span>
+                                {item.originalPrice && <del className="text-xl text-muted-foreground">Rs. {item.originalPrice}</del>}
+                            </div>
 
-                        <Separator />
-                        
-                        <ScrollArea className="flex-grow my-6 -mr-4 pr-4">
-                            <div className="space-y-6">
+                            <Separator />
+                            
+                            <div className="my-6 space-y-6">
                                 <div className="space-y-2">
                                     <h4 className="font-semibold text-lg">Ratings</h4>
                                     <div className="flex items-center gap-2">
@@ -333,39 +333,39 @@ export const ProductDetailDialog = ({
                                     </div>
                                 </div>
                             </div>
-                        </ScrollArea>
-                        
-                        <div className="flex flex-col gap-3 pt-6 mt-auto border-t">
-                            {cartItem ? (
-                                <div className="w-full flex items-center justify-between gap-2 p-2 border-2 bg-primary/10 rounded-lg">
-                                    <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md text-primary" onClick={() => onRemoveFromCart(item.name)}>
-                                        <Minus className="h-5 w-5" />
+                            
+                            <div className="flex flex-col gap-3 pt-6 border-t">
+                                {cartItem ? (
+                                    <div className="w-full flex items-center justify-between gap-2 p-2 border-2 bg-primary/10 rounded-lg">
+                                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md text-primary" onClick={() => onRemoveFromCart(item.name)}>
+                                            <Minus className="h-5 w-5" />
+                                        </Button>
+                                        <span className="font-bold text-xl w-10 text-center text-primary">{cartItem.quantity}</span>
+                                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md text-primary" onClick={() => onAddToCart(item)}>
+                                            <Plus className="h-5 w-5" />
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <Button size="lg" className="w-full" onClick={() => onAddToCart(item)}>
+                                        <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
                                     </Button>
-                                    <span className="font-bold text-xl w-10 text-center text-primary">{cartItem.quantity}</span>
-                                    <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md text-primary" onClick={() => onAddToCart(item)}>
-                                        <Plus className="h-5 w-5" />
-                                    </Button>
-                                </div>
-                            ) : (
-                                <Button size="lg" className="w-full" onClick={() => onAddToCart(item)}>
-                                    <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
+                                )}
+                                <Button size="lg" variant="secondary" className="w-full" onClick={onCartClick}>
+                                    View Cart
                                 </Button>
-                            )}
-                             <Button size="lg" variant="secondary" className="w-full" onClick={onCartClick}>
-                                View Cart
-                             </Button>
-                            <Button size="lg" variant="outline" className="w-full border-green-500 text-green-600 hover:bg-green-500 hover:text-white" asChild>
-                                <Link href={whatsappOrderUrl} target="_blank" rel="noopener noreferrer">
-                                    <WhatsappIcon className="mr-2 h-5 w-5" /> Order on WhatsApp
+                                <Button size="lg" variant="outline" className="w-full border-green-500 text-green-600 hover:bg-green-500 hover:text-white" asChild>
+                                    <Link href={whatsappOrderUrl} target="_blank" rel="noopener noreferrer">
+                                        <WhatsappIcon className="mr-2 h-5 w-5" /> Order on WhatsApp
+                                    </Link>
+                                </Button>
+                                <Button size="lg" variant="outline" className="w-full" asChild>
+                                <Link href="tel:8250104315">
+                                    <Phone className="mr-2 h-5 w-5" /> Call to Order
                                 </Link>
-                            </Button>
-                            <Button size="lg" variant="outline" className="w-full" asChild>
-                              <Link href="tel:8250104315">
-                                  <Phone className="mr-2 h-5 w-5" /> Call to Order
-                              </Link>
-                            </Button>
+                                </Button>
+                            </div>
                         </div>
-                    </div>
+                    </ScrollArea>
                 </div>
             </DialogContent>
         </Dialog>
