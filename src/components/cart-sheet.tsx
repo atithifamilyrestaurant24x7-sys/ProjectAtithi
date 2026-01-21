@@ -48,7 +48,7 @@ const CartSheet = ({
     };
 
     const content = (
-        <SheetContent className="p-0 flex flex-col bg-secondary/20">
+        <SheetContent className="p-0 flex flex-col bg-background">
             <SheetHeader className="p-6 border-b bg-background">
                 <SheetTitle className="text-xl font-semibold">Your Cart</SheetTitle>
             </SheetHeader>
