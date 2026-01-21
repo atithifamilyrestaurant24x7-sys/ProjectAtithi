@@ -268,9 +268,9 @@ export const ProductDetailDialog = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="p-0 w-full h-full max-w-full rounded-none border-0 flex flex-col top-0 left-0 translate-x-0 translate-y-0 md:flex-row md:h-auto md:max-h-[90vh] md:max-w-4xl md:rounded-lg md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 data-[state=open]:animate-in data-[state=open]:zoom-in-90 data-[state=closed]:zoom-out-90 data-[state=closed]:animate-out">
+            <DialogContent className="p-0 w-full h-full max-w-full md:max-w-4xl md:h-auto md:max-h-[600px] flex flex-col md:flex-row rounded-none md:rounded-lg border-0 top-0 left-0 translate-x-0 translate-y-0 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 data-[state=open]:animate-in data-[state=open]:zoom-in-90 data-[state=closed]:zoom-out-90 data-[state=closed]:animate-out">
                 {/* Image Section */}
-                <div className="w-full md:w-1/2 relative md:min-h-[500px] h-[40%] md:h-auto flex-shrink-0">
+                <div className="w-full md:w-1/2 relative h-[40%] md:h-auto flex-shrink-0">
                     <div className="absolute inset-0">
                         {imageData ? (
                             <Image src={imageData.imageUrl} alt={item.description} layout="fill" objectFit="cover" data-ai-hint={imageData.imageHint} className="md:rounded-l-lg"/>
@@ -286,21 +286,21 @@ export const ProductDetailDialog = ({
                 {/* Details Section */}
                 <div className="w-full md:w-1/2 bg-background md:rounded-r-lg flex flex-col flex-grow min-h-0">
                     <ScrollArea className="h-full">
-                        <div className="p-6 md:p-8 flex flex-col h-full space-y-6">
-                            <DialogHeader className="text-left">
+                        <div className="p-6 md:p-8 flex flex-col h-full">
+                            <DialogHeader className="text-left mb-6">
                                 <DialogTitle className="text-3xl md:text-4xl font-extrabold tracking-tight">{item.name}</DialogTitle>
                                 <DialogDescription className="text-base text-muted-foreground pt-2">{item.description}</DialogDescription>
                             </DialogHeader>
-                            
+
                             <div className="flex-grow space-y-6">
                                 <div className="flex items-baseline gap-3">
                                     <span className="font-bold text-4xl text-primary">Rs. {item.price}</span>
                                     {item.originalPrice && <del className="text-xl text-muted-foreground">Rs. {item.originalPrice}</del>}
                                 </div>
                                 
-                                <Separator className="bg-border/50" />
+                                <Separator />
 
-                                <div className="space-y-4">
+                                <div className="space-y-2">
                                     <h4 className="font-semibold text-lg">Ratings</h4>
                                     <div className="flex items-center gap-2">
                                         <div className="flex items-center">
@@ -334,34 +334,31 @@ export const ProductDetailDialog = ({
                                 </div>
                             </div>
                             
-                            <div className="flex flex-col gap-3 pt-4">
+                            <div className="flex flex-col gap-3 pt-6 mt-auto">
                                 {cartItem ? (
-                                    <div className="w-full flex items-center justify-between gap-4 p-2 border-2 bg-background rounded-lg">
-                                        <span className="font-semibold text-lg ml-2">In Cart</span>
-                                        <div className="flex items-center gap-2">
-                                            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md" onClick={() => onRemoveFromCart(item.name)}>
-                                                <Minus className="h-5 w-5" />
-                                            </Button>
-                                            <span className="font-bold text-xl w-10 text-center">{cartItem.quantity}</span>
-                                            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md" onClick={() => onAddToCart(item)}>
-                                                <Plus className="h-5 w-5" />
-                                            </Button>
-                                        </div>
+                                    <div className="w-full flex items-center justify-between gap-2 p-2 border-2 bg-primary/10 rounded-lg">
+                                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md text-primary" onClick={() => onRemoveFromCart(item.name)}>
+                                            <Minus className="h-5 w-5" />
+                                        </Button>
+                                        <span className="font-bold text-xl w-10 text-center text-primary">{cartItem.quantity}</span>
+                                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md text-primary" onClick={() => onAddToCart(item)}>
+                                            <Plus className="h-5 w-5" />
+                                        </Button>
                                     </div>
                                 ) : (
-                                    <Button size="lg" className="w-full bg-primary h-14 text-lg" onClick={() => onAddToCart(item)}>
+                                    <Button size="lg" className="w-full" onClick={() => onAddToCart(item)}>
                                         <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
                                     </Button>
                                 )}
-                                 <Button size="lg" variant="outline" className="w-full h-14 text-lg" onClick={onCartClick}>
+                                 <Button size="lg" variant="secondary" className="w-full" onClick={onCartClick}>
                                     View Cart
                                  </Button>
-                                <Button size="lg" variant="outline" className="w-full bg-transparent text-foreground hover:bg-green-500 hover:text-white dark:hover:bg-green-600 h-14 text-lg border-2 border-green-500 hover:border-green-500" asChild>
+                                <Button size="lg" variant="outline" className="w-full border-green-500 text-green-600 hover:bg-green-500 hover:text-white" asChild>
                                     <Link href={whatsappOrderUrl} target="_blank" rel="noopener noreferrer">
                                         <WhatsappIcon className="mr-2 h-5 w-5" /> Order on WhatsApp
                                     </Link>
                                 </Button>
-                                <Button size="lg" variant="outline" className="w-full bg-transparent text-foreground hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary h-14 text-lg border-2 border-primary hover:border-primary" asChild>
+                                <Button size="lg" variant="outline" className="w-full" asChild>
                                   <Link href="tel:8250104315">
                                       <Phone className="mr-2 h-5 w-5" /> Call to Order
                                   </Link>
@@ -882,7 +879,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                     </div>
 
                     <div className="space-y-12">
-                    {allMenuItems.flatMap((category) => {
+                    {allMenuItems.flatMap((category, i) => {
                         const categoryComponent = (
                             <div className='container mx-auto px-4' key={category.name}>
                                 <ProductCategory 
@@ -895,8 +892,23 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                             </div>
                         );
 
-                        if (category.name === 'Rolls') {
-                            const bannerComponent = (
+                        let bannerComponent = null;
+
+                        if (category.name === 'Menu') {
+                            bannerComponent = (
+                                <div key="banner-menu" className="my-12">
+                                    <Image
+                                        src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
+                                        alt="Special Offer Banner"
+                                        width={1920}
+                                        height={400}
+                                        className="object-cover w-full"
+                                    />
+                                </div>
+                            );
+                        }
+                         else if (category.name === 'Rolls') {
+                            bannerComponent = (
                                 <div key="banner-rolls" className="my-12">
                                     <Image
                                         src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
@@ -907,9 +919,12 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                                     />
                                 </div>
                             );
-                            return [categoryComponent, bannerComponent];
                         }
 
+                        if (bannerComponent) {
+                           return [categoryComponent, bannerComponent];
+                        }
+                        
                         return [categoryComponent];
                     })}
                     </div>
