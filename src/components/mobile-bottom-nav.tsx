@@ -8,17 +8,18 @@ import { GoogleMapsIcon } from './icons';
 type MobileBottomNavProps = {
   cartCount: number;
   onCartClick: () => void;
+  onMenuClick: () => void;
 };
 
 const navItems = [
   { href: '/', icon: Home, label: 'Home' },
-  { href: '#products', icon: List, label: 'Menu' },
+  { href: 'menu', icon: List, label: 'Menu' },
   { href: 'cart', icon: ShoppingCart, label: 'Cart' },
   { href: '#contact', icon: Phone, label: 'Contact' },
   { href: 'https://www.google.com/maps/place/Atithi+Family+Restaurant/@24.2027813,87.7959755,17z/data=!4m12!1m5!3m4!2zMjTCsDEyJzEwLjAiTiA4N8KwNDcnNTQuOCJF!8m2!3d24.2027764!4d87.7985504!3m5!1s0x39fa1ec0ffee3159:0x79903c862e585ea1!8m2!3d24.2024486!4d87.7985075!16s%2Fg%2F11c5_nvjc3?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D', icon: GoogleMapsIcon, label: 'Location' },
 ];
 
-export function MobileBottomNav({ cartCount, onCartClick }: MobileBottomNavProps) {
+export function MobileBottomNav({ cartCount, onCartClick, onMenuClick }: MobileBottomNavProps) {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-background border-t shadow-[0_-2px_5px_rgba(0,0,0,0.05)] z-40">
       <div className="grid h-full grid-cols-5">
@@ -39,6 +40,19 @@ export function MobileBottomNav({ cartCount, onCartClick }: MobileBottomNavProps
                     {cartCount}
                   </Badge>
                 )}
+              </button>
+            );
+          }
+
+          if (item.href === 'menu') {
+            return (
+              <button
+                key={item.label}
+                onClick={onMenuClick}
+                className="flex flex-col items-center justify-center text-center text-muted-foreground hover:text-primary transition-colors group"
+              >
+                <item.icon className="h-6 w-6 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-xs font-medium">{item.label}</span>
               </button>
             );
           }

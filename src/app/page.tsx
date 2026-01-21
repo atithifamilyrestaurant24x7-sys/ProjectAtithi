@@ -37,6 +37,7 @@ export default function Home() {
   const [isCartSheetOpen, setIsCartSheetOpen] = useState(false);
   const [reviews, setReviews] = useState<Review[]>(config.reviews);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isMenuDialogOpen, setIsMenuDialogOpen] = useState(false);
 
 
   const handleCardClick = (item: MenuItem) => {
@@ -199,7 +200,7 @@ export default function Home() {
               <MenuSection />
             </div>
 
-            <div className="hidden md:block">
+            <div className="hidden md:block my-12">
               <Image
                 src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
                 alt="Special Offer Banner"
@@ -213,6 +214,16 @@ export default function Home() {
               <BestSellerSection />
             </div>
             
+            <div className="my-12 hidden md:block">
+                <Image
+                    src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
+                    alt="Special Offer Banner"
+                    width={1920}
+                    height={400}
+                    className="object-cover w-full"
+                />
+            </div>
+            
             <ProductSection 
                 allMenuItems={allMenuItems}
                 cart={cart}
@@ -224,17 +235,7 @@ export default function Home() {
                 onCartClick={() => setIsCartSheetOpen(true)}
             />
 
-            <div className="hidden md:block my-12">
-              <Image
-                src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
-                alt="Special Offer Banner"
-                width={1920}
-                height={400}
-                className="object-cover w-full"
-              />
-            </div>
-
-            <div className="md:hidden my-8">
+            <div className="md:hidden my-8 -mx-4">
                 <Image
                     src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
                     alt="Special Offer Banner"
@@ -257,6 +258,7 @@ export default function Home() {
         <MobileBottomNav 
             cartCount={totalCartItems}
             onCartClick={() => setIsCartSheetOpen(true)}
+            onMenuClick={() => setIsMenuDialogOpen(true)}
         />
 
         {/* Cart Sheet for Mobile */}
@@ -267,6 +269,11 @@ export default function Home() {
             onEmptyCart={handleEmptyCart}
             onAddToCart={handleAddToCart}
             onRemoveFromCart={handleRemoveFromCart}
+        />
+
+        <MenuDialog 
+            isOpen={isMenuDialogOpen}
+            onOpenChange={setIsMenuDialogOpen}
         />
 
         {selectedItem && (
