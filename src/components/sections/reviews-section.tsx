@@ -5,7 +5,7 @@ import * as React from "react";
 import { type Review } from "@/lib/utils";
 import useEmblaCarousel from 'embla-carousel-react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 
 const ReviewsSection = ({ reviews }: { reviews: Review[] }) => {
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start' });
@@ -14,7 +14,7 @@ const ReviewsSection = ({ reviews }: { reviews: Review[] }) => {
     const scrollNext = React.useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
     
     return (
-        <section id="reviews" className="py-20 md:py-32 bg-secondary/30">
+        <section id="reviews" className="py-20 md:py-32 bg-secondary/30 review-card-section">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-foreground">Words from Our Guests</h2>
@@ -28,16 +28,16 @@ const ReviewsSection = ({ reviews }: { reviews: Review[] }) => {
                         <div className="flex -ml-8 py-4">
                             {reviews.map((review, index) => {
                                 return (
-                                    <div key={`${review.name}-${index}`} className="flex-[0_0_280px] min-w-0 pl-8 flex items-center justify-center">
-                                        <div className="book">
-                                            <div className="inner">
-                                                <p className="text-sm text-muted-foreground p-4">"{review.review}"</p>
+                                    <div key={`${review.name}-${index}`} className="flex-[0_0_auto] min-w-0 pl-8 flex items-stretch">
+                                        <div className="review-card">
+                                            <div className="review-card__overlay" />
+                                            <div className="review-card__circle">
+                                                <Quote />
                                             </div>
-                                            <div className="cover">
-                                                <div className="text-center p-4">
-                                                    <p className="font-bold text-lg">{review.name}</p>
-                                                    <p className="text-sm text-muted-foreground mt-1">{review.title}</p>
-                                                </div>
+                                            <h3 className="review-card__name">{review.name}</h3>
+                                            <p className="review-card__title">{review.title}</p>
+                                            <div className="review-card__review-text">
+                                                <p>"{review.review}"</p>
                                             </div>
                                         </div>
                                     </div>
