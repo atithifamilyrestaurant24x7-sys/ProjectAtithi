@@ -91,8 +91,9 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
     const selectedDate = form.watch('date');
 
     React.useEffect(() => {
+        if (!selectedDate || !isValid(selectedDate)) return;
         const selectedTime = form.getValues('time');
-        if (!selectedTime || !isValid(selectedDate)) return;
+        if (!selectedTime) return;
 
         const now = new Date();
         const isToday = format(selectedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
@@ -106,6 +107,38 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
             }
         }
     }, [selectedDate, form]);
+
+    const getMinTimeForToday = () => {
+        if (!selectedDate || !isValid(selectedDate)) return '10:00';
+        const now = new Date();
+        const isToday = format(selectedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
+        if (!isToday) return '10:00';
+
+        const currentHour = now.getHours();
+        const openingHour = 10;
+        const closingHour = 22;
+
+        if (currentHour >= closingHour) {
+            // It's past closing time, but maybe they are ordering for tomorrow.
+            // Since we are on today, they can't order.
+            // This case is for today, after closing.
+            return `${closingHour}:00`; 
+        }
+
+        if (currentHour < openingHour) {
+            return `${String(openingHour).padStart(2, '0')}:00`;
+        }
+
+        now.setMinutes(now.getMinutes() + 15); // 15 min buffer
+        const minHour = now.getHours();
+        const minMinute = now.getMinutes();
+
+        if (minHour >= closingHour) {
+             return `${closingHour}:00`;
+        }
+        
+        return `${String(minHour).padStart(2, '0')}:${String(minMinute).padStart(2, '0')}`;
+    };
 
     const onSubmit = (data: OrderFormValues) => {
         const orderDetails = cart.map(item => `${item.name} (x${item.quantity}) - Rs. ${(item.price * item.quantity).toFixed(2)}`).join('\n');
@@ -127,25 +160,6 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
         window.open(whatsappUrl, '_blank');
         onOpenChange(false);
         form.reset();
-    };
-
-    const getMinTimeForToday = () => {
-        if (!isValid(selectedDate)) return '10:00';
-        const now = new Date();
-        const isToday = format(selectedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
-        if (!isToday) return '10:00';
-
-        const currentHour = now.getHours();
-        if (currentHour >= 22) return '22:00'; // After closing
-        if (currentHour < 10) return '10:00'; // Before opening
-
-        now.setMinutes(now.getMinutes() + 15); // 15 min buffer
-        const minHour = now.getHours();
-        const minMinute = now.getMinutes();
-
-        if (minHour >= 22) return '22:00';
-        
-        return `${String(minHour).padStart(2, '0')}:${String(minMinute).padStart(2, '0')}`;
     };
 
     return (
@@ -231,7 +245,7 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                                 !field.value && "text-muted-foreground"
                                             )}
                                             >
-                                            {field.value ? (
+                                            {field.value && isValid(field.value) ? (
                                                 format(field.value, "PPP")
                                             ) : (
                                                 <span>Pick a date</span>
@@ -245,6 +259,7 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                             mode="single"
                                             selected={field.value}
                                             onSelect={field.onChange}
+                                            disabled={(date) => date < new Date(new Date().toDateString())}
                                             initialFocus
                                         />
                                         </PopoverContent>
