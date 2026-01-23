@@ -1,10 +1,11 @@
-
 'use client';
 
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -15,16 +16,47 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { type CartItem } from '@/app/page';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+
+// Helper function to generate time slots
+const generateTimeSlots = (startHour: number, endHour: number, interval: number) => {
+    const slots = [];
+    const now = new Date();
+    for (let hour = startHour; hour < endHour; hour++) {
+        for (let minute = 0; minute < 60; minute += interval) {
+            const slotTime = new Date();
+            slotTime.setHours(hour, minute, 0, 0);
+            
+            // Only add future time slots for the current day
+            if (format(now, 'yyyy-MM-dd') === format(slotTime, 'yyyy-MM-dd') && slotTime < now) {
+                continue;
+            }
+            
+            const timeString = format(slotTime, 'hh:mm a');
+            slots.push(timeString);
+        }
+    }
+    return slots;
+};
+
 
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
     phone: z.string().min(10, { message: "Please enter a valid 10-digit phone number." }).max(15),
     deliveryOption: z.enum(['delivery', 'dine-in'], { required_error: "Please select an option." }),
+    date: z.date({
+        required_error: "A date is required.",
+    }),
+    time: z.string({
+        required_error: "A time slot is required.",
+    }).min(1, { message: "A time slot is required." }),
     address: z.string().optional(),
     pincode: z.string().optional(),
 }).superRefine((data, ctx) => {
@@ -55,24 +87,59 @@ type OrderFormDialogProps = {
 };
 
 export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogProps) {
+    const [timeSlots, setTimeSlots] = React.useState(generateTimeSlots(10, 22, 30));
+
     const form = useForm<OrderFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: '',
             phone: '',
             deliveryOption: 'delivery',
+            date: new Date(),
+            time: '',
             address: '',
             pincode: '',
         },
     });
 
     const deliveryOption = form.watch('deliveryOption');
+    const selectedDate = form.watch('date');
+
+    React.useEffect(() => {
+        const now = new Date();
+        const isToday = selectedDate ? format(selectedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd') : false;
+
+        const newTimeSlots = [];
+        for (let hour = 10; hour < 22; hour++) {
+            for (let minute = 0; minute < 60; minute += 30) {
+                const slotTime = new Date(selectedDate);
+                slotTime.setHours(hour, minute, 0, 0);
+
+                if (isToday && slotTime < now) {
+                    continue;
+                }
+                
+                const timeString = format(slotTime, 'hh:mm a');
+                newTimeSlots.push(timeString);
+            }
+        }
+        setTimeSlots(newTimeSlots);
+        
+        // Reset time if it's no longer valid
+        if (!newTimeSlots.includes(form.getValues('time'))) {
+            form.setValue('time', '');
+        }
+
+    }, [selectedDate, form]);
 
     const onSubmit = (data: OrderFormValues) => {
         const orderDetails = cart.map(item => `${item.name} (x${item.quantity}) - Rs. ${(item.price * item.quantity).toFixed(2)}`).join('\n');
         const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
-        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${data.deliveryOption === 'delivery' ? 'Delivery' : 'Dine-in'}`;
+        const orderType = data.deliveryOption === 'delivery' ? 'Delivery' : 'Dine-in';
+        const formattedDate = format(data.date, "PPP");
+
+        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}\nDate: ${formattedDate}\nTime Slot: ${data.time}`;
 
         if (data.deliveryOption === 'delivery') {
             customerDetails += `\nAddress: ${data.address}\nPincode: ${data.pincode}`;
@@ -151,6 +218,73 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                 </FormItem>
                             )}
                         />
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="date"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                    <FormLabel>Date</FormLabel>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-full pl-3 text-left font-normal",
+                                                !field.value && "text-muted-foreground"
+                                            )}
+                                            >
+                                            {field.value ? (
+                                                format(field.value, "PPP")
+                                            ) : (
+                                                <span>Pick a date</span>
+                                            )}
+                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                            </Button>
+                                        </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value}
+                                            onSelect={field.onChange}
+                                            disabled={(date) =>
+                                                date < new Date(new Date().setDate(new Date().getDate() - 1))
+                                            }
+                                            initialFocus
+                                        />
+                                        </PopoverContent>
+                                    </Popover>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                                <FormField
+                                control={form.control}
+                                name="time"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Time Slot</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a time" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {timeSlots.length > 0 ? timeSlots.map(slot => (
+                                                <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                                            )) : <SelectItem value="disabled" disabled>No slots available</SelectItem>}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                        </div>
+
                         {deliveryOption === 'delivery' && (
                             <>
                                 <FormField
