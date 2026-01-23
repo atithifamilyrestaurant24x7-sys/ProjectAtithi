@@ -266,15 +266,15 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                 name="time"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="flex items-center">
-                                            <Clock className="mr-2 h-4 w-4 opacity-70" />
-                                            Time
-                                        </FormLabel>
+                                        <FormLabel>Time</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select a time" />
-                                            </SelectTrigger>
+                                                <SelectTrigger>
+                                                    <div className="flex items-center gap-2">
+                                                        <Clock className="h-4 w-4 opacity-50" />
+                                                        <SelectValue placeholder="Select a time" />
+                                                    </div>
+                                                </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
                                                 {timeSlots.length > 0 ? timeSlots.map(slot => (
