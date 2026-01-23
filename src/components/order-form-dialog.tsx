@@ -22,30 +22,17 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { type CartItem } from '@/app/page';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
-// Helper function to generate time slots
-const generateTimeSlots = (startHour: number, endHour: number, interval: number) => {
-    const slots = [];
-    const now = new Date();
-    for (let hour = startHour; hour < endHour; hour++) {
-        for (let minute = 0; minute < 60; minute += interval) {
-            const slotTime = new Date();
-            slotTime.setHours(hour, minute, 0, 0);
-            
-            // Only add future time slots for the current day
-            if (format(now, 'yyyy-MM-dd') === format(slotTime, 'yyyy-MM-dd') && slotTime < now) {
-                continue;
-            }
-            
-            const timeString = format(slotTime, 'hh:mm a');
-            slots.push(timeString);
-        }
-    }
-    return slots;
+// Helper function to format 24-hour time to 12-hour time with AM/PM
+const formatTime12 = (time24: string): string => {
+    if (!time24) return '';
+    const [hours, minutes] = time24.split(':');
+    const h = parseInt(hours, 10);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const hour12 = h % 12 || 12; // Convert 0 to 12
+    return `${String(hour12).padStart(2, '0')}:${minutes} ${ampm}`;
 };
-
 
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -55,8 +42,8 @@ const formSchema = z.object({
         required_error: "A date is required.",
     }),
     time: z.string({
-        required_error: "A time slot is required.",
-    }).min(1, { message: "A time slot is required." }),
+        required_error: "A time is required.",
+    }).min(1, { message: "A time is required." }),
     address: z.string().optional(),
     pincode: z.string().optional(),
 }).superRefine((data, ctx) => {
@@ -87,8 +74,6 @@ type OrderFormDialogProps = {
 };
 
 export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogProps) {
-    const [timeSlots, setTimeSlots] = React.useState(generateTimeSlots(10, 22, 30));
-
     const form = useForm<OrderFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -106,30 +91,20 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
     const selectedDate = form.watch('date');
 
     React.useEffect(() => {
+        const selectedTime = form.getValues('time');
+        if (!selectedTime) return;
+
         const now = new Date();
-        const isToday = selectedDate ? format(selectedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd') : false;
-
-        const newTimeSlots = [];
-        for (let hour = 10; hour < 22; hour++) {
-            for (let minute = 0; minute < 60; minute += 30) {
-                const slotTime = new Date(selectedDate);
-                slotTime.setHours(hour, minute, 0, 0);
-
-                if (isToday && slotTime < now) {
-                    continue;
-                }
-                
-                const timeString = format(slotTime, 'hh:mm a');
-                newTimeSlots.push(timeString);
+        const isToday = format(selectedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
+        
+        if (isToday) {
+            const [hour, minute] = selectedTime.split(':').map(Number);
+            const selectedDateTime = new Date(selectedDate);
+            selectedDateTime.setHours(hour, minute, 0, 0);
+            if (selectedDateTime < now) {
+                form.setValue('time', '');
             }
         }
-        setTimeSlots(newTimeSlots);
-        
-        // Reset time if it's no longer valid
-        if (!newTimeSlots.includes(form.getValues('time'))) {
-            form.setValue('time', '');
-        }
-
     }, [selectedDate, form]);
 
     const onSubmit = (data: OrderFormValues) => {
@@ -138,8 +113,9 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
 
         const orderType = data.deliveryOption === 'delivery' ? 'Delivery' : 'Dine-in';
         const formattedDate = format(data.date, "PPP");
+        const formattedTime = formatTime12(data.time);
 
-        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}\nDate: ${formattedDate}\nTime: ${data.time}`;
+        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}\nDate: ${formattedDate}\nTime: ${formattedTime}`;
 
         if (data.deliveryOption === 'delivery') {
             customerDetails += `\nAddress: ${data.address}\nPincode: ${data.pincode}`;
@@ -151,6 +127,19 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
         window.open(whatsappUrl, '_blank');
         onOpenChange(false);
         form.reset();
+    };
+
+    const getMinTimeForToday = () => {
+        const now = new Date();
+        const isToday = format(selectedDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
+        if (!isToday) return '10:00';
+
+        const currentHour = now.getHours();
+        if (currentHour >= 22) return '22:00'; // After closing
+        if (currentHour < 10) return '10:00'; // Before opening
+
+        now.setMinutes(now.getMinutes() + 15); // 15 min buffer
+        return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
     };
 
     return (
@@ -267,21 +256,21 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Time</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                            </div>
                                             <FormControl>
-                                                <SelectTrigger>
-                                                    <div className="flex items-center gap-2">
-                                                        <Clock className="h-4 w-4 opacity-50" />
-                                                        <SelectValue placeholder="Select a time" />
-                                                    </div>
-                                                </SelectTrigger>
+                                                <Input
+                                                    type="time"
+                                                    {...field}
+                                                    className="w-full pl-10"
+                                                    min={getMinTimeForToday()}
+                                                    max="22:00"
+                                                    step="1800" // 30 minutes
+                                                />
                                             </FormControl>
-                                            <SelectContent>
-                                                {timeSlots.length > 0 ? timeSlots.map(slot => (
-                                                    <SelectItem key={slot} value={slot}>{slot}</SelectItem>
-                                                )) : <SelectItem value="disabled" disabled>No slots available</SelectItem>}
-                                            </SelectContent>
-                                        </Select>
+                                        </div>
                                     <FormMessage />
                                     </FormItem>
                                 )}
