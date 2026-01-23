@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Clock } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -139,7 +139,7 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
         const orderType = data.deliveryOption === 'delivery' ? 'Delivery' : 'Dine-in';
         const formattedDate = format(data.date, "PPP");
 
-        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}\nDate: ${formattedDate}\nTime Slot: ${data.time}`;
+        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}\nDate: ${formattedDate}\nTime: ${data.time}`;
 
         if (data.deliveryOption === 'delivery') {
             customerDetails += `\nAddress: ${data.address}\nPincode: ${data.pincode}`;
@@ -266,19 +266,22 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                 name="time"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Time Slot</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select a time" />
-                                        </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {timeSlots.length > 0 ? timeSlots.map(slot => (
-                                                <SelectItem key={slot} value={slot}>{slot}</SelectItem>
-                                            )) : <SelectItem value="disabled" disabled>No slots available</SelectItem>}
-                                        </SelectContent>
-                                    </Select>
+                                        <FormLabel className="flex items-center">
+                                            <Clock className="mr-2 h-4 w-4 opacity-70" />
+                                            Time
+                                        </FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a time" />
+                                            </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {timeSlots.length > 0 ? timeSlots.map(slot => (
+                                                    <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                                                )) : <SelectItem value="disabled" disabled>No slots available</SelectItem>}
+                                            </SelectContent>
+                                        </Select>
                                     <FormMessage />
                                     </FormItem>
                                 )}
