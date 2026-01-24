@@ -22,6 +22,7 @@ import { type CartItem } from '@/app/page';
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
     phone: z.string().min(10, { message: "Please enter a valid 10-digit phone number." }).max(15),
+    date: z.string({ required_error: "Please select a date." }),
     deliveryOption: z.enum(['delivery', 'dine-in'], { required_error: "Please select an option." }),
     address: z.string().optional(),
     pincode: z.string().optional(),
@@ -58,6 +59,7 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
         defaultValues: {
             name: '',
             phone: '',
+            date: new Date().toISOString().split('T')[0],
             deliveryOption: 'delivery',
             address: '',
             pincode: '',
@@ -71,8 +73,10 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
         const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
         const orderType = data.deliveryOption === 'delivery' ? 'Delivery' : 'Dine-in';
+        
+        const formattedDate = new Date(data.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
-        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}`;
+        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}\nDate: ${formattedDate}`;
 
         if (data.deliveryOption === 'delivery') {
             customerDetails += `\nAddress: ${data.address}\nPincode: ${data.pincode}`;
@@ -146,6 +150,24 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                     <FormLabel>Phone Number</FormLabel>
                                     <FormControl>
                                         <Input type="tel" placeholder="Enter your phone number" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="date"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Date</FormLabel>
+                                    <FormControl>
+                                        <input
+                                            type="date"
+                                            className="input w-full"
+                                            {...field}
+                                            min={new Date().toISOString().split("T")[0]}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
