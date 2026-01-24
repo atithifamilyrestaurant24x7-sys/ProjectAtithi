@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -31,7 +32,6 @@ const HeroSection = ({}: HeroSectionProps) => {
           fill
           className="object-cover"
           priority
-          unoptimized
         />
         <div className="absolute inset-0 bg-black/40"></div>
       </div>

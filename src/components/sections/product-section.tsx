@@ -273,7 +273,7 @@ export const ProductDetailDialog = ({
                 <div className="w-full md:w-1/2 relative h-[40%] md:h-auto flex-shrink-0">
                     <div className="absolute inset-0">
                         {imageData ? (
-                            <Image src={imageData.imageUrl} alt={item.description} layout="fill" objectFit="cover" data-ai-hint={imageData.imageHint} className="md:rounded-l-lg"/>
+                            <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover md:rounded-l-lg"/>
                         ) : (
                             <div className="w-full h-full bg-secondary flex items-center justify-center md:rounded-l-lg">
                                 <span className="text-muted-foreground">No Image</span>

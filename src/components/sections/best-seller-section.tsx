@@ -40,8 +40,8 @@ const BestSellerSection = () => {
                                         <Image
                                             src={imageData.imageUrl}
                                             alt={`Our best-selling dish: ${item.name}`}
-                                            width={800}
-                                            height={600}
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, 50vw"
                                             data-ai-hint={imageData.imageHint}
                                             className="rounded-lg object-cover shadow-2xl"
                                             priority
