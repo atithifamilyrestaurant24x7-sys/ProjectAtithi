@@ -99,16 +99,14 @@ const CartSheet = ({
                          {totalSavings > 0 && (
                             <>
                                 <Separator className="bg-black/10"/>
-                                <div className="flex justify-between items-center text-sm font-medium text-green-600 py-2">
-                                    <span>Total Savings</span>
-                                    <span>- Rs. {totalSavings.toFixed(2)}</span>
+                                <div className="text-sm font-medium text-green-600 py-2">
+                                    <span>Total Savings: - Rs. {totalSavings.toFixed(2)}</span>
                                 </div>
                             </>
                         )}
                          <Separator className="bg-black/10"/>
-                        <div className="flex justify-between items-center font-bold text-xl pt-2">
-                            <span>Grand Total</span>
-                            <span>Rs. {totalPrice.toFixed(2)}</span>
+                        <div className="font-bold text-xl pt-2">
+                            <span>Grand Total: Rs. {totalPrice.toFixed(2)}</span>
                         </div>
                     </div>
                     <div className="flex flex-col gap-3 pt-2">
