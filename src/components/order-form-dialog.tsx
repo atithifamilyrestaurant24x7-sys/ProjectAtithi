@@ -1,9 +1,11 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import QRCode from 'qrcode';
 import {
   Dialog,
   DialogContent,
@@ -16,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { type CartItem } from '@/app/page';
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -28,7 +30,8 @@ const formSchema = z.object({
     deliveryOption: z.enum(['delivery', 'dine-in', 'take-away'], { required_error: "Please select an option." }),
     address: z.string().optional(),
     pincode: z.string().optional(),
-    paymentMethod: z.enum(['pay-now', 'cod']).optional(),
+    paymentMethod: z.enum(['pay-now', 'cod'], { required_error: "Please select a payment method." }),
+    utr: z.string().optional(),
 }).superRefine((data, ctx) => {
     if (data.deliveryOption === 'delivery') {
         if (!data.address || data.address.length < 5) {
@@ -45,12 +48,10 @@ const formSchema = z.object({
                 message: 'A valid 6-digit pincode is required for delivery.',
             });
         }
-        if (!data.paymentMethod) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                path: ['paymentMethod'],
-                message: 'Please select a payment method.',
-            });
+    }
+    if (data.paymentMethod === 'pay-now') {
+        if (!data.utr || data.utr.length < 12) {
+             ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['utr'], message: 'A valid 12-digit UPI Transaction ID is required.' });
         }
     }
 });
@@ -75,14 +76,39 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
             address: '',
             pincode: '',
             paymentMethod: 'cod',
+            utr: '',
         },
     });
 
     const deliveryOption = form.watch('deliveryOption');
+    const paymentMethod = form.watch('paymentMethod');
+    const [qrCodeUrl, setQrCodeUrl] = React.useState<string | null>(null);
+
+    const totalPrice = React.useMemo(() => cart.reduce((total, item) => total + (item.price * item.quantity), 0), [cart]);
+
+    React.useEffect(() => {
+        if (isOpen && paymentMethod === 'pay-now' && totalPrice > 0) {
+            const transactionNote = cart.length > 1 
+                ? `Cart order (${cart.length} items)` 
+                : cart[0]?.name || 'Atithi Order';
+            const upiLink = `upi://pay?pa=8250104315@axisbank&pn=SANJOY MONDAL&am=${totalPrice.toFixed(2)}&cu=INR&tn=${encodeURIComponent(transactionNote.substring(0, 49))}`;
+
+            QRCode.toDataURL(upiLink, { errorCorrectionLevel: 'M', width: 300, margin: 2 }, (err, url) => {
+                if (err) {
+                    console.error("Failed to generate QR code", err);
+                    setQrCodeUrl(null);
+                } else {
+                    setQrCodeUrl(url);
+                }
+            });
+        } else {
+            setQrCodeUrl(null);
+        }
+    }, [isOpen, paymentMethod, cart, totalPrice]);
+
 
     const onSubmit = (data: OrderFormValues) => {
         const orderDetails = cart.map(item => `${item.name} (x${item.quantity}) - Rs. ${(item.price * item.quantity).toFixed(2)}`).join('\n');
-        const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
         let orderType: string;
         switch (data.deliveryOption) {
@@ -110,28 +136,27 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
             const [hours, minutes] = timeString.split(':');
             const hoursInt = parseInt(hours, 10);
             const ampm = hoursInt >= 12 ? 'PM' : 'AM';
-            const formattedHours = hoursInt % 12 || 12; // Convert 0 to 12
+            const formattedHours = hoursInt % 12 || 12;
             formattedTime = `${String(formattedHours).padStart(2, '0')}:${minutes} ${ampm}`;
         }
 
         let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}`;
         
-        if (formattedDate) {
-            customerDetails += `\nDate: ${formattedDate}`;
-        }
-        if(formattedTime) {
-            customerDetails += `\nTime: ${formattedTime}`;
-        }
+        if (formattedDate) customerDetails += `\nDate: ${formattedDate}`;
+        if(formattedTime) customerDetails += `\nTime: ${formattedTime}`;
 
         if (data.deliveryOption === 'delivery') {
             customerDetails += `\nAddress: ${data.address}\nPincode: ${data.pincode}`;
-            if (data.paymentMethod) {
-                const paymentMethodText = data.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Pay Now';
-                customerDetails += `\nPayment Method: ${paymentMethodText}`;
-            }
+        }
+        
+        const paymentMethodText = data.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Paid via UPI';
+        customerDetails += `\nPayment Method: ${paymentMethodText}`;
+        if (data.paymentMethod === 'pay-now' && data.utr) {
+            customerDetails += `\nUPI Transaction ID: ${data.utr}`;
         }
 
-        const message = `Hello Atithi, I would like to place the following order:\n\n*Order Summary:*\n${orderDetails}\n\n*Total: Rs. ${totalPrice.toFixed(2)}*\n\n${customerDetails}\n\nPlease confirm this order.`;
+
+        const message = `Hello Atithii, I would like to place the following order:\n\n*Order Summary:*\n${orderDetails}\n\n*Total: Rs. ${totalPrice.toFixed(2)}*\n\n${customerDetails}\n\nPlease confirm this order.`;
 
         const whatsappUrl = `https://wa.me/918250104315?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
@@ -275,37 +300,71 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                             </FormItem>
                                         )}
                                     />
+                                </>
+                            )}
+                            <FormField
+                                control={form.control}
+                                name="paymentMethod"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-3">
+                                        <FormLabel>Payment Method</FormLabel>
+                                        <FormControl>
+                                            <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                className="flex space-x-4"
+                                            >
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                        <RadioGroupItem value="cod" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Cash on Delivery</FormLabel>
+                                                </FormItem>
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                        <RadioGroupItem value="pay-now" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Pay Now</FormLabel>
+                                                </FormItem>
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {paymentMethod === 'pay-now' && (
+                                <div className="space-y-4 pt-4 border-t">
+                                    <div className="text-center">
+                                        <h3 className="font-semibold text-lg">Scan to Pay</h3>
+                                        <p className="text-muted-foreground text-sm">Total Amount: <strong>Rs. {totalPrice.toFixed(2)}</strong></p>
+                                    </div>
+                                    {qrCodeUrl ? (
+                                        <div className="flex justify-center">
+                                            <Image src={qrCodeUrl} alt="UPI QR Code" width={250} height={250} />
+                                        </div>
+                                    ) : (
+                                        <div className="flex justify-center items-center h-[250px] w-[250px] mx-auto bg-muted rounded-md">
+                                            <p>Generating QR Code...</p>
+                                        </div>
+                                    )}
                                     <FormField
                                         control={form.control}
-                                        name="paymentMethod"
+                                        name="utr"
                                         render={({ field }) => (
-                                            <FormItem className="space-y-3">
-                                                <FormLabel>Payment Method</FormLabel>
+                                            <FormItem>
+                                                <FormLabel>UPI Transaction ID (UTR/Ref ID)</FormLabel>
                                                 <FormControl>
-                                                    <RadioGroup
-                                                        onValueChange={field.onChange}
-                                                        defaultValue={field.value}
-                                                        className="flex space-x-4"
-                                                    >
-                                                        <FormItem className="flex items-center space-x-2 space-y-0">
-                                                            <FormControl>
-                                                                <RadioGroupItem value="cod" />
-                                                            </FormControl>
-                                                            <FormLabel className="font-normal">Cash on Delivery</FormLabel>
-                                                        </FormItem>
-                                                        <FormItem className="flex items-center space-x-2 space-y-0">
-                                                            <FormControl>
-                                                                <RadioGroupItem value="pay-now" />
-                                                            </FormControl>
-                                                            <FormLabel className="font-normal">Pay Now</FormLabel>
-                                                        </FormItem>
-                                                    </RadioGroup>
+                                                    <Input placeholder="Enter the 12-digit UTR from your UPI app" {...field} />
                                                 </FormControl>
+                                                <FormDescription>
+                                                    After paying, enter the transaction ID here to confirm.
+                                                </FormDescription>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-                                </>
+                                </div>
                             )}
                         </form>
                     </Form>
