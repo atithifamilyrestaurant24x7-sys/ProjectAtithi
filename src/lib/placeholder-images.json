@@ -259,6 +259,12 @@
       "imageHint": "spicy rice"
     },
     {
+      "id": "Chicken Biryani",
+      "imageUrl": "https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/food_images/chicken-biryani.webp",
+      "description": "Aromatic and flavorful rice dish with marinated chicken, cooked to perfection.",
+      "imageHint": "chicken biryani"
+    },
+    {
       "id": "Puri Sabji",
       "imageUrl": "https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/food_images/puri-sabji.webp",
       "description": "Fluffy deep-fried bread served with a savory potato curry. A breakfast classic.",
