@@ -11,6 +11,7 @@ import { type CartItem } from '@/app/page';
 import { type MenuItem } from '@/lib/menu';
 import { WhatsappIcon } from './icons';
 import { OrderFormDialog } from './order-form-dialog';
+import { cn } from '@/lib/utils';
 
 type CartSheetProps = {
     cart: CartItem[];
@@ -49,13 +50,16 @@ const CartSheet = ({
     };
 
     const content = (
-        <SheetContent className="w-full max-w-none sm:max-w-none h-full max-h-none inset-0 border-0 p-0 flex flex-col bg-[#F8F5F0] text-[#3D3227]">
+        <SheetContent className={cn(
+            "w-full max-w-none sm:max-w-none h-full max-h-none inset-0 border-0 p-0 grid bg-[#F8F5F0] text-[#3D3227]",
+            cart.length > 0 ? "grid-rows-[auto_auto_1fr_auto]" : "grid-rows-[auto_auto_1fr]"
+        )}>
             <SheetHeader className="p-6 pb-4">
                 <SheetTitle className="text-2xl font-bold">Your Cart</SheetTitle>
                 {cart.length > 0 && <p className="text-sm text-muted-foreground">{totalItems} {totalItems === 1 ? 'item' : 'items'} • Ready to order</p>}
             </SheetHeader>
             <Separator className="bg-black/10"/>
-            <div className="flex-grow overflow-y-auto px-6 py-4">
+            <div className="overflow-y-auto px-6 py-4">
                 {cart.length === 0 ? (
                     <div className="flex h-full flex-col items-center justify-center text-center p-10">
                         <ShoppingCart className="h-16 w-16 text-muted-foreground/30" strokeWidth={1.5} />
@@ -90,7 +94,7 @@ const CartSheet = ({
                 )}
             </div>
             {cart.length > 0 && (
-                <SheetFooter className="p-6 bg-transparent mt-auto space-y-4">
+                <SheetFooter className="p-6 bg-transparent space-y-4">
                     <div className="space-y-2">
                          {totalSavings > 0 && (
                             <>
