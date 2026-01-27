@@ -89,7 +89,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
-  sitemap: `${siteUrl}/sitemap.xml`,
   viewport: {
     width: 'device-width',
     initialScale: 1,
