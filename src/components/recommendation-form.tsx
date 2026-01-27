@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useActionState } from "react";
-import { useFormStatus } from "react-dom";
+import { useState } from "react";
+import { useFormStatus, useFormState } from "react-dom";
 import { recommendDish, RecommendDishOutput } from "@/ai/flows/recommend-dish";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,7 +63,7 @@ const questions = [
 ];
 
 const RecommendationForm = () => {
-  const [state, formAction] = useActionState(submitSelections, initialState);
+  const [state, formAction] = useFormState(submitSelections, initialState);
   const [step, setStep] = useState(0);
   const [selections, setSelections] = useState<Record<string, string>>({});
 
