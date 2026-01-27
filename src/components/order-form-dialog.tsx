@@ -18,12 +18,13 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { type CartItem } from '@/app/page';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
     phone: z.string().min(10, { message: "Please enter a valid 10-digit phone number." }).max(15),
-    date: z.string({ required_error: "Please select a date." }),
-    time: z.string({ required_error: "Please select a time." }),
+    date: z.string().optional(),
+    time: z.string().optional(),
     deliveryOption: z.enum(['delivery', 'dine-in', 'take-away'], { required_error: "Please select an option." }),
     address: z.string().optional(),
     pincode: z.string().optional(),
@@ -89,9 +90,11 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                 orderType = 'Not specified';
         }
         
-        const formattedDate = new Date(data.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
-
-        // Convert 24-hour time to 12-hour format with AM/PM
+        let formattedDate = '';
+        if (data.date) {
+            formattedDate = new Date(data.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+        
         let formattedTime = '';
         if (data.time) {
             const timeString = data.time;
@@ -102,7 +105,11 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
             formattedTime = `${String(formattedHours).padStart(2, '0')}:${minutes} ${ampm}`;
         }
 
-        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}\nDate: ${formattedDate}`;
+        let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}`;
+        
+        if (formattedDate) {
+            customerDetails += `\nDate: ${formattedDate}`;
+        }
         if(formattedTime) {
             customerDetails += `\nTime: ${formattedTime}`;
         }
@@ -121,12 +128,13 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px] flex flex-col max-h-[90vh]">
-                <DialogHeader className="flex-shrink-0">
+            <DialogContent className="w-full h-full max-w-none max-h-none rounded-none top-0 left-0 translate-x-0 translate-y-0 flex flex-col border-0 p-0">
+                <DialogHeader className="flex-shrink-0 p-4 border-b">
                     <DialogTitle>Complete Your Order</DialogTitle>
                     <DialogDescription>Please provide your details to proceed with the order.</DialogDescription>
                 </DialogHeader>
-                <div className="flex-grow overflow-y-auto pr-6">
+                <ScrollArea className="flex-grow">
+                  <div className="p-4">
                     <Form {...form}>
                         <form id="order-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <FormField
@@ -258,8 +266,9 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                             )}
                         </form>
                     </Form>
-                </div>
-                <DialogFooter className="flex-shrink-0 pt-4">
+                  </div>
+                </ScrollArea>
+                <DialogFooter className="flex-shrink-0 p-4 border-t">
                     <Button type="submit" form="order-form" className="w-full">
                         Send Order on WhatsApp
                     </Button>
