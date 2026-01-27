@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ShoppingCart, Phone, Plus, Minus, X } from 'lucide-react';
@@ -49,18 +49,22 @@ const CartSheet = ({
     };
 
     const content = (
-        <SheetContent className={cn(
+        <DialogContent className={cn(
             "bg-[#F8F5F0] text-[#3D3227] p-0 flex flex-col",
-            "inset-0 w-full h-full border-0" // Make it full-screen on all devices
+            "fixed inset-0 w-full h-full border-0 rounded-none shadow-none",
+            "translate-x-0 translate-y-0 max-w-none",
+            "data-[state=closed]:slide-out-to-left-0 data-[state=closed]:slide-out-to-top-0",
+            "data-[state=open]:slide-in-from-left-0 data-[state=open]:slide-in-from-top-0",
+            "data-[state=closed]:zoom-out-100 data-[state=open]:zoom-in-100"
         )}>
-            <SheetHeader className="p-6 pb-4 flex-shrink-0 sticky top-0 bg-[#F8F5F0]/95 backdrop-blur-sm z-10">
-                <SheetTitle className="text-2xl font-bold">Your Cart</SheetTitle>
+            <DialogHeader className="p-6 pb-4 flex-shrink-0 sticky top-0 bg-[#F8F5F0]/95 backdrop-blur-sm z-10">
+                <DialogTitle className="text-2xl font-bold">Your Cart</DialogTitle>
                 {cart.length > 0 && <p className="text-sm text-muted-foreground">{totalItems} {totalItems === 1 ? 'item' : 'items'} • Ready to order</p>}
-                <SheetClose className="absolute right-4 top-4 rounded-full opacity-70 p-1 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+                <DialogClose className="absolute right-4 top-4 rounded-full opacity-70 p-1 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
                     <X className="h-6 w-6" />
                     <span className="sr-only">Close</span>
-                </SheetClose>
-            </SheetHeader>
+                </DialogClose>
+            </DialogHeader>
             
             <div className="flex-grow overflow-y-auto">
                 {cart.length === 0 ? (
@@ -129,16 +133,16 @@ const CartSheet = ({
                     </div>
                 </div>
             )}
-        </SheetContent>
+        </DialogContent>
     );
 
     if (children) {
         return (
             <React.Fragment>
-                <Sheet open={isOpen} onOpenChange={onOpenChange}>
+                <Dialog open={isOpen} onOpenChange={onOpenChange}>
                     {children}
                     {content}
-                </Sheet>
+                </Dialog>
                 <OrderFormDialog isOpen={isOrderFormOpen} onOpenChange={setIsOrderFormOpen} cart={cart} />
             </React.Fragment>
         );
@@ -146,7 +150,7 @@ const CartSheet = ({
 
     return (
         <React.Fragment>
-            <Sheet open={isOpen} onOpenChange={onOpenChange}>{content}</Sheet>
+            <Dialog open={isOpen} onOpenChange={onOpenChange}>{content}</Dialog>
             <OrderFormDialog isOpen={isOrderFormOpen} onOpenChange={setIsOrderFormOpen} cart={cart} />
         </React.Fragment>
     );
