@@ -121,147 +121,149 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
+            <DialogContent className="sm:max-w-[425px] flex flex-col max-h-[90vh]">
+                <DialogHeader className="flex-shrink-0">
                     <DialogTitle>Complete Your Order</DialogTitle>
                     <DialogDescription>Please provide your details to proceed with the order.</DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="deliveryOption"
-                            render={({ field }) => (
-                                <FormItem className="space-y-3">
-                                    <FormLabel>Order Option</FormLabel>
-                                    <FormControl>
-                                        <RadioGroup
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                            className="flex space-x-4"
-                                        >
-                                            <FormItem className="flex items-center space-x-2 space-y-0">
+                <div className="flex-grow overflow-y-auto pr-6">
+                    <Form {...form}>
+                        <form id="order-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="deliveryOption"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-3">
+                                        <FormLabel>Order Option</FormLabel>
+                                        <FormControl>
+                                            <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                className="flex space-x-4"
+                                            >
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                        <RadioGroupItem value="delivery" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Delivery</FormLabel>
+                                                </FormItem>
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                        <RadioGroupItem value="dine-in" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Dine-in</FormLabel>
+                                                </FormItem>
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                        <RadioGroupItem value="take-away" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Take Away</FormLabel>
+                                                </FormItem>
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Name</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter your full name" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Phone Number</FormLabel>
+                                        <FormControl>
+                                            <Input type="tel" placeholder="Enter your phone number" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="date"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Date</FormLabel>
+                                        <FormControl>
+                                            <input
+                                                type="date"
+                                                className="input w-full"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="time"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Time</FormLabel>
+                                        <FormControl>
+                                            <input
+                                                type="time"
+                                                className="input w-full"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            
+                            {deliveryOption === 'delivery' && (
+                                <>
+                                    <FormField
+                                        control={form.control}
+                                        name="address"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Delivery Address</FormLabel>
                                                 <FormControl>
-                                                    <RadioGroupItem value="delivery" />
+                                                    <Textarea placeholder="Enter your full address" {...field} />
                                                 </FormControl>
-                                                <FormLabel className="font-normal">Delivery</FormLabel>
+                                                <FormMessage />
                                             </FormItem>
-                                            <FormItem className="flex items-center space-x-2 space-y-0">
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="pincode"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Pincode</FormLabel>
                                                 <FormControl>
-                                                    <RadioGroupItem value="dine-in" />
+                                                    <Input type="number" placeholder="Enter your 6-digit pincode" {...field} />
                                                 </FormControl>
-                                                <FormLabel className="font-normal">Dine-in</FormLabel>
+                                                <FormMessage />
                                             </FormItem>
-                                            <FormItem className="flex items-center space-x-2 space-y-0">
-                                                <FormControl>
-                                                    <RadioGroupItem value="take-away" />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">Take Away</FormLabel>
-                                            </FormItem>
-                                        </RadioGroup>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                                        )}
+                                    />
+                                </>
                             )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Name</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter your full name" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="phone"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Phone Number</FormLabel>
-                                    <FormControl>
-                                        <Input type="tel" placeholder="Enter your phone number" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="date"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Date</FormLabel>
-                                    <FormControl>
-                                        <input
-                                            type="date"
-                                            className="input w-full"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="time"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Time</FormLabel>
-                                    <FormControl>
-                                        <input
-                                            type="time"
-                                            className="input w-full"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        
-                        {deliveryOption === 'delivery' && (
-                            <>
-                                <FormField
-                                    control={form.control}
-                                    name="address"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Delivery Address</FormLabel>
-                                            <FormControl>
-                                                <Textarea placeholder="Enter your full address" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="pincode"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Pincode</FormLabel>
-                                            <FormControl>
-                                                <Input type="number" placeholder="Enter your 6-digit pincode" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </>
-                        )}
-                        <DialogFooter>
-                            <Button type="submit" className="w-full">
-                                Send Order on WhatsApp
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
+                        </form>
+                    </Form>
+                </div>
+                <DialogFooter className="flex-shrink-0 pt-4">
+                    <Button type="submit" form="order-form" className="w-full">
+                        Send Order on WhatsApp
+                    </Button>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     );
