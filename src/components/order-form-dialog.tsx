@@ -18,7 +18,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { type CartItem } from '@/app/page';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -28,6 +28,7 @@ const formSchema = z.object({
     deliveryOption: z.enum(['delivery', 'dine-in', 'take-away'], { required_error: "Please select an option." }),
     address: z.string().optional(),
     pincode: z.string().optional(),
+    paymentMethod: z.enum(['pay-now', 'cod']).optional(),
 }).superRefine((data, ctx) => {
     if (data.deliveryOption === 'delivery') {
         if (!data.address || data.address.length < 5) {
@@ -42,6 +43,13 @@ const formSchema = z.object({
                 code: z.ZodIssueCode.custom,
                 path: ['pincode'],
                 message: 'A valid 6-digit pincode is required for delivery.',
+            });
+        }
+        if (!data.paymentMethod) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ['paymentMethod'],
+                message: 'Please select a payment method.',
             });
         }
     }
@@ -66,6 +74,7 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
             deliveryOption: 'delivery',
             address: '',
             pincode: '',
+            paymentMethod: 'cod',
         },
     });
 
@@ -116,6 +125,10 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
 
         if (data.deliveryOption === 'delivery') {
             customerDetails += `\nAddress: ${data.address}\nPincode: ${data.pincode}`;
+            if (data.paymentMethod) {
+                const paymentMethodText = data.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Pay Now';
+                customerDetails += `\nPayment Method: ${paymentMethodText}`;
+            }
         }
 
         const message = `Hello Atithi, I would like to place the following order:\n\n*Order Summary:*\n${orderDetails}\n\n*Total: Rs. ${totalPrice.toFixed(2)}*\n\n${customerDetails}\n\nPlease confirm this order.`;
@@ -257,6 +270,36 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                                 <FormLabel>Pincode</FormLabel>
                                                 <FormControl>
                                                     <Input type="number" placeholder="Enter your 6-digit pincode" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="paymentMethod"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-3">
+                                                <FormLabel>Payment Method</FormLabel>
+                                                <FormControl>
+                                                    <RadioGroup
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                        className="flex space-x-4"
+                                                    >
+                                                        <FormItem className="flex items-center space-x-2 space-y-0">
+                                                            <FormControl>
+                                                                <RadioGroupItem value="cod" />
+                                                            </FormControl>
+                                                            <FormLabel className="font-normal">Cash on Delivery</FormLabel>
+                                                        </FormItem>
+                                                        <FormItem className="flex items-center space-x-2 space-y-0">
+                                                            <FormControl>
+                                                                <RadioGroupItem value="pay-now" />
+                                                            </FormControl>
+                                                            <FormLabel className="font-normal">Pay Now</FormLabel>
+                                                        </FormItem>
+                                                    </RadioGroup>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
