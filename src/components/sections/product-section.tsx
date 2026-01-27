@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import * as React from 'react';
@@ -791,3 +790,5 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
 };
 
 export default ProductSection;
+
+    
