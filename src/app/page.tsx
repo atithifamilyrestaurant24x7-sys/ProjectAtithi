@@ -188,6 +188,7 @@ export default function Home() {
                       height={400}
                       className="object-cover w-full"
                       priority
+                      sizes="100vw"
                   />
               </div>
               <div className="px-4">
@@ -207,6 +208,7 @@ export default function Home() {
                 width={1920}
                 height={400}
                 className="object-cover w-full"
+                sizes="100vw"
               />
             </div>
             
@@ -221,6 +223,7 @@ export default function Home() {
                     width={1920}
                     height={400}
                     className="object-cover w-full"
+                    sizes="100vw"
                 />
             </div>
             
@@ -242,6 +245,7 @@ export default function Home() {
                     width={1200}
                     height={400}
                     className="object-cover w-full"
+                    sizes="100vw"
                 />
             </div>
             
@@ -291,7 +295,7 @@ export default function Home() {
               cartItem={cart.find(ci => ci.name === selectedItem.name)}
               cart={cart}
               onAddToCart={handleAddToCart}
-              onRemoveFromCart={handleRemoveFromCart}
+              onRemoveFromCart={onRemoveFromCart}
               onRate={handleRatingChange}
               onCartClick={() => {
                 setIsDetailViewOpen(false);
