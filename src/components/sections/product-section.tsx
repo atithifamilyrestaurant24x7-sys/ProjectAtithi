@@ -629,6 +629,56 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
     );
 };
 
+const MobileProductFilters = React.memo(({ allMenuItems, handleOpenCategoryDialog }: {
+    allMenuItems: { name: string; items: MenuItem[] }[];
+    handleOpenCategoryDialog: (category: { name: string; items: MenuItem[] }) => void;
+}) => {
+    return (
+        <div className="mx-4">
+            <div className="bg-white rounded-xl shadow-filters p-2">
+                <div className="grid grid-cols-2 gap-2">
+                    <Select onValueChange={(value) => {
+                        if (value === 'all') {
+                            return;
+                        }
+                        const category = allMenuItems.find(c => c.name.toLowerCase().replace(/\s+/g, '-') === value);
+                        if (category) {
+                            handleOpenCategoryDialog(category);
+                        }
+                    }}
+                    suppressHydrationWarning={true}
+                    >
+                        <SelectTrigger className="h-12 bg-white text-foreground border-border rounded-xl text-[15px] font-medium px-[18px]" suppressHydrationWarning={true}>
+                            <SelectValue placeholder="All Categories" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Categories</SelectItem>
+                            {allMenuItems.map(category => (
+                                <SelectItem 
+                                    key={category.name} 
+                                    value={category.name.toLowerCase().replace(/\s+/g, '-')}
+                                >
+                                    {category.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <Select defaultValue="popular" suppressHydrationWarning={true}>
+                        <SelectTrigger className="h-12 bg-white text-foreground border-border rounded-xl text-[15px] font-medium px-[18px]" suppressHydrationWarning={true}>
+                            <SelectValue placeholder="Sort by: Popular" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="popular">Sort by: Popular</SelectItem>
+                            <SelectItem value="rating">Sort by: Rating</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+        </div>
+    );
+});
+MobileProductFilters.displayName = 'MobileProductFilters';
+
 
 const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onCardClick, onRate, searchQuery, onCartClick }: {
   allMenuItems: { name: string, items: MenuItem[] }[];
@@ -643,10 +693,10 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
     const [selectedCategory, setSelectedCategory] = React.useState<{ name: string; items: MenuItem[] } | null>(null);
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = React.useState(false);
 
-    const handleOpenCategoryDialog = (category: { name: string, items: MenuItem[] }) => {
+    const handleOpenCategoryDialog = React.useCallback((category: { name: string; items: MenuItem[] }) => {
         setSelectedCategory(category);
         setIsCategoryDialogOpen(true);
-    };
+    }, []);
 
   return (
     <section id="products" className="pb-6 md:py-32 bg-background overflow-hidden relative">
@@ -687,47 +737,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
         </div>
 
         <div className='block md:hidden'>
-            <div className="mx-4">
-                <div className="bg-white rounded-xl shadow-filters p-2">
-                        <div className="grid grid-cols-2 gap-2">
-                        <Select onValueChange={(value) => {
-                            if (value === 'all') {
-                                return;
-                            }
-                            const category = allMenuItems.find(c => c.name.toLowerCase().replace(/\s+/g, '-') === value);
-                            if (category) {
-                                handleOpenCategoryDialog(category);
-                            }
-                        }}
-                        suppressHydrationWarning={true}
-                        >
-                            <SelectTrigger className="h-12 bg-white text-foreground border-border rounded-xl text-[15px] font-medium px-[18px]" suppressHydrationWarning={true}>
-                                <SelectValue placeholder="All Categories" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Categories</SelectItem>
-                                {allMenuItems.map(category => (
-                                    <SelectItem 
-                                        key={category.name} 
-                                        value={category.name.toLowerCase().replace(/\s+/g, '-')}
-                                    >
-                                        {category.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <Select defaultValue="popular" suppressHydrationWarning={true}>
-                            <SelectTrigger className="h-12 bg-white text-foreground border-border rounded-xl text-[15px] font-medium px-[18px]" suppressHydrationWarning={true}>
-                                <SelectValue placeholder="Sort by: Popular" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="popular">Sort by: Popular</SelectItem>
-                                <SelectItem value="rating">Sort by: Rating</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-            </div>
+            <MobileProductFilters allMenuItems={allMenuItems} handleOpenCategoryDialog={handleOpenCategoryDialog} />
             <div className='mx-4'>
                 <h2 className="text-xl font-semibold text-foreground mt-4 mx-4">Categories</h2>
                     <div className="mt-4 border-b border-border"></div>
