@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -288,6 +289,7 @@ export default function Home() {
               onOpenChange={setIsDetailViewOpen}
               item={selectedItem}
               cartItem={cart.find(ci => ci.name === selectedItem.name)}
+              cart={cart}
               onAddToCart={handleAddToCart}
               onRemoveFromCart={handleRemoveFromCart}
               onRate={handleRatingChange}
