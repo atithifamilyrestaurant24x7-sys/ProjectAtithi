@@ -341,7 +341,7 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                     </div>
                                     {qrCodeUrl ? (
                                         <div className="flex justify-center">
-                                            <Image src={qrCodeUrl} alt="UPI QR Code" width={250} height={250} />
+                                            <Image src={qrCodeUrl} alt="UPI QR Code" width={250} height={250} unoptimized={true} />
                                         </div>
                                     ) : (
                                         <div className="flex justify-center items-center h-[250px] w-[250px] mx-auto bg-muted rounded-md">

@@ -3,31 +3,31 @@
     {
       "id": "menu-card-1",
       "description": "Atithi Menu Card Page 1",
-      "imageUrl": "https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/food_images/menu-card-1.webp",
+      "imageUrl": "https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/menu%201.png",
       "imageHint": "menu page"
     },
     {
       "id": "menu-card-2",
       "description": "Atithi Menu Card Page 2",
-      "imageUrl": "https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/food_images/menu-card-2.webp",
+      "imageUrl": "https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/menu%202.png",
       "imageHint": "menu page"
     },
     {
       "id": "menu-card-3",
       "description": "Atithi Menu Card Page 3",
-      "imageUrl": "https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/food_images/menu-card-3.webp",
+      "imageUrl": "https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/menu%203.png",
       "imageHint": "menu page"
     },
     {
       "id": "menu-card-4",
       "description": "Atithi Menu Card Page 4",
-      "imageUrl": "https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/food_images/menu-card-4.webp",
+      "imageUrl": "https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/menu%204.png",
       "imageHint": "menu page"
     },
     {
       "id": "menu-card-5",
       "description": "Atithi Menu Card Page 5",
-      "imageUrl": "https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/food_images/menu-card-5.webp",
+      "imageUrl": "https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/menu%205.png",
       "imageHint": "menu page"
     },
     {
@@ -644,5 +644,3 @@
     }
   ]
 }
-
-```

@@ -301,6 +301,7 @@ const ProductRow = React.memo(({
                                                   sizes="(max-width: 640px) 80vw, 33vw"
                                                   data-ai-hint={imageData.imageHint}
                                                   className="object-cover rounded-t-[30px]"
+                                                  unoptimized={true}
                                               />
                                           ) : (
                                               <div className="w-full h-full bg-secondary rounded-t-[30px] flex items-center justify-center">
@@ -564,7 +565,7 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
         return (
              <div className="w-full overflow-hidden bg-card rounded-xl shadow-product" onClick={() => onCardClick(item)}>
                 <div className="relative aspect-video w-full">
-                    {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-t-xl" /> : <div className="bg-muted w-full h-full rounded-t-xl"/>}
+                    {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-t-xl" unoptimized={true} /> : <div className="bg-muted w-full h-full rounded-t-xl"/>}
                 </div>
                 <div className="p-4">
                     <div className="flex justify-between items-start mb-1 gap-2">
@@ -599,7 +600,7 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
         <div className="grid grid-cols-[80px_1fr] gap-3 w-full overflow-hidden bg-card rounded-xl shadow-product p-3 items-center" onClick={() => onCardClick(item)}>
             {/* Column 1: Image */}
             <div className="relative w-20 h-20 flex-shrink-0">
-                {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-lg" /> : <div className="bg-muted w-full h-full rounded-lg"/>}
+                {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-lg" unoptimized={true} /> : <div className="bg-muted w-full h-full rounded-lg"/>}
             </div>
             
             {/* Column 2: Content */}
@@ -758,6 +759,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                                             alt={`Preview of ${category.name}`}
                                             fill
                                             className="object-cover"
+                                            unoptimized={true}
                                         />
                                     ) : (
                                         <div className="w-full h-full bg-secondary flex items-center justify-center">

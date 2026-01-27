@@ -82,6 +82,7 @@ const MenuSection = () => {
                                                     sizes="(max-width: 640px) 80vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                                                     data-ai-hint={imageData.imageHint}
                                                     className="object-contain rounded-lg shadow-lg"
+                                                    unoptimized={true}
                                                 />
                                             )}
                                         </div>

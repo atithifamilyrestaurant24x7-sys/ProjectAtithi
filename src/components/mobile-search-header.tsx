@@ -66,6 +66,7 @@ const MobileSearchHeader = ({ onSearch, searchQuery, allMenuItems, onProductSele
                                     height={40}
                                     className="h-10 w-auto"
                                     priority
+                                    unoptimized={true}
                                 />
                             </Link>
                         </div>
@@ -104,7 +105,7 @@ const MobileSearchHeader = ({ onSearch, searchQuery, allMenuItems, onProductSele
                                                 <button key={item.name} onClick={() => handleResultClick(item)} className="w-full text-left flex items-center gap-4 p-2 rounded-lg hover:bg-secondary">
                                                     <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
                                                         {imageData ? (
-                                                            <Image src={imageData.imageUrl} alt={item.name} fill className="object-cover" />
+                                                            <Image src={imageData.imageUrl} alt={item.name} fill className="object-cover" unoptimized={true} />
                                                         ) : (
                                                             <div className="w-full h-full bg-muted"></div>
                                                         )}

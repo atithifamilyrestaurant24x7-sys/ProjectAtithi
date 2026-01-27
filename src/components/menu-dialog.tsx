@@ -47,6 +47,7 @@ export function MenuDialog({ isOpen, onOpenChange }: { isOpen: boolean; onOpenCh
                           data-ai-hint={imageData.imageHint}
                           className="object-contain"
                           priority={index === 0}
+                          unoptimized={true}
                         />
                       ) : (
                         <div className="flex items-center justify-center h-full bg-muted">
