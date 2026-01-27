@@ -49,7 +49,7 @@ const CartSheet = ({
     };
 
     const content = (
-        <SheetContent className="w-full h-full max-w-none max-h-none inset-0 border-0 p-0 flex flex-col bg-[#F8F5F0] text-[#3D3227]">
+        <SheetContent className="w-full max-w-none sm:max-w-none h-full max-h-none inset-0 border-0 p-0 flex flex-col bg-[#F8F5F0] text-[#3D3227]">
             <SheetHeader className="p-6 pb-4">
                 <SheetTitle className="text-2xl font-bold">Your Cart</SheetTitle>
                 {cart.length > 0 && <p className="text-sm text-muted-foreground">{totalItems} {totalItems === 1 ? 'item' : 'items'} • Ready to order</p>}
