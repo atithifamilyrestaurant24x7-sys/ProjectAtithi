@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -83,6 +84,7 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
     const deliveryOption = form.watch('deliveryOption');
     const paymentMethod = form.watch('paymentMethod');
     const [qrCodeUrl, setQrCodeUrl] = React.useState<string | null>(null);
+    const [upiLink, setUpiLink] = React.useState<string | null>(null);
 
     const totalPrice = React.useMemo(() => cart.reduce((total, item) => total + (item.price * item.quantity), 0), [cart]);
 
@@ -91,18 +93,21 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
             const transactionNote = cart.length > 1 
                 ? `Cart order (${cart.length} items)` 
                 : cart[0]?.name || 'Atithi Order';
-            const upiLink = `upi://pay?pa=8250104315@axisbank&pn=SANJOY MONDAL&am=${totalPrice.toFixed(2)}&cu=INR&tn=${encodeURIComponent(transactionNote.substring(0, 49))}`;
+            const generatedUpiLink = `upi://pay?pa=8250104315@axisbank&pn=SANJOY MONDAL&am=${totalPrice.toFixed(2)}&cu=INR&tn=${encodeURIComponent(transactionNote.substring(0, 49))}`;
+            setUpiLink(generatedUpiLink);
 
-            QRCode.toDataURL(upiLink, { errorCorrectionLevel: 'M', width: 300, margin: 2 }, (err, url) => {
+            QRCode.toDataURL(generatedUpiLink, { errorCorrectionLevel: 'M', width: 300, margin: 2 }, (err, url) => {
                 if (err) {
                     console.error("Failed to generate QR code", err);
                     setQrCodeUrl(null);
+                    setUpiLink(null);
                 } else {
                     setQrCodeUrl(url);
                 }
             });
         } else {
             setQrCodeUrl(null);
+            setUpiLink(null);
         }
     }, [isOpen, paymentMethod, cart, totalPrice]);
 
@@ -340,8 +345,19 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                                         <p className="text-muted-foreground text-sm">Total Amount: <strong>Rs. {totalPrice.toFixed(2)}</strong></p>
                                     </div>
                                     {qrCodeUrl ? (
-                                        <div className="flex justify-center">
+                                        <div className="flex flex-col items-center gap-4">
                                             <Image src={qrCodeUrl} alt="UPI QR Code" width={250} height={250} unoptimized={true} />
+                                            <Button
+                                                variant="outline"
+                                                className="w-full max-w-[250px]"
+                                                onClick={() => {
+                                                    if (upiLink) {
+                                                        window.location.href = upiLink;
+                                                    }
+                                                }}
+                                            >
+                                                Pay using UPI App
+                                            </Button>
                                         </div>
                                     ) : (
                                         <div className="flex justify-center items-center h-[250px] w-[250px] mx-auto bg-muted rounded-md">
@@ -379,3 +395,4 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
         </Dialog>
     );
 }
+
