@@ -2,9 +2,28 @@
 User-agent: *
 Allow: /
 
-# Disallow specific paths if necessary (e.g., admin pages, carts)
+# Disallow specific paths if necessary
 # Disallow: /admin
 # Disallow: /cart
 
-# Location of sitemap
-Sitemap: https://your-domain.com/sitemap.xml
+# Google specific rules for better crawling
+User-agent: Googlebot
+Allow: /
+
+# Mobile-first indexing
+User-agent: Googlebot-Mobile
+Allow: /
+
+# Image optimization
+User-agent: Googlebot-Image
+Allow: /
+
+# Location of sitemaps (both www and non-www)
+Sitemap: https://www.atithirestaurant.in/sitemap.xml
+Sitemap: https://atithirestaurant.in/sitemap.xml
+
+# Crawl delay (optional, helps server load)
+# Crawl-delay: 1
+
+# Host directive (preferred domain)
+Host: https://www.atithirestaurant.in

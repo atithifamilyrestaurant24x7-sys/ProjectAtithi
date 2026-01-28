@@ -35,7 +35,7 @@ const MobileSearchHeader = ({ onSearch, searchQuery, allMenuItems, onProductSele
                 categoryResults = matchedCategory.items;
             }
         }
-        
+
         const itemResults = flatMenuItems.filter(item =>
             item.name.toLowerCase().includes(lowerCaseQuery) ||
             item.description.toLowerCase().includes(lowerCaseQuery)
@@ -43,10 +43,10 @@ const MobileSearchHeader = ({ onSearch, searchQuery, allMenuItems, onProductSele
 
         const combined = [...categoryResults, ...itemResults];
         const uniqueResults = Array.from(new Map(combined.map(item => [item.name, item])).values());
-        
+
         return uniqueResults;
     }, [searchQuery, allMenuItems, flatMenuItems]);
-    
+
     const handleResultClick = (item: MenuItem) => {
         onProductSelect(item);
         onSearch('');
@@ -66,7 +66,7 @@ const MobileSearchHeader = ({ onSearch, searchQuery, allMenuItems, onProductSele
                                     height={40}
                                     className="h-10 w-auto"
                                     priority
-                                    unoptimized={true}
+                                    quality={75}
                                 />
                             </Link>
                         </div>
@@ -83,7 +83,7 @@ const MobileSearchHeader = ({ onSearch, searchQuery, allMenuItems, onProductSele
                             />
                             {searchQuery && (
                                 <button onClick={() => onSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground">
-                                    <X className="h-4 w-4"/>
+                                    <X className="h-4 w-4" />
                                 </button>
                             )}
                         </div>
@@ -105,7 +105,7 @@ const MobileSearchHeader = ({ onSearch, searchQuery, allMenuItems, onProductSele
                                                 <button key={item.name} onClick={() => handleResultClick(item)} className="w-full text-left flex items-center gap-4 p-2 rounded-lg hover:bg-secondary">
                                                     <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
                                                         {imageData ? (
-                                                            <Image src={imageData.imageUrl} alt={item.name} fill className="object-cover" unoptimized={true} />
+                                                            <Image src={imageData.imageUrl} alt={item.name} fill className="object-cover" loading="lazy" quality={75} />
                                                         ) : (
                                                             <div className="w-full h-full bg-muted"></div>
                                                         )}

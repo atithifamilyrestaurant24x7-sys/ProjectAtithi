@@ -28,7 +28,7 @@ const BannerCarousel = () => {
                             fill
                             className="object-cover rounded-lg"
                             priority
-                            unoptimized={true}
+                            quality={75}
                         />
                     </div>
                 ))}

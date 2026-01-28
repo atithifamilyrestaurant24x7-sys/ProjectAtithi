@@ -27,13 +27,15 @@ const CartSheet = dynamic(() => import("@/components/cart-sheet"));
 const MenuDialog = dynamic(() => import("@/components/menu-dialog").then(mod => mod.MenuDialog));
 
 
+import { usePersistedCart } from "@/hooks/use-persisted-cart";
+
 export type CartItem = MenuItem & { quantity: number };
 
 export default function Home() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
+
   const { toast } = useToast();
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const { cart, setCart } = usePersistedCart();
   const [allMenuItems, setAllMenuItems] = useState(menuData);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
@@ -44,108 +46,108 @@ export default function Home() {
 
 
   const handleCardClick = (item: MenuItem) => {
-      setSelectedItem(item);
-      setIsDetailViewOpen(true);
+    setSelectedItem(item);
+    setIsDetailViewOpen(true);
   };
 
   const handleRatingChange = (itemName: string, newRating: number) => {
-      setAllMenuItems(prevMenuData => {
-          return prevMenuData.map(category => {
+    setAllMenuItems(prevMenuData => {
+      return prevMenuData.map(category => {
+        return {
+          ...category,
+          items: category.items.map(item => {
+            if (item.name === itemName) {
+              const newTotalRating = (item.rating * item.ratingsCount) + newRating;
+              const newRatingsCount = item.ratingsCount + 1;
               return {
-                  ...category,
-                  items: category.items.map(item => {
-                      if (item.name === itemName) {
-                          const newTotalRating = (item.rating * item.ratingsCount) + newRating;
-                          const newRatingsCount = item.ratingsCount + 1;
-                          return {
-                              ...item,
-                              rating: newTotalRating / newRatingsCount,
-                              ratingsCount: newRatingsCount,
-                          };
-                      }
-                      return item;
-                  }),
+                ...item,
+                rating: newTotalRating / newRatingsCount,
+                ratingsCount: newRatingsCount,
               };
-          });
+            }
+            return item;
+          }),
+        };
       });
-      
-      if (selectedItem && selectedItem.name === itemName) {
-          setSelectedItem(prevItem => {
-              if (!prevItem) return null;
-              const newTotalRating = (prevItem.rating * prevItem.ratingsCount) + newRating;
-              const newRatingsCount = prevItem.ratingsCount + 1;
-              return {
-                  ...prevItem,
-                  rating: newTotalRating / newRatingsCount,
-                  ratingsCount: newRatingsCount,
-              };
-          });
-      }
+    });
+
+    if (selectedItem && selectedItem.name === itemName) {
+      setSelectedItem(prevItem => {
+        if (!prevItem) return null;
+        const newTotalRating = (prevItem.rating * prevItem.ratingsCount) + newRating;
+        const newRatingsCount = prevItem.ratingsCount + 1;
+        return {
+          ...prevItem,
+          rating: newTotalRating / newRatingsCount,
+          ratingsCount: newRatingsCount,
+        };
+      });
+    }
   };
 
   const handleAddToCart = (item: MenuItem) => {
-      setCart(prevCart => {
-          const existingItem = prevCart.find(cartItem => cartItem.name === item.name);
-          if (existingItem) {
-              return prevCart.map(cartItem =>
-                  cartItem.name === item.name ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
-              );
-          }
-          return [...prevCart, { ...item, quantity: 1 }];
-      });
-      toast({
-          title: "Added to Cart",
-          description: `${item.name} has been added to your cart.`,
-      });
+    setCart(prevCart => {
+      const existingItem = prevCart.find(cartItem => cartItem.name === item.name);
+      if (existingItem) {
+        return prevCart.map(cartItem =>
+          cartItem.name === item.name ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
+        );
+      }
+      return [...prevCart, { ...item, quantity: 1 }];
+    });
+    toast({
+      title: "Added to Cart",
+      description: `${item.name} has been added to your cart.`,
+    });
   };
 
   const handleRemoveFromCart = (itemName: string) => {
-      let itemRemoved = false;
-      let itemDecremented = false;
+    let itemRemoved = false;
+    let itemDecremented = false;
 
-      setCart(prevCart => {
-          const existingItem = prevCart.find(cartItem => cartItem.name === itemName);
-          if (existingItem && existingItem.quantity > 1) {
-              itemDecremented = true;
-              return prevCart.map(cartItem =>
-                  cartItem.name === itemName ? { ...cartItem, quantity: cartItem.quantity - 1 } : cartItem
-              );
-          }
-          itemRemoved = true;
-          return prevCart.filter(cartItem => cartItem.name !== itemName);
-      });
-
-      if (itemRemoved) {
-        toast({
-            variant: "destructive",
-            title: "Removed from Cart",
-            description: `${itemName} has been removed from your cart.`,
-        });
-      } else if (itemDecremented) {
-        toast({
-            title: "Quantity Updated",
-            description: `Quantity of ${itemName} has been updated.`,
-        });
+    setCart(prevCart => {
+      const existingItem = prevCart.find(cartItem => cartItem.name === itemName);
+      if (existingItem && existingItem.quantity > 1) {
+        itemDecremented = true;
+        return prevCart.map(cartItem =>
+          cartItem.name === itemName ? { ...cartItem, quantity: cartItem.quantity - 1 } : cartItem
+        );
       }
-  };
-  
-  const handleEmptyCart = () => {
-      setCart([]);
+      itemRemoved = true;
+      return prevCart.filter(cartItem => cartItem.name !== itemName);
+    });
+
+    if (itemRemoved) {
       toast({
-          variant: "destructive",
-          title: "Cart Emptied",
-          description: "All items have been removed from your cart.",
+        variant: "destructive",
+        title: "Removed from Cart",
+        description: `${itemName} has been removed from your cart.`,
       });
+    } else if (itemDecremented) {
+      toast({
+        title: "Quantity Updated",
+        description: `Quantity of ${itemName} has been updated.`,
+      });
+    }
+  };
+
+  const handleEmptyCart = () => {
+    setCart([]);
+    toast({
+      variant: "destructive",
+      title: "Cart Emptied",
+      description: "All items have been removed from your cart.",
+    });
   };
 
   const handleReviewSubmit = (newReview: { name: string; title: string; review: string }) => {
     const reviewWithAvatar: Review = { ...newReview, avatarId: `review-avatar-${Date.now()}` };
     setReviews(prevReviews => [reviewWithAvatar, ...prevReviews]);
     toast({
-        title: "Review Submitted",
-        description: "Thank you! Your feedback has been added.",
+      title: "Review Submitted",
+      description: "Thank you! Your feedback has been added.",
     });
-};
+  };
 
   const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -153,7 +155,7 @@ export default function Home() {
   return (
     <>
       <div className="hidden md:block">
-        <Header 
+        <Header
           cart={cart}
           onEmptyCart={handleEmptyCart}
           onAddToCart={handleAddToCart}
@@ -166,147 +168,144 @@ export default function Home() {
           onCartToggle={setIsCartSheetOpen}
         />
       </div>
-      
-      <div className="block md:hidden">
-          <MobileSearchHeader 
-              searchQuery={searchQuery}
-              onSearch={setSearchQuery}
-              allMenuItems={allMenuItems}
-              onProductSelect={handleCardClick}
-          />
-      </div>
-        <div className="pb-16 md:pb-0">
-          <main>
-             <div className="hidden md:block">
-              <HeroSection />
-            </div>
-            <div className="md:hidden">
-              <div className="mt-[-12px]">
-                  <Image
-                      src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
-                      alt="Special Offer Banner"
-                      width={1200}
-                      height={400}
-                      className="object-cover w-full"
-                      priority
-                      unoptimized={true}
-                  />
-              </div>
-              <div className="px-4">
-                <h1 className="text-2xl font-semibold tracking-[0.2px] text-foreground mt-4">Our Best Seller</h1>
-                <MobileHeroCarousel onCardClick={handleCardClick} onAddToCart={handleAddToCart} />
-              </div>
-              <div className="mx-4 mt-8 mb-4 border-b border-border"></div>
-            </div>
-            <div className="hidden md:block">
-              <MenuSection />
-            </div>
 
-            <div className="hidden md:block my-12">
+      <div className="block md:hidden">
+        <MobileSearchHeader
+          searchQuery={searchQuery}
+          onSearch={setSearchQuery}
+          allMenuItems={allMenuItems}
+          onProductSelect={handleCardClick}
+        />
+      </div>
+      <div className="pb-16 md:pb-0">
+        <main>
+          <div className="hidden md:block">
+            <HeroSection />
+          </div>
+          <div className="md:hidden">
+            <div className="mt-[-12px]">
               <Image
                 src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
                 alt="Special Offer Banner"
-                width={1920}
+                width={1200}
                 height={400}
                 className="object-cover w-full"
-                sizes="100vw"
-                unoptimized={true}
+                priority
+                quality={75}
               />
             </div>
-            
-            <div className="hidden md:block">
-              <BestSellerSection />
+            <div className="px-4">
+              <h1 className="text-2xl font-semibold tracking-[0.2px] text-foreground mt-4">Our Best Seller</h1>
+              <MobileHeroCarousel onCardClick={handleCardClick} onAddToCart={handleAddToCart} />
             </div>
-            
-            <div className="my-12 hidden md:block">
-                <Image
-                    src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
-                    alt="Special Offer Banner"
-                    width={1920}
-                    height={400}
-                    className="object-cover w-full"
-                    sizes="100vw"
-                    unoptimized={true}
-                />
-            </div>
-            
-            <ProductSection 
-                allMenuItems={allMenuItems}
-                cart={cart}
-                onAddToCart={handleAddToCart}
-                onRemoveFromCart={handleRemoveFromCart}
-                onCardClick={handleCardClick}
-                onRate={handleRatingChange}
-                searchQuery={searchQuery}
-                onCartClick={() => setIsCartSheetOpen(true)}
+            <div className="mx-4 mt-8 mb-4 border-b border-border"></div>
+          </div>
+          <div className="hidden md:block">
+            <MenuSection />
+          </div>
+
+          <div className="hidden md:block my-12">
+            <Image
+              src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
+              alt="Special Offer Banner"
+              width={1920}
+              height={400}
+              className="object-cover w-full"
+              sizes="100vw"
+              quality={75}
+              loading="lazy"
             />
+          </div>
 
-            <div className="md:hidden -mx-4">
-                <Image
-                    src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
-                    alt="Special Offer Banner"
-                    width={1200}
-                    height={400}
-                    className="object-cover w-full"
-                    sizes="100vw"
-                    unoptimized={true}
-                />
-            </div>
-            
-            <div className="text-center my-8 md:my-16 md:hidden">
-              <h2 className="text-2xl font-bold text-foreground">Words from Our Guests</h2>
-              <p className="mt-2 text-md text-muted-foreground max-w-xl mx-auto px-4">
-                  We are proud to be a part of so many wonderful journeys. Here's what our valued customers have to say.
-              </p>
-            </div>
-            
-            <ReviewsSection reviews={reviews} />
-            <WriteReviewSection onReviewSubmit={handleReviewSubmit} />
-            <ContactSection />
-            <div className="hidden md:block">
-              <RecommendationSection />
-            </div>
-          </main>
-          <Footer />
-        </div>
+          <div className="hidden md:block">
+            <BestSellerSection />
+          </div>
 
-        <MobileBottomNav 
-            cartCount={totalCartItems}
-            onCartClick={() => setIsCartSheetOpen(true)}
-            onMenuClick={() => setIsMenuDialogOpen(true)}
-        />
+          <div className="my-12 hidden md:block">
+            <Image
+              src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
+              alt="Special Offer Banner"
+              width={1920}
+              height={400}
+              className="object-cover w-full"
+              sizes="100vw"
+              quality={75}
+              loading="lazy"
+            />
+          </div>
 
-        {/* Cart Sheet for Mobile */}
-        <CartSheet
-            isOpen={isCartSheetOpen}
-            onOpenChange={setIsCartSheetOpen}
+          <ProductSection
+            allMenuItems={allMenuItems}
             cart={cart}
-            onEmptyCart={handleEmptyCart}
             onAddToCart={handleAddToCart}
             onRemoveFromCart={handleRemoveFromCart}
-        />
-
-        <MenuDialog 
-            isOpen={isMenuDialogOpen}
-            onOpenChange={setIsMenuDialogOpen}
-        />
-
-        {selectedItem && (
-          <ProductDetailDialog
-              isOpen={isDetailViewOpen}
-              onOpenChange={setIsDetailViewOpen}
-              item={selectedItem}
-              cartItem={cart.find(ci => ci.name === selectedItem.name)}
-              cart={cart}
-              onAddToCart={handleAddToCart}
-              onRemoveFromCart={handleRemoveFromCart}
-              onRate={handleRatingChange}
-              onCartClick={() => {
-                setIsDetailViewOpen(false);
-                setIsCartSheetOpen(true);
-              }}
-              onSelectItem={handleCardClick}
+            onCardClick={handleCardClick}
+            onRate={handleRatingChange}
+            searchQuery={searchQuery}
+            onCartClick={() => setIsCartSheetOpen(true)}
           />
+
+          <div className="md:hidden -mx-4">
+            <Image
+              src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
+              alt="Special Offer Banner"
+              width={1200}
+              height={400}
+              className="object-cover w-full"
+              sizes="100vw"
+              quality={75}
+              loading="lazy"
+            />
+          </div>
+
+
+          <ReviewsSection reviews={reviews} />
+          <WriteReviewSection onReviewSubmit={handleReviewSubmit} />
+          <ContactSection />
+          <div>
+            <RecommendationSection />
+          </div>
+        </main>
+        <Footer />
+      </div>
+
+      <MobileBottomNav
+        cartCount={totalCartItems}
+        onCartClick={() => setIsCartSheetOpen(true)}
+        onMenuClick={() => setIsMenuDialogOpen(true)}
+      />
+
+      {/* Cart Sheet for Mobile */}
+      <CartSheet
+        isOpen={isCartSheetOpen}
+        onOpenChange={setIsCartSheetOpen}
+        cart={cart}
+        onEmptyCart={handleEmptyCart}
+        onAddToCart={handleAddToCart}
+        onRemoveFromCart={handleRemoveFromCart}
+      />
+
+      <MenuDialog
+        isOpen={isMenuDialogOpen}
+        onOpenChange={setIsMenuDialogOpen}
+      />
+
+      {selectedItem && (
+        <ProductDetailDialog
+          isOpen={isDetailViewOpen}
+          onOpenChange={setIsDetailViewOpen}
+          item={selectedItem}
+          cartItem={cart.find(ci => ci.name === selectedItem.name)}
+          cart={cart}
+          onAddToCart={handleAddToCart}
+          onRemoveFromCart={handleRemoveFromCart}
+          onRate={handleRatingChange}
+          onCartClick={() => {
+            setIsDetailViewOpen(false);
+            setIsCartSheetOpen(true);
+          }}
+          onSelectItem={handleCardClick}
+        />
       )}
     </>
   );

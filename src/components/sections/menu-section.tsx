@@ -28,7 +28,7 @@ const MenuSection = () => {
     const startScrolling = React.useCallback((direction: 'prev' | 'next') => {
         if (scrollIntervalRef.current) return;
         if (!emblaApi) return;
-        
+
         scrollIntervalRef.current = setInterval(() => {
             if (direction === 'next') {
                 emblaApi.scrollNext();
@@ -58,19 +58,19 @@ const MenuSection = () => {
                 </p>
             </div>
 
-            <div 
-              className="w-full relative group/carousel"
+            <div
+                className="w-full relative group/carousel"
             >
                 <div className="overflow-hidden" ref={emblaRef}>
                     <div className="flex -ml-8 py-4 group">
                         {[...menuCards, ...menuCards].map((card, index) => {
                             const imageData = PlaceHolderImages.find(img => img.id === card.id);
                             return (
-                                <div 
+                                <div
                                     key={`${card.id}-${index}`}
                                     className="flex-[0_0_80%] sm:flex-[0_0_50%] md:flex-[0_0_33.333%] lg:flex-[0_0_25%] min-w-0 pl-8"
                                 >
-                                     <div className="flex flex-col items-center transition-all duration-300 ease-in-out transform group-hover:blur-[2px] hover:!blur-none hover:scale-125">
+                                    <div className="flex flex-col items-center transition-all duration-300 ease-in-out transform group-hover:blur-[2px] hover:!blur-none hover:scale-125">
                                         <div className={cn(
                                             "relative w-full aspect-[2/3] transition-transform duration-300 ease-in-out"
                                         )}>
@@ -82,7 +82,8 @@ const MenuSection = () => {
                                                     sizes="(max-width: 640px) 80vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                                                     data-ai-hint={imageData.imageHint}
                                                     className="object-contain rounded-lg shadow-lg"
-                                                    unoptimized={true}
+                                                    loading="lazy"
+                                                    quality={75}
                                                 />
                                             )}
                                         </div>
@@ -96,9 +97,9 @@ const MenuSection = () => {
 
                 {/* Manual Navigation Buttons */}
                 <div className="absolute inset-y-0 left-0 flex items-center">
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={scrollPrev}
                         className="h-12 w-12 rounded-full bg-black/20 text-white hover:bg-black/40 hover:text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 z-30 ml-4"
                     >
@@ -106,23 +107,23 @@ const MenuSection = () => {
                     </Button>
                 </div>
                 <div className="absolute inset-y-0 right-0 flex items-center">
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={scrollNext}
                         className="h-12 w-12 rounded-full bg-black/20 text-white hover:bg-black/40 hover:text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 z-30 mr-4"
                     >
                         <ChevronRight className="h-6 w-6" />
                     </Button>
                 </div>
-                
+
                 {/* Hover scroll zones */}
-                 <div 
+                <div
                     className="absolute top-0 left-0 h-full w-1/4 z-20"
                     onMouseEnter={() => startScrolling('prev')}
                     onMouseLeave={stopScrolling}
                 />
-                <div 
+                <div
                     className="absolute top-0 right-0 h-full w-1/4 z-20"
                     onMouseEnter={() => startScrolling('next')}
                     onMouseLeave={stopScrolling}

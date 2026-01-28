@@ -8,12 +8,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import QRCode from 'qrcode';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,7 +52,7 @@ const formSchema = z.object({
     }
     if (data.paymentMethod === 'pay-now') {
         if (!data.utr || data.utr.length < 12) {
-             ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['utr'], message: 'A valid 12-digit UPI Transaction ID is required.' });
+            ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['utr'], message: 'A valid 12-digit UPI Transaction ID is required.' });
         }
     }
 });
@@ -90,10 +90,12 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
 
     React.useEffect(() => {
         if (isOpen && paymentMethod === 'pay-now' && totalPrice > 0) {
-            const transactionNote = cart.length > 1 
-                ? `Cart order (${cart.length} items)` 
+            const transactionNote = cart.length > 1
+                ? `Cart order (${cart.length} items)`
                 : cart[0]?.name || 'Atithi Order';
-            const generatedUpiLink = `upi://pay?pa=8250104315@axisbank&pn=SANJOY MONDAL&am=${totalPrice.toFixed(2)}&cu=INR&tn=${encodeURIComponent(transactionNote.substring(0, 49))}`;
+            const upiId = process.env.NEXT_PUBLIC_UPI_ID || '8250104315@axisbank';
+            const upiPayeeName = process.env.NEXT_PUBLIC_UPI_PAYEE_NAME || 'SANJOY MONDAL';
+            const generatedUpiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiPayeeName)}&am=${totalPrice.toFixed(2)}&cu=INR&tn=${encodeURIComponent(transactionNote.substring(0, 49))}`;
             setUpiLink(generatedUpiLink);
 
             QRCode.toDataURL(generatedUpiLink, { errorCorrectionLevel: 'M', width: 300, margin: 2 }, (err, url) => {
@@ -129,12 +131,12 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
             default:
                 orderType = 'Not specified';
         }
-        
+
         let formattedDate = '';
         if (data.date) {
             formattedDate = new Date(data.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
         }
-        
+
         let formattedTime = '';
         if (data.time) {
             const timeString = data.time;
@@ -146,14 +148,14 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
         }
 
         let customerDetails = `*Customer Details:*\nName: ${data.name}\nPhone: ${data.phone}\nOrder Type: ${orderType}`;
-        
+
         if (formattedDate) customerDetails += `\nDate: ${formattedDate}`;
-        if(formattedTime) customerDetails += `\nTime: ${formattedTime}`;
+        if (formattedTime) customerDetails += `\nTime: ${formattedTime}`;
 
         if (data.deliveryOption === 'delivery') {
             customerDetails += `\nAddress: ${data.address}\nPincode: ${data.pincode}`;
         }
-        
+
         const paymentMethodText = data.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Paid via UPI';
         customerDetails += `\nPayment Method: ${paymentMethodText}`;
         if (data.paymentMethod === 'pay-now' && data.utr) {
@@ -177,214 +179,214 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                     <DialogDescription>Please provide your details to proceed with the order.</DialogDescription>
                 </DialogHeader>
                 <ScrollArea className="flex-grow">
-                  <div className="p-4">
-                    <Form {...form}>
-                        <form id="order-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            <FormField
-                                control={form.control}
-                                name="deliveryOption"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-3">
-                                        <FormLabel>Order Option</FormLabel>
-                                        <FormControl>
-                                            <RadioGroup
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                className="flex space-x-4"
-                                            >
-                                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                                    <FormControl>
-                                                        <RadioGroupItem value="delivery" />
-                                                    </FormControl>
-                                                    <FormLabel className="font-normal">Delivery</FormLabel>
-                                                </FormItem>
-                                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                                    <FormControl>
-                                                        <RadioGroupItem value="dine-in" />
-                                                    </FormControl>
-                                                    <FormLabel className="font-normal">Dine-in</FormLabel>
-                                                </FormItem>
-                                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                                    <FormControl>
-                                                        <RadioGroupItem value="take-away" />
-                                                    </FormControl>
-                                                    <FormLabel className="font-normal">Take Away</FormLabel>
-                                                </FormItem>
-                                            </RadioGroup>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter your full name" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="phone"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Phone Number</FormLabel>
-                                        <FormControl>
-                                            <Input type="tel" placeholder="Enter your phone number" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                             <FormField
-                                control={form.control}
-                                name="date"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Date</FormLabel>
-                                        <FormControl>
-                                            <input
-                                                type="date"
-                                                className="input w-full"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                             <FormField
-                                control={form.control}
-                                name="time"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Time</FormLabel>
-                                        <FormControl>
-                                            <input
-                                                type="time"
-                                                className="input w-full"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            
-                            {deliveryOption === 'delivery' && (
-                                <>
-                                    <FormField
-                                        control={form.control}
-                                        name="address"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Delivery Address</FormLabel>
-                                                <FormControl>
-                                                    <Textarea placeholder="Enter your full address" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="pincode"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Pincode</FormLabel>
-                                                <FormControl>
-                                                    <Input type="number" placeholder="Enter your 6-digit pincode" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </>
-                            )}
-                            <FormField
-                                control={form.control}
-                                name="paymentMethod"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-3">
-                                        <FormLabel>Payment Method</FormLabel>
-                                        <FormControl>
-                                            <RadioGroup
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                className="flex space-x-4"
-                                            >
-                                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                                    <FormControl>
-                                                        <RadioGroupItem value="cod" />
-                                                    </FormControl>
-                                                    <FormLabel className="font-normal">Cash on Delivery</FormLabel>
-                                                </FormItem>
-                                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                                    <FormControl>
-                                                        <RadioGroupItem value="pay-now" />
-                                                    </FormControl>
-                                                    <FormLabel className="font-normal">Pay Now</FormLabel>
-                                                </FormItem>
-                                            </RadioGroup>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            {paymentMethod === 'pay-now' && (
-                                <div className="space-y-4 pt-4 border-t">
-                                    <div className="text-center">
-                                        <h3 className="font-semibold text-lg">Scan to Pay</h3>
-                                        <p className="text-muted-foreground text-sm">Total Amount: <strong>Rs. {totalPrice.toFixed(2)}</strong></p>
-                                    </div>
-                                    {qrCodeUrl ? (
-                                        <div className="flex flex-col items-center gap-4">
-                                            <Image src={qrCodeUrl} alt="UPI QR Code" width={250} height={250} unoptimized={true} />
-                                            <Button
-                                                variant="outline"
-                                                className="w-full max-w-[250px]"
-                                                onClick={() => {
-                                                    if (upiLink) {
-                                                        window.location.href = upiLink;
-                                                    }
-                                                }}
-                                            >
-                                                Pay using UPI App
-                                            </Button>
-                                        </div>
-                                    ) : (
-                                        <div className="flex justify-center items-center h-[250px] w-[250px] mx-auto bg-muted rounded-md">
-                                            <p>Generating QR Code...</p>
-                                        </div>
+                    <div className="p-4">
+                        <Form {...form}>
+                            <form id="order-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="deliveryOption"
+                                    render={({ field }) => (
+                                        <FormItem className="space-y-3">
+                                            <FormLabel>Order Option</FormLabel>
+                                            <FormControl>
+                                                <RadioGroup
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={field.value}
+                                                    className="flex space-x-4"
+                                                >
+                                                    <FormItem className="flex items-center space-x-2 space-y-0">
+                                                        <FormControl>
+                                                            <RadioGroupItem value="delivery" />
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal">Delivery</FormLabel>
+                                                    </FormItem>
+                                                    <FormItem className="flex items-center space-x-2 space-y-0">
+                                                        <FormControl>
+                                                            <RadioGroupItem value="dine-in" />
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal">Dine-in</FormLabel>
+                                                    </FormItem>
+                                                    <FormItem className="flex items-center space-x-2 space-y-0">
+                                                        <FormControl>
+                                                            <RadioGroupItem value="take-away" />
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal">Take Away</FormLabel>
+                                                    </FormItem>
+                                                </RadioGroup>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
                                     )}
-                                    <FormField
-                                        control={form.control}
-                                        name="utr"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>UPI Transaction ID (UTR/Ref ID)</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Enter the 12-digit UTR from your UPI app" {...field} />
-                                                </FormControl>
-                                                <FormDescription>
-                                                    After paying, enter the transaction ID here to confirm.
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Enter your full name" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="phone"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Phone Number</FormLabel>
+                                            <FormControl>
+                                                <Input type="tel" placeholder="Enter your phone number" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="date"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Date</FormLabel>
+                                            <FormControl>
+                                                <input
+                                                    type="date"
+                                                    className="input w-full"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="time"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Time</FormLabel>
+                                            <FormControl>
+                                                <input
+                                                    type="time"
+                                                    className="input w-full"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {deliveryOption === 'delivery' && (
+                                    <>
+                                        <FormField
+                                            control={form.control}
+                                            name="address"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Delivery Address</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea placeholder="Enter your full address" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="pincode"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Pincode</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="number" placeholder="Enter your 6-digit pincode" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </>
+                                )}
+                                <FormField
+                                    control={form.control}
+                                    name="paymentMethod"
+                                    render={({ field }) => (
+                                        <FormItem className="space-y-3">
+                                            <FormLabel>Payment Method</FormLabel>
+                                            <FormControl>
+                                                <RadioGroup
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={field.value}
+                                                    className="flex space-x-4"
+                                                >
+                                                    <FormItem className="flex items-center space-x-2 space-y-0">
+                                                        <FormControl>
+                                                            <RadioGroupItem value="cod" />
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal">Cash on Delivery</FormLabel>
+                                                    </FormItem>
+                                                    <FormItem className="flex items-center space-x-2 space-y-0">
+                                                        <FormControl>
+                                                            <RadioGroupItem value="pay-now" />
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal">Pay Now</FormLabel>
+                                                    </FormItem>
+                                                </RadioGroup>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {paymentMethod === 'pay-now' && (
+                                    <div className="space-y-4 pt-4 border-t">
+                                        <div className="text-center">
+                                            <h3 className="font-semibold text-lg">Scan to Pay</h3>
+                                            <p className="text-muted-foreground text-sm">Total Amount: <strong>Rs. {totalPrice.toFixed(2)}</strong></p>
+                                        </div>
+                                        {qrCodeUrl ? (
+                                            <div className="flex flex-col items-center gap-4">
+                                                <Image src={qrCodeUrl} alt="UPI QR Code" width={250} height={250} unoptimized={true} />
+                                                <Button
+                                                    variant="outline"
+                                                    className="w-full max-w-[250px]"
+                                                    onClick={() => {
+                                                        if (upiLink) {
+                                                            window.location.href = upiLink;
+                                                        }
+                                                    }}
+                                                >
+                                                    Pay using UPI App
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div className="flex justify-center items-center h-[250px] w-[250px] mx-auto bg-muted rounded-md">
+                                                <p>Generating QR Code...</p>
+                                            </div>
                                         )}
-                                    />
-                                </div>
-                            )}
-                        </form>
-                    </Form>
-                  </div>
+                                        <FormField
+                                            control={form.control}
+                                            name="utr"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>UPI Transaction ID (UTR/Ref ID)</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="Enter the 12-digit UTR from your UPI app" {...field} />
+                                                    </FormControl>
+                                                    <FormDescription>
+                                                        After paying, enter the transaction ID here to confirm.
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                )}
+                            </form>
+                        </Form>
+                    </div>
                 </ScrollArea>
                 <DialogFooter className="flex-shrink-0 p-4 border-t">
                     <Button type="submit" form="order-form" className="w-full">

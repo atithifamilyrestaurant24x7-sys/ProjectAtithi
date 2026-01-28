@@ -4,6 +4,13 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    // Enable image optimization with quality settings
+    formats: ['image/avif', 'image/webp'],
+    // Responsive image sizes for different devices
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Cache optimized images longer
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     remotePatterns: [
       {
         protocol: 'https',
@@ -42,6 +49,20 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  // Add headers for caching static assets
+  async headers() {
+    return [
+      {
+        source: '/:all*(svg|jpg|jpeg|png|webp|avif|gif|ico)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
   },
 };
 

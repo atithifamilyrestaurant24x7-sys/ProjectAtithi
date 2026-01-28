@@ -44,7 +44,8 @@ const BestSellerSection = () => {
                                             sizes="(max-width: 768px) 100vw, 50vw"
                                             data-ai-hint={imageData.imageHint}
                                             className="rounded-lg object-cover shadow-2xl"
-                                            unoptimized={true}
+                                            loading="lazy"
+                                            quality={75}
                                         />
                                     )}
                                 </div>
@@ -68,4 +69,4 @@ const BestSellerSection = () => {
 
 export default BestSellerSection;
 
-    
+
