@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
 import { Phone, Star, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { type MenuItem } from "@/lib/menu";
+import { type MenuItem, menuData } from "@/lib/menu";
 import { type CartItem } from '@/app/page';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useToast } from '@/hooks/use-toast';
@@ -34,6 +34,7 @@ export const ProductDetailDialog = ({
     onRemoveFromCart,
     onRate,
     onCartClick,
+    onSelectItem,
 }: {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
@@ -44,6 +45,7 @@ export const ProductDetailDialog = ({
     onRemoveFromCart: (itemName: string) => void;
     onRate: (itemName: string, rating: number) => void;
     onCartClick: () => void;
+    onSelectItem: (item: MenuItem) => void;
 }) => {
     const [hoveredRating, setHoveredRating] = React.useState(0);
     const [currentRating, setCurrentRating] = React.useState(item.rating);
@@ -53,6 +55,15 @@ export const ProductDetailDialog = ({
     
     const imageData = PlaceHolderImages.find(img => img.id === item.name);
     const discount = item.originalPrice ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100) : 0;
+
+    const suggestedItems = React.useMemo(() => {
+        if (!item) return [];
+        const currentCategory = menuData.find(category => 
+            category.items.some(menuItem => menuItem.name === item.name)
+        );
+        if (!currentCategory) return [];
+        return currentCategory.items.filter(menuItem => menuItem.name !== item.name).slice(0, 4);
+    }, [item]);
     
     const handleRatingSubmit = (rating: number) => {
         const newTotalRatingPoints = (currentRating * ratingsCount) + rating;
@@ -152,6 +163,32 @@ export const ProductDetailDialog = ({
                                         </div>
                                     </div>
                                 </div>
+                                
+                                {suggestedItems.length > 0 && (
+                                    <div className="space-y-4 mb-6">
+                                        <h4 className="font-semibold text-lg">You might also like</h4>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            {suggestedItems.map(suggestedItem => {
+                                                const suggestedImageData = PlaceHolderImages.find(img => img.id === suggestedItem.name);
+                                                return (
+                                                    <button key={suggestedItem.name} onClick={() => onSelectItem(suggestedItem)} className="text-left w-full rounded-lg border bg-card text-card-foreground shadow-sm hover:bg-secondary transition-colors overflow-hidden">
+                                                        <div className="relative aspect-square w-full">
+                                                            {suggestedImageData ? (
+                                                                <Image src={suggestedImageData.imageUrl} alt={suggestedItem.name} fill className="object-cover" unoptimized={true} />
+                                                            ) : (
+                                                                <div className="w-full h-full bg-muted rounded-t-lg" />
+                                                            )}
+                                                        </div>
+                                                        <div className="p-3">
+                                                            <p className="font-semibold text-sm truncate">{suggestedItem.name}</p>
+                                                            <p className="text-xs text-muted-foreground">Rs. {suggestedItem.price}</p>
+                                                        </div>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
                                 
                                 <div className="flex flex-col gap-3 pt-6 border-t">
                                     {cartItem ? (

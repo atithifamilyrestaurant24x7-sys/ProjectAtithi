@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState } from "react";
@@ -188,7 +189,6 @@ export default function Home() {
                       height={400}
                       className="object-cover w-full"
                       priority
-                      sizes="100vw"
                       unoptimized={true}
                   />
               </div>
@@ -305,6 +305,7 @@ export default function Home() {
                 setIsDetailViewOpen(false);
                 setIsCartSheetOpen(true);
               }}
+              onSelectItem={handleCardClick}
           />
       )}
     </>
