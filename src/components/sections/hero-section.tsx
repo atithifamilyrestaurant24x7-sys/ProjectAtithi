@@ -46,7 +46,7 @@ const HeroSection = ({ }: HeroSectionProps) => {
 
       <div className="container mx-auto px-4 h-full">
         <div className="relative z-10 flex h-full items-center justify-center text-white">
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-6 w-full px-4">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-6 w-full px-4">
             {/* Hidden H1 for SEO, visual text is in the video */}
             <h1 className="sr-only">
               {config.fullName}
