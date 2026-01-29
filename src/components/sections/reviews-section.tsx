@@ -1,10 +1,11 @@
+
 "use client";
 
 import * as React from "react";
 import { type Review } from "@/lib/utils";
 import useEmblaCarousel from 'embla-carousel-react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Quote, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ReviewsSection = ({ reviews }: { reviews: Review[] }) => {
@@ -48,13 +49,8 @@ const ReviewsSection = ({ reviews }: { reviews: Review[] }) => {
                                                 ))}
                                             </div>
 
-                                            {/* Quote Icon Background */}
-                                            <div className="absolute top-6 left-6 opacity-10">
-                                                <Quote size={48} className="text-primary" />
-                                            </div>
-
                                             {/* Review Text */}
-                                            <p className="text-muted-foreground text-base leading-relaxed flex-grow line-clamp-6 mb-6 relative z-10">
+                                            <p className="text-muted-foreground text-base leading-relaxed flex-grow line-clamp-6 mb-6">
                                                 "{review.review}"
                                             </p>
 
