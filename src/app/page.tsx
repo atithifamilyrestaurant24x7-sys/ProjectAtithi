@@ -10,7 +10,7 @@ import HeroSection from "@/components/sections/hero-section";
 import { useToast } from "@/hooks/use-toast";
 import { type MenuItem, menuData } from "@/lib/menu";
 import { config, type Review } from "@/lib/utils";
-const MobileSearchHeader = dynamic(() => import("@/components/mobile-search-header"));
+const MobileSearchHeader = dynamic(() => import("@/components/mobile-search-header"), { ssr: false });
 const MobileHeroCarousel = dynamic(() => import("@/components/mobile-hero-carousel"));
 const MobileBottomNav = dynamic(() => import("@/components/mobile-bottom-nav").then(mod => mod.MobileBottomNav));
 const MobileAISheet = dynamic(() => import("@/components/mobile-ai-sheet"));
@@ -265,7 +265,7 @@ export default function Home() {
             allMenuItems={allMenuItems}
             cart={cart}
             onAddToCart={handleAddToCart}
-            onRemoveFromCart={handleRemoveFromCart}
+            onRemoveFromCart={onRemoveFromCart}
             onCardClick={handleCardClick}
             onRate={handleRatingChange}
             searchQuery={searchQuery}
@@ -332,7 +332,7 @@ export default function Home() {
           cartItem={cart.find(ci => ci.name === selectedItem.name)}
           cart={cart}
           onAddToCart={handleAddToCart}
-          onRemoveFromCart={handleRemoveFromCart}
+          onRemoveFromCart={onRemoveFromCart}
           onRate={handleRatingChange}
           onCartClick={() => {
             setIsDetailViewOpen(false);
