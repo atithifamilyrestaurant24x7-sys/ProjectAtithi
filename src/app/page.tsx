@@ -265,7 +265,7 @@ export default function Home() {
             allMenuItems={allMenuItems}
             cart={cart}
             onAddToCart={handleAddToCart}
-            onRemoveFromCart={onRemoveFromCart}
+            onRemoveFromCart={handleRemoveFromCart}
             onCardClick={handleCardClick}
             onRate={handleRatingChange}
             searchQuery={searchQuery}
@@ -332,7 +332,7 @@ export default function Home() {
           cartItem={cart.find(ci => ci.name === selectedItem.name)}
           cart={cart}
           onAddToCart={handleAddToCart}
-          onRemoveFromCart={onRemoveFromCart}
+          onRemoveFromCart={handleRemoveFromCart}
           onRate={handleRatingChange}
           onCartClick={() => {
             setIsDetailViewOpen(false);
