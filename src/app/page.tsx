@@ -13,7 +13,7 @@ import { config, type Review } from "@/lib/utils";
 import MobileSearchHeader from "@/components/mobile-search-header";
 import MobileHeroCarousel from "@/components/mobile-hero-carousel";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
-import MobileAIRecommendation from "@/components/mobile-ai-recommendation";
+import FloatingAIButton from "@/components/floating-ai-button";
 
 const MenuSection = dynamic(() => import("@/components/sections/menu-section"));
 const BestSellerSection = dynamic(() => import("@/components/sections/best-seller-section"));
@@ -153,6 +153,30 @@ export default function Home() {
   const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
 
 
+  const handleBulkAddToCart = (items: MenuItem[]) => {
+    setCart(prevCart => {
+      let newCart = [...prevCart];
+      items.forEach(newItem => {
+        const existingItemIndex = newCart.findIndex(item => item.name === newItem.name);
+        if (existingItemIndex > -1) {
+          const existingItem = newCart[existingItemIndex];
+          newCart[existingItemIndex] = { ...existingItem, quantity: existingItem.quantity + 1 };
+        } else {
+          newCart.push({ ...newItem, quantity: 1 });
+        }
+      });
+      return newCart;
+    });
+
+    toast({
+      title: "Added to Cart",
+      description: `${items.length} items have been added to your cart.`,
+    });
+
+    // Open cart sheet after adding
+    setTimeout(() => setIsCartSheetOpen(true), 500);
+  };
+
   return (
     <>
       <div className="hidden md:block">
@@ -266,7 +290,6 @@ export default function Home() {
           <div className="hidden md:block">
             <RecommendationSection />
           </div>
-          <MobileAIRecommendation />
         </main>
         <Footer />
       </div>
@@ -276,6 +299,8 @@ export default function Home() {
         onCartClick={() => setIsCartSheetOpen(true)}
         onMenuClick={() => setIsMenuDialogOpen(true)}
       />
+
+      <FloatingAIButton onAddToCart={handleBulkAddToCart} />
 
       {/* Cart Sheet for Mobile */}
       <CartSheet

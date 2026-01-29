@@ -30,11 +30,12 @@ import {
 import { cn } from '@/lib/utils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
-import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight, Menu, X } from 'lucide-react';
+import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight, Menu, X, Sparkles, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { type CartItem } from '@/app/page';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { chat } from "@/ai/flows/chat";
 
 
 const CategoryProductDialog = ({
@@ -56,6 +57,34 @@ const CategoryProductDialog = ({
     onCardClick: (item: MenuItem) => void;
     onCartClick: () => void;
 }) => {
+    const [aiSuggestion, setAiSuggestion] = React.useState<string | null>(null);
+    const [isAiLoading, setIsAiLoading] = React.useState(false);
+    const [showAiCard, setShowAiCard] = React.useState(true);
+
+    // Reset AI suggestion when dialog opens with new category
+    React.useEffect(() => {
+        if (isOpen) {
+            setAiSuggestion(null);
+            setShowAiCard(true);
+        }
+    }, [isOpen, category?.name]);
+
+    const handleGetAiSuggestion = async () => {
+        if (!category) return;
+        setIsAiLoading(true);
+        try {
+            const response = await chat({
+                message: `${category.name} category থেকে সবচেয়ে ভালো dish কোনটা? শুধু dish এর নাম এবং কেন ভালো সেটা বলো।`,
+                userLocale: typeof navigator !== "undefined" ? navigator.language : "bn-IN",
+            });
+            setAiSuggestion(response.response);
+        } catch (error) {
+            setAiSuggestion("দুঃখিত, এখন suggestion দিতে পারছি না।");
+        } finally {
+            setIsAiLoading(false);
+        }
+    };
+
     if (!category) return null;
     const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -83,6 +112,48 @@ const CategoryProductDialog = ({
                 </DialogHeader>
                 <ScrollArea className="flex-grow bg-background">
                     <div className="p-4 space-y-4">
+                        {/* AI Suggestion Card */}
+                        {showAiCard && (
+                            <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl p-4 text-white">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Sparkles className="w-5 h-5" />
+                                    <span className="font-semibold">AI Suggestion</span>
+                                </div>
+                                {!aiSuggestion && !isAiLoading && (
+                                    <>
+                                        <p className="text-sm text-white/90 mb-3">এই category থেকে কোনটা নেবেন বুঝতে পারছেন না?</p>
+                                        <Button
+                                            size="sm"
+                                            variant="secondary"
+                                            className="bg-white/20 hover:bg-white/30 text-white border-0"
+                                            onClick={handleGetAiSuggestion}
+                                        >
+                                            <Sparkles className="w-4 h-4 mr-2" />
+                                            AI কে জিজ্ঞাসা করুন
+                                        </Button>
+                                    </>
+                                )}
+                                {isAiLoading && (
+                                    <div className="flex items-center gap-2">
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <span className="text-sm">ভাবছে...</span>
+                                    </div>
+                                )}
+                                {aiSuggestion && (
+                                    <>
+                                        <p className="text-sm leading-relaxed">{aiSuggestion}</p>
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            className="mt-2 text-white/80 hover:text-white hover:bg-white/10 p-0 h-auto"
+                                            onClick={() => setShowAiCard(false)}
+                                        >
+                                            বন্ধ করুন
+                                        </Button>
+                                    </>
+                                )}
+                            </div>
+                        )}
                         {category.items.map(item => (
                             <MobileProductCard
                                 key={item.name}
@@ -743,14 +814,38 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                     <h2 className="text-xl font-semibold text-foreground mt-4 mx-4">Categories</h2>
                     <div className="mt-4 border-b border-border"></div>
                 </div>
-                <div className="grid grid-cols-2 gap-4 px-4 pt-4">
+                <div className="grid grid-cols-2 gap-3 px-4 pt-4">
+                    {/* AI Suggestion Card - Special First Card */}
+                    <button
+                        onClick={() => {
+                            // Trigger floating AI button
+                            const aiButton = document.querySelector('[aria-label="AI Assistant"]') as HTMLButtonElement;
+                            if (aiButton) aiButton.click();
+                        }}
+                        className="relative bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-amber-400 ring-offset-2 aspect-square group"
+                    >
+                        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_-20%,_rgba(255,255,255,0.4),transparent_70%)]" />
+                        <div className="relative h-full flex flex-col items-center justify-center p-4 text-white text-center">
+                            <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2L14.5 9H22L16 14L18.5 21L12 17L5.5 21L8 14L2 9H9.5L12 2Z" />
+                                </svg>
+                            </div>
+                            <h3 className="font-bold text-lg">AI Suggestion</h3>
+                            <p className="text-sm text-white/80 mt-1">আমাকে জিজ্ঞাসা করুন!</p>
+                        </div>
+                        <div className="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5">
+                            <span className="text-[10px] font-medium text-white">NEW</span>
+                        </div>
+                    </button>
+
                     {allMenuItems.map((category) => {
                         const firstItem = category.items[0];
                         const imageData = firstItem ? PlaceHolderImages.find(img => img.id === firstItem.name) : null;
                         const itemCount = category.items.length;
 
                         return (
-                            <button key={category.name} onClick={() => handleOpenCategoryDialog(category)} className="border-0 bg-card rounded-[14px] shadow-card-subtle overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-primary ring-offset-2 aspect-square" suppressHydrationWarning={true}>
+                            <button key={category.name} onClick={() => handleOpenCategoryDialog(category)} className="border-0 bg-card rounded-2xl shadow-lg overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-primary ring-offset-2 aspect-square group active:scale-[0.98] transition-transform" suppressHydrationWarning={true}>
                                 <div className="relative w-full h-full">
                                     <div className="absolute inset-0">
                                         {imageData ? (
@@ -758,7 +853,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                                                 src={imageData.imageUrl}
                                                 alt={`Preview of ${category.name}`}
                                                 fill
-                                                className="object-cover"
+                                                className="object-cover group-hover:scale-105 transition-transform duration-300"
                                                 loading="lazy"
                                                 quality={75}
                                             />
@@ -768,10 +863,12 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                                             </div>
                                         )}
                                     </div>
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
-                                    <div className="relative h-full flex flex-col justify-end p-3 drop-shadow-lg">
-                                        <h3 className="font-semibold text-xl text-white">{category.name}</h3>
-                                        <p className="text-[13px] text-white/90">{itemCount} items</p>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                                    <div className="relative h-full flex flex-col justify-end p-3">
+                                        <h3 className="font-bold text-lg text-white drop-shadow-lg">{category.name}</h3>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className="text-xs text-white/90 bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">{itemCount} items</span>
+                                        </div>
                                     </div>
                                 </div>
                             </button>
