@@ -41,7 +41,7 @@ const restaurantSchema = {
   "menu": `${siteUrl}/#menu`,
   "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 08:00-22:00",
   "acceptsReservations": "True",
-  "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=630&fit=crop",
+  "image": "https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/food_images/bestseller-butter-chicken.webp",
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.5",
@@ -160,26 +160,43 @@ const breadcrumbSchema = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${config.fullName} - ${config.industry}`,
-    template: `%s | ${config.brandName}`,
+    default: "Atithi Family Restaurant | Premium Dining in Rampurhat",
+    template: "%s | Atithi - Rampurhat",
   },
-  description: config.description,
+  description:
+    "Experience the finest multi-cuisine dining at Atithi Family Restaurant in Rampurhat. Serving authentic Indian, Bengali & Chinese delicacies in a premium, hygienic, and air-conditioned ambiance. Located conveniently on NH-14, near Tarapith & Hattala. The perfect stop for families and highway travelers seeking quality food and comfort.",
   keywords: [
-    "indian restaurant", "family restaurant", "highway restaurant", "rampurhat", "birbhum", "tarapith",
-    "hygienic food", "premium dining", "atithi", "atiti", "athithi", "athiti",
-    "best restaurant rampurhat", "restaurant near me", "food delivery rampurhat",
-    "biryani rampurhat", "chicken biryani", "butter chicken", "paneer dishes",
-    "chinese food rampurhat", "tandoori", "north indian food", "bengali food",
-    "family dining", "veg restaurant", "non veg restaurant", "best food NH14",
-    "restaurant in hattala", "restaurant near gurukulpara", "restaurant in tilai", "hotel in kutigram",
-    "rampurhat railway station food", "tarapith nearby restaurant", "restaurant in nalhati",
-    "mallarpur restaurant", "sainthia food", "best family restaurant birbhum",
-    "restuarant", "restaurent", "femily restaurant", "dhaba near me", "food hotel",
-    "otiti", "athithi", "famly restaurant", "resturant rampurhat", "resturent near me"
+    // Core Identity
+    "Atithi Family Restaurant", "Best Restaurant in Rampurhat", "Top Rated Restaurant Rampurhat",
+    "Premium Family Dining Rampurhat", "AC Restaurant Rampurhat", "Fine Dining Birbhum",
+
+    // Location Based
+    "Restaurant near Tarapith Temple", "Food near Tarapith", "Restaurant near Hattala",
+    "Highway Restaurant NH14", "Best Hotel on NH14", "Restaurant in Rampurhat Railway Station area",
+    "Dining in Birbhum", "Places to eat in Rampurhat",
+
+    // Cuisine & Food
+    "Authentic Bengali Thali Rampurhat", "Best Biryani in Rampurhat", "North Indian Food Rampurhat",
+    "Chinese Restaurant Rampurhat", "Butter Chicken Rampurhat", "Mutton Kasa", "Veg Thali",
+    "Tandoori Chicken", "Fresh Seafood", "Vegetarian Restaurant options",
+
+    // Qualities
+    "Hygienic Food Rampurhat", "Clean Washrooms Highway", "Family Friendly Restaurant",
+    "Good Parking Space", "Breakfast Lunch Dinner", "Late night food Rampurhat",
+
+    // Common Misspellings & Variations (Crucial for Local Search)
+    "Atiti", "Athithi", "Otithi", "Othithi", "Atithi Hotel", "Attithi", "Athisi",
+    "Resturant", "Restaurent", "Resturent", "Rasturant", "Femily Restaurant",
+    "Dhaba near me", "Food Hotel Rampurhat", "Khawar Hotel Rampurhat",
+
+    // Spanglish / Bangla-English Search Terms
+    "Rampurhat e bhalo khawar hotel", "Tarapith er kache restaurant",
+    "NH14 dhaba", "Atithi Menu", "Atithi Phone Number",
+    "Best restaurant for lunch", "Best place for dinner"
   ],
   authors: [{ name: 'Atithi Family Restaurant', url: siteUrl }],
-  creator: 'Firebase Studio',
-  publisher: 'Firebase Studio',
+  creator: 'Atithi Family Restaurant',
+  publisher: 'Atithi Family Restaurant',
   robots: {
     index: true,
     follow: true,
@@ -192,16 +209,16 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: `Atithi - Best Family Restaurant in Rampurhat | NH-14`,
-    description: config.description,
+    title: "Atithi Family Restaurant | Exquisite Dining in Rampurhat",
+    description: "Discover the taste of authentic Indian cuisine. A perfect blend of tradition, taste, and hospitality on NH-14, Rampurhat.",
     url: siteUrl,
-    siteName: config.fullName,
+    siteName: "Atithi Family Restaurant",
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=630&fit=crop',
+        url: `${siteUrl}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: 'A serene and luxurious dining space at Atithi Family Restaurant.',
+        alt: 'Atithi Family Restaurant - Premium Dining',
       },
     ],
     locale: 'en_US',
@@ -211,16 +228,12 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `Atithi - Best Family Restaurant in Rampurhat | NH-14`,
     description: config.description,
-    images: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=630&fit=crop'],
+    images: [`${siteUrl}/og-image.png`],
   },
   alternates: {
     canonical: siteUrl,
   },
-  icons: {
-    icon: '/icons/icon-192x192.png',
-    shortcut: '/icons/icon-96x96.png',
-    apple: '/icons/icon-192x192.png',
-  },
+
   manifest: '/manifest.json',
 };
 
@@ -240,21 +253,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={cn(inter.variable)}>
       <head>
-        {/* DNS Prefetch for faster external resource loading */}
-        <link rel="dns-prefetch" href="https://yryoxzexvuhimvezdwle.supabase.co" />
-        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        {/* Preconnect and DNS Prefetch for faster external resource loading */}
+        <link rel="preconnect" href="https://ihpfajyotvzcdqagdslw.supabase.co" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://ihpfajyotvzcdqagdslw.supabase.co" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        {/* Preconnect for critical resources */}
-        <link rel="preconnect" href="https://images.unsplash.com" />
-
-        {/* Manual Favicon Fallback */}
-        <link rel="icon" href="/icons/icon-192x192.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-        {/* Preload hero image for faster LCP */}
+        {/* Preload LCP image for mobile */}
         <link
           rel="preload"
-          href="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=630&fit=crop"
           as="image"
+          href="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/banner-one.webp"
           type="image/webp"
         />
         <script

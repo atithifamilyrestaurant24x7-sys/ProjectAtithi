@@ -10,10 +10,10 @@ import HeroSection from "@/components/sections/hero-section";
 import { useToast } from "@/hooks/use-toast";
 import { type MenuItem, menuData } from "@/lib/menu";
 import { config, type Review } from "@/lib/utils";
-import MobileSearchHeader from "@/components/mobile-search-header";
-import MobileHeroCarousel from "@/components/mobile-hero-carousel";
-import { MobileBottomNav } from "@/components/mobile-bottom-nav";
-import FloatingAIButton from "@/components/floating-ai-button";
+const MobileSearchHeader = dynamic(() => import("@/components/mobile-search-header"));
+const MobileHeroCarousel = dynamic(() => import("@/components/mobile-hero-carousel"));
+const MobileBottomNav = dynamic(() => import("@/components/mobile-bottom-nav").then(mod => mod.MobileBottomNav));
+const MobileAISheet = dynamic(() => import("@/components/mobile-ai-sheet"));
 
 const MenuSection = dynamic(() => import("@/components/sections/menu-section"));
 const BestSellerSection = dynamic(() => import("@/components/sections/best-seller-section"));
@@ -44,6 +44,7 @@ export default function Home() {
   const [reviews, setReviews] = useState<Review[]>(config.reviews);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuDialogOpen, setIsMenuDialogOpen] = useState(false);
+  const [isAIOpen, setIsAIOpen] = useState(false);
 
 
   const handleCardClick = (item: MenuItem) => {
@@ -210,12 +211,13 @@ export default function Home() {
           <div className="md:hidden">
             <div className="mt-[-12px]">
               <Image
-                src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
+                src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/banner-one.webp"
                 alt="Special Offer Banner"
                 width={1200}
                 height={400}
                 className="object-cover w-full"
                 priority
+                sizes="100vw"
                 quality={75}
               />
             </div>
@@ -231,7 +233,7 @@ export default function Home() {
 
           <div className="hidden md:block my-12">
             <Image
-              src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(5).png"
+              src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/banner-one.webp"
               alt="Special Offer Banner"
               width={1920}
               height={400}
@@ -248,7 +250,7 @@ export default function Home() {
 
           <div className="my-12 hidden md:block">
             <Image
-              src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
+              src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/banner-two.webp"
               alt="Special Offer Banner"
               width={1920}
               height={400}
@@ -272,7 +274,7 @@ export default function Home() {
 
           <div className="md:hidden -mx-4">
             <Image
-              src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/image%20(6).png"
+              src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/banner-two.webp"
               alt="Special Offer Banner"
               width={1200}
               height={400}
@@ -282,7 +284,6 @@ export default function Home() {
               loading="lazy"
             />
           </div>
-
 
           <ReviewsSection reviews={reviews} />
           <WriteReviewSection onReviewSubmit={handleReviewSubmit} />
@@ -298,9 +299,15 @@ export default function Home() {
         cartCount={totalCartItems}
         onCartClick={() => setIsCartSheetOpen(true)}
         onMenuClick={() => setIsMenuDialogOpen(true)}
+        onAIClick={() => setIsAIOpen(true)}
       />
 
-      <FloatingAIButton onAddToCart={handleBulkAddToCart} />
+      {/* AI Sheet for Mobile */}
+      <MobileAISheet
+        isOpen={isAIOpen}
+        onClose={() => setIsAIOpen(false)}
+        onAddToCart={handleBulkAddToCart}
+      />
 
       {/* Cart Sheet for Mobile */}
       <CartSheet

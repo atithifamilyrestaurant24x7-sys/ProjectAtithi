@@ -38,6 +38,7 @@ const Page = forwardRef<HTMLDivElement, { imageData: { imageUrl: string; descrip
                 src={imageData.imageUrl}
                 alt={imageData.description || name}
                 fill
+                sizes="(max-width: 768px) 280px, 400px"
                 className="object-contain"
                 loading="lazy"
                 quality={75}

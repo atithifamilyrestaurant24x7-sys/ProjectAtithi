@@ -187,7 +187,7 @@ export async function tryLocalResponse(message: string): Promise<LocalAIResponse
     ];
 
     if (hasKeyword(m, orderingKeywords)) {
-        console.log('[Local AI] Ordering intent detected → Routing to Gemini');
+        // Ordering intent detected → Route to Gemini
         return { handled: false };
     }
 

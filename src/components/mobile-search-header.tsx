@@ -60,12 +60,10 @@ const MobileSearchHeader = ({ onSearch, searchQuery, allMenuItems, onProductSele
                         <div className="flex-shrink-0">
                             <Link href="/">
                                 <Image
-                                    src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/atithifamilyrestaurant24x7@gmail.com's%20Org/ChatGPT%20Image%20Jan%2020,%202026,%2012_52_38%20AM.png"
+                                    src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Logo/atithi-logo.webp"
                                     alt="Atithi Logo"
-                                    width={80}
+                                    width={60}
                                     height={40}
-                                    className="h-10 w-auto"
-                                    priority
                                     quality={75}
                                 />
                             </Link>
@@ -105,7 +103,7 @@ const MobileSearchHeader = ({ onSearch, searchQuery, allMenuItems, onProductSele
                                                 <button key={item.name} onClick={() => handleResultClick(item)} className="w-full text-left flex items-center gap-4 p-2 rounded-lg hover:bg-secondary">
                                                     <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
                                                         {imageData ? (
-                                                            <Image src={imageData.imageUrl} alt={item.name} fill className="object-cover" loading="lazy" quality={75} />
+                                                            <Image src={imageData.imageUrl} alt={item.name} fill sizes="64px" className="object-cover" loading="lazy" quality={75} />
                                                         ) : (
                                                             <div className="w-full h-full bg-muted"></div>
                                                         )}

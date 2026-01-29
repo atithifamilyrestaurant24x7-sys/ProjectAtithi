@@ -6,16 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export type SectionData = {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  themeColor: string;
-  mode: 'dark' | 'light' | 'inherit';
-  animatedWebpUrl: string;
-};
-
 export type NavbarLink = {
   name: string;
   href: string;
@@ -41,7 +31,6 @@ type Config = {
   description: string;
   navbarLinks: NavbarLink[];
   mobileNavbarLinks: NavbarLink[];
-  sections: SectionData[];
   reviews: Review[];
 };
 
@@ -67,41 +56,7 @@ export const config: Config = {
     { name: 'Contact', href: '#contact' },
     { name: 'AI Recommendation', href: '#recommendation' },
   ],
-  sections: [
-    {
-      id: 'family-dining',
-      title: 'Family Dining',
-      subtitle: 'Comfort • Hygiene • Taste',
-      description:
-        'A calm, spacious dining experience designed for families and premium travelers.',
-      themeColor: '#C9A24D',
-      mode: 'light',
-      animatedWebpUrl:
-        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80',
-    },
-    {
-      id: 'highway-hospitality',
-      title: 'Highway Hospitality',
-      subtitle: 'Premium • Convenient • Refreshing',
-      description:
-        'Redefining roadside stops with unmatched service and a serene atmosphere for the discerning traveler.',
-      themeColor: '#A87C4F',
-      mode: 'light',
-      animatedWebpUrl:
-        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80',
-    },
-    {
-      id: 'modern-indian',
-      title: 'Modern Indian Cuisine',
-      subtitle: 'Authentic • Innovative • Exquisite',
-      description:
-        'Savor traditional flavors presented with a contemporary twist by our expert chefs.',
-      themeColor: '#E69A8D',
-      mode: 'light',
-      animatedWebpUrl:
-        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80',
-    },
-  ],
+
   reviews: [
     {
       name: 'Lusy',

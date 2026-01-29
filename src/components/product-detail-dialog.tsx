@@ -103,7 +103,7 @@ export const ProductDetailDialog = ({
                     <div className="w-full md:w-1/2 relative h-[40%] md:h-auto flex-shrink-0">
                         <div className="absolute inset-0">
                             {imageData ? (
-                                <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover md:rounded-l-lg" quality={75} />
+                                <Image src={imageData.imageUrl} alt={item.description} fill sizes="(max-width: 768px) 100vw, 50vw" data-ai-hint={imageData.imageHint} className="object-cover md:rounded-l-lg" quality={75} />
                             ) : (
                                 <div className="w-full h-full bg-secondary flex items-center justify-center md:rounded-l-lg">
                                     <span className="text-muted-foreground">No Image</span>
@@ -203,7 +203,7 @@ export const ProductDetailDialog = ({
                                                     <button key={suggestedItem.name} onClick={() => onSelectItem(suggestedItem)} className="text-left w-full rounded-lg border bg-card text-card-foreground shadow-sm hover:bg-secondary transition-colors overflow-hidden">
                                                         <div className="relative aspect-square w-full">
                                                             {suggestedImageData ? (
-                                                                <Image src={suggestedImageData.imageUrl} alt={suggestedItem.name} fill className="object-cover" loading="lazy" quality={75} />
+                                                                <Image src={suggestedImageData.imageUrl} alt={suggestedItem.name} fill sizes="150px" className="object-cover" loading="lazy" quality={75} />
                                                             ) : (
                                                                 <div className="w-full h-full bg-muted rounded-t-lg" />
                                                             )}

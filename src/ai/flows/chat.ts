@@ -46,11 +46,9 @@ export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 // Main chat function - uses hybrid approach
 export async function chat(input: ChatInput): Promise<ChatOutput> {
     // Step 1: Try local handler first (FREE - no API cost)
-    console.log('[Hybrid AI] Trying local handler for:', input.message.substring(0, 40));
     const localResult = await tryLocalResponse(input.message);
 
     if (localResult.handled) {
-        console.log('[Hybrid AI] ✅ Handled locally (FREE)');
         return {
             response: localResult.response!,
             suggestedDish: localResult.suggestedDish,
@@ -61,7 +59,6 @@ export async function chat(input: ChatInput): Promise<ChatOutput> {
     }
 
     // Step 2: Fall back to Gemini for complex queries
-    console.log('[Hybrid AI] → Falling back to Gemini API');
     return chatFlow(input);
 }
 
@@ -257,13 +254,9 @@ const chatFlow = ai.defineFlow(
     },
     async input => {
         try {
-            console.log('[AI Chat] Starting chat flow with message:', input.message.substring(0, 50));
             const { output } = await prompt(input);
-            console.log('[AI Chat] Successfully got response');
             return output!;
         } catch (error: any) {
-            console.error('[AI Chat] ERROR:', error?.message || error);
-            console.error('[AI Chat] Full error:', JSON.stringify(error, null, 2));
 
             // Return a more informative error response
             return {

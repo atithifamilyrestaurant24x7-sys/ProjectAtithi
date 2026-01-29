@@ -57,33 +57,33 @@ const CategoryProductDialog = ({
     onCardClick: (item: MenuItem) => void;
     onCartClick: () => void;
 }) => {
-    const [aiSuggestion, setAiSuggestion] = React.useState<string | null>(null);
-    const [isAiLoading, setIsAiLoading] = React.useState(false);
-    const [showAiCard, setShowAiCard] = React.useState(true);
+    // const [aiSuggestion, setAiSuggestion] = React.useState<string | null>(null);
+    // const [isAiLoading, setIsAiLoading] = React.useState(false);
+    // const [showAiCard, setShowAiCard] = React.useState(true);
 
     // Reset AI suggestion when dialog opens with new category
-    React.useEffect(() => {
-        if (isOpen) {
-            setAiSuggestion(null);
-            setShowAiCard(true);
-        }
-    }, [isOpen, category?.name]);
+    // React.useEffect(() => {
+    //     if (isOpen) {
+    //         setAiSuggestion(null);
+    //         setShowAiCard(true);
+    //     }
+    // }, [isOpen, category?.name]);
 
-    const handleGetAiSuggestion = async () => {
-        if (!category) return;
-        setIsAiLoading(true);
-        try {
-            const response = await chat({
-                message: `${category.name} category থেকে সবচেয়ে ভালো dish কোনটা? শুধু dish এর নাম এবং কেন ভালো সেটা বলো।`,
-                userLocale: typeof navigator !== "undefined" ? navigator.language : "bn-IN",
-            });
-            setAiSuggestion(response.response);
-        } catch (error) {
-            setAiSuggestion("দুঃখিত, এখন suggestion দিতে পারছি না।");
-        } finally {
-            setIsAiLoading(false);
-        }
-    };
+    // const handleGetAiSuggestion = async () => {
+    //     if (!category) return;
+    //     setIsAiLoading(true);
+    //     try {
+    //         const response = await chat({
+    //             message: `${category.name} category থেকে সবচেয়ে ভালো dish কোনটা? শুধু dish এর নাম এবং কেন ভালো সেটা বলো।`,
+    //             userLocale: typeof navigator !== "undefined" ? navigator.language : "bn-IN",
+    //         });
+    //         setAiSuggestion(response.response);
+    //     } catch (error) {
+    //         setAiSuggestion("দুঃখিত, এখন suggestion দিতে পারছি না।");
+    //     } finally {
+    //         setIsAiLoading(false);
+    //     }
+    // };
 
     if (!category) return null;
     const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
@@ -112,48 +112,7 @@ const CategoryProductDialog = ({
                 </DialogHeader>
                 <ScrollArea className="flex-grow bg-background">
                     <div className="p-4 space-y-4">
-                        {/* AI Suggestion Card */}
-                        {showAiCard && (
-                            <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl p-4 text-white">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Sparkles className="w-5 h-5" />
-                                    <span className="font-semibold">AI Suggestion</span>
-                                </div>
-                                {!aiSuggestion && !isAiLoading && (
-                                    <>
-                                        <p className="text-sm text-white/90 mb-3">এই category থেকে কোনটা নেবেন বুঝতে পারছেন না?</p>
-                                        <Button
-                                            size="sm"
-                                            variant="secondary"
-                                            className="bg-white/20 hover:bg-white/30 text-white border-0"
-                                            onClick={handleGetAiSuggestion}
-                                        >
-                                            <Sparkles className="w-4 h-4 mr-2" />
-                                            AI কে জিজ্ঞাসা করুন
-                                        </Button>
-                                    </>
-                                )}
-                                {isAiLoading && (
-                                    <div className="flex items-center gap-2">
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                        <span className="text-sm">ভাবছে...</span>
-                                    </div>
-                                )}
-                                {aiSuggestion && (
-                                    <>
-                                        <p className="text-sm leading-relaxed">{aiSuggestion}</p>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            className="mt-2 text-white/80 hover:text-white hover:bg-white/10 p-0 h-auto"
-                                            onClick={() => setShowAiCard(false)}
-                                        >
-                                            বন্ধ করুন
-                                        </Button>
-                                    </>
-                                )}
-                            </div>
-                        )}
+
                         {category.items.map(item => (
                             <MobileProductCard
                                 key={item.name}
@@ -637,7 +596,7 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
         return (
             <div className="w-full overflow-hidden bg-card rounded-xl shadow-product" onClick={() => onCardClick(item)}>
                 <div className="relative aspect-video w-full">
-                    {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-t-xl" loading="lazy" quality={75} /> : <div className="bg-muted w-full h-full rounded-t-xl" />}
+                    {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill sizes="(max-width: 768px) 100vw, 50vw" data-ai-hint={imageData.imageHint} className="object-cover rounded-t-xl" loading="lazy" quality={75} /> : <div className="bg-muted w-full h-full rounded-t-xl" />}
                 </div>
                 <div className="p-4">
                     <div className="flex justify-between items-start mb-1 gap-2">
@@ -672,7 +631,7 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
         <div className="grid grid-cols-[80px_1fr] gap-3 w-full overflow-hidden bg-card rounded-xl shadow-product p-3 items-center" onClick={() => onCardClick(item)}>
             {/* Column 1: Image */}
             <div className="relative w-20 h-20 flex-shrink-0">
-                {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-lg" loading="lazy" quality={75} /> : <div className="bg-muted w-full h-full rounded-lg" />}
+                {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill sizes="80px" data-ai-hint={imageData.imageHint} className="object-cover rounded-lg" loading="lazy" quality={75} /> : <div className="bg-muted w-full h-full rounded-lg" />}
             </div>
 
             {/* Column 2: Content */}
@@ -714,6 +673,12 @@ const MobileProductFilters = React.memo(({ allMenuItems, handleOpenCategoryDialo
                         if (value === 'all') {
                             return;
                         }
+                        if (value === 'ai-suggestion') {
+                            // Open AI Sheet by clicking the AI button in bottom nav
+                            const aiButton = document.querySelector('button:has(.lucide-sparkles)') as HTMLButtonElement;
+                            if (aiButton) aiButton.click();
+                            return;
+                        }
                         const category = allMenuItems.find(c => c.name.toLowerCase().replace(/\s+/g, '-') === value);
                         if (category) {
                             handleOpenCategoryDialog(category);
@@ -725,6 +690,9 @@ const MobileProductFilters = React.memo(({ allMenuItems, handleOpenCategoryDialo
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Categories</SelectItem>
+                            <SelectItem value="ai-suggestion" className="text-amber-600 font-medium">
+                                ✨ AI Suggestion
+                            </SelectItem>
                             {allMenuItems.map(category => (
                                 <SelectItem
                                     key={category.name}
@@ -815,29 +783,6 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                     <div className="mt-4 border-b border-border"></div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 px-4 pt-4">
-                    {/* AI Suggestion Card - Special First Card */}
-                    <button
-                        onClick={() => {
-                            // Trigger floating AI button
-                            const aiButton = document.querySelector('[aria-label="AI Assistant"]') as HTMLButtonElement;
-                            if (aiButton) aiButton.click();
-                        }}
-                        className="relative bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-amber-400 ring-offset-2 aspect-square group"
-                    >
-                        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_-20%,_rgba(255,255,255,0.4),transparent_70%)]" />
-                        <div className="relative h-full flex flex-col items-center justify-center p-4 text-white text-center">
-                            <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2L14.5 9H22L16 14L18.5 21L12 17L5.5 21L8 14L2 9H9.5L12 2Z" />
-                                </svg>
-                            </div>
-                            <h3 className="font-bold text-lg">AI Suggestion</h3>
-                            <p className="text-sm text-white/80 mt-1">আমাকে জিজ্ঞাসা করুন!</p>
-                        </div>
-                        <div className="absolute top-2 right-2 bg-white/20 rounded-full px-2 py-0.5">
-                            <span className="text-[10px] font-medium text-white">NEW</span>
-                        </div>
-                    </button>
 
                     {allMenuItems.map((category) => {
                         const firstItem = category.items[0];
@@ -853,6 +798,7 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
                                                 src={imageData.imageUrl}
                                                 alt={`Preview of ${category.name}`}
                                                 fill
+                                                sizes="(max-width: 768px) 50vw, 25vw"
                                                 className="object-cover group-hover:scale-105 transition-transform duration-300"
                                                 loading="lazy"
                                                 quality={75}

@@ -11,13 +11,13 @@ export default function Loading() {
                 <div className="absolute h-32 w-32 rounded-full border-2 border-b-amber-300 border-t-transparent border-l-transparent border-r-transparent animate-[spin_2s_linear_infinite_reverse]" />
 
                 {/* Logo/Icon with Pulse */}
-                <div className="relative h-20 w-20 animate-in fade-in zoom-in duration-1000">
+                <div className="relative h-20 w-20 animate-in fade-in zoom-in duration-1000 flex items-center justify-center">
                     <Image
                         src="/icons/icon-192x192.png"
                         alt="Atithi Loading"
-                        fill
+                        width={80}
+                        height={80}
                         className="object-contain drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]"
-                        priority
                     />
                 </div>
 

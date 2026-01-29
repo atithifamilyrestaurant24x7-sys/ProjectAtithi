@@ -75,7 +75,7 @@ const MobileHeroCarousel = ({ onCardClick, onAddToCart }: MobileHeroCarouselProp
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
-                    priority
+                    priority={index === 0}
                     quality={75}
                   />
                 )}
