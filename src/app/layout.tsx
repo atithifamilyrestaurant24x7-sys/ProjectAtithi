@@ -6,7 +6,7 @@ import './globals.css';
 import { config, cn } from '@/lib/utils';
 import { Inter } from 'next/font/google';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.atithirestaurant.in';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -20,7 +20,7 @@ const restaurantSchema = {
   "@type": "Restaurant",
   "name": config.fullName,
   "alternateName": ["Atithi", "Atiti", "Athithi", "Athiti", "Otithi", "Atithi Resturant", "Atithi Resturent", "Atithi Family Restuarant", "Atithi Femily Restaurant", "Atithi Restaurant Rampurhat", "Atithi Restaurant NH14"],
-  "description": "Best Family Restaurant in Rampurhat, Hattala, and Tarapith area. Located on NH-14 near Gurukulpara. Serving authentic Indian, Bengali & Chinese cuisine. " + config.description,
+  "description": config.description,
   "url": siteUrl,
   "telephone": "+91-8250104315",
   "address": {
@@ -41,7 +41,7 @@ const restaurantSchema = {
   "menu": `${siteUrl}/#menu`,
   "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 08:00-22:00",
   "acceptsReservations": "True",
-  "image": "https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/HeroSec2.webp",
+  "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=630&fit=crop",
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.5",
@@ -192,13 +192,13 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: `${config.fullName} - Premium Highway Dining`,
+    title: `Atithi - Best Family Restaurant in Rampurhat | NH-14`,
     description: config.description,
     url: siteUrl,
     siteName: config.fullName,
     images: [
       {
-        url: 'https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/HeroSec2.webp',
+        url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=630&fit=crop',
         width: 1200,
         height: 630,
         alt: 'A serene and luxurious dining space at Atithi Family Restaurant.',
@@ -209,9 +209,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${config.fullName} - Premium Highway Dining`,
+    title: `Atithi - Best Family Restaurant in Rampurhat | NH-14`,
     description: config.description,
-    images: ['https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/HeroSec2.webp'],
+    images: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=630&fit=crop'],
   },
   alternates: {
     canonical: siteUrl,
@@ -241,15 +241,18 @@ export default function RootLayout({
       <head>
         {/* DNS Prefetch for faster external resource loading */}
         <link rel="dns-prefetch" href="https://yryoxzexvuhimvezdwle.supabase.co" />
-        <link rel="dns-prefetch" href="https://ihpfajyotvzcdqagdslw.supabase.co" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         {/* Preconnect for critical resources */}
-        <link rel="preconnect" href="https://yryoxzexvuhimvezdwle.supabase.co" />
-        <link rel="preconnect" href="https://ihpfajyotvzcdqagdslw.supabase.co" />
+        <link rel="preconnect" href="https://images.unsplash.com" />
+
+        {/* Manual Favicon Fallback */}
+        <link rel="icon" href="/icons/icon-192x192.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         {/* Preload hero image for faster LCP */}
         <link
           rel="preload"
-          href="https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/HeroSec2.webp"
+          href="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=630&fit=crop"
           as="image"
           type="image/webp"
         />

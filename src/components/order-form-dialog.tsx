@@ -22,6 +22,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { type CartItem } from '@/app/page';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { usePersistedForm } from '@/hooks/use-persisted-form';
 
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -65,6 +66,8 @@ type OrderFormDialogProps = {
     cart: CartItem[];
 };
 
+
+
 export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogProps) {
     const form = useForm<OrderFormValues>({
         resolver: zodResolver(formSchema),
@@ -80,6 +83,9 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
             utr: '',
         },
     });
+
+    // Persist form data to localStorage
+    usePersistedForm(form, 'atithi-order-form');
 
     const deliveryOption = form.watch('deliveryOption');
     const paymentMethod = form.watch('paymentMethod');

@@ -23,19 +23,33 @@ const HeroSection = ({ }: HeroSectionProps) => {
 
   return (
     <section id="home" className="relative h-screen w-full overflow-hidden">
-      {/* Background Image - Optimized for fast loading */}
+      {/* Background Image - Responsive split for Desktop Animation vs Mobile Performance */}
       <div className="absolute inset-0 z-[-1] bg-black">
-        <Image
-          src="https://yryoxzexvuhimvezdwle.supabase.co/storage/v1/object/public/asset/HeroSec2.webp"
-          alt="An elegant view of the luxurious dining space at Atithi Family Restaurant."
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-          quality={75}
-          placeholder="blur"
-          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAgEDAwUBAAAAAAAAAAAAAQIDAAQRBRIhBhMiMUFR/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAZEQACAwEAAAAAAAAAAAAAAAABAgADESH/2gAMAwEAAhEDEEA/ANf0y8eWR4ZkKSRnBwQQfxgfRUy+vrmzvJ4IriVYo3KojMSFAPAFKUcEMC+Zex5J/9k="
-        />
+        {/* Desktop: Animated WebP (Unoptimized to play animation) */}
+        <div className="hidden md:block absolute inset-0">
+          {/* Using standard img tag to ensure animated WebP plays without Next.js processing */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80"
+            alt="Atithi Family Restaurant Ambience"
+            className="h-full w-full object-cover"
+          />
+        </div>
+
+        {/* Mobile: Optimized Static Image (Better performance) */}
+        <div className="block md:hidden absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1080&q=75"
+            alt="Atithi Family Restaurant Ambience"
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+            quality={75}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAgEDAwUBAAAAAAAAAAAAAQIDAAQRBRIhBhMiMUFR/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAZEQACAwEAAAAAAAAAAAAAAAABAgADESH/2gAMAwEAAhEDEEA/ANf0y8eWR4ZkKSRnBwQQfxgfRUy+vrmzvJ4IriVYo3KojMSFAPAFKUcEMC+Zex5J/9k="
+          />
+        </div>
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
 
