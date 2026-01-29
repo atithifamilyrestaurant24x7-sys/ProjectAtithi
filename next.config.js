@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Externalize packages that use dynamic require() to avoid build warnings
+  serverExternalPackages: [
+    'require-in-the-middle',
+    '@opentelemetry/instrumentation',
+    '@opentelemetry/exporter-jaeger',
+  ],
   eslint: {
     ignoreDuringBuilds: true,
   },
