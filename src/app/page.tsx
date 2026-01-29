@@ -13,6 +13,7 @@ import { config, type Review } from "@/lib/utils";
 import MobileSearchHeader from "@/components/mobile-search-header";
 import MobileHeroCarousel from "@/components/mobile-hero-carousel";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import MobileAIRecommendation from "@/components/mobile-ai-recommendation";
 
 const MenuSection = dynamic(() => import("@/components/sections/menu-section"));
 const BestSellerSection = dynamic(() => import("@/components/sections/best-seller-section"));
@@ -262,9 +263,10 @@ export default function Home() {
           <ReviewsSection reviews={reviews} />
           <WriteReviewSection onReviewSubmit={handleReviewSubmit} />
           <ContactSection />
-          <div>
+          <div className="hidden md:block">
             <RecommendationSection />
           </div>
+          <MobileAIRecommendation />
         </main>
         <Footer />
       </div>
