@@ -28,7 +28,7 @@ const HeroSection = ({ }: HeroSectionProps) => {
           {/* Using standard img tag to ensure animated WebP plays without Next.js processing */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <video
-            src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/hero-video.mp4"
+            src="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/hero%20video%201.webm"
             className="h-full w-full object-cover"
             autoPlay
             loop
