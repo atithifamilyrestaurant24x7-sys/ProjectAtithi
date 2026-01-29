@@ -187,7 +187,7 @@ export const ProductDetailDialog = ({
                                         <WhatsappIcon className="mr-2 h-5 w-5" /> Order on WhatsApp
                                     </Button>
                                     <Button size="lg" variant="outline" className="w-full" asChild>
-                                        <Link href="tel:8250104315">
+                                        <Link href="tel:8250104315" onClick={(e) => e.stopPropagation()}>
                                             <Phone className="mr-2 h-5 w-5" /> Call to Order
                                         </Link>
                                     </Button>
