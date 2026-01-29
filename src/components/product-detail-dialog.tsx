@@ -52,19 +52,19 @@ export const ProductDetailDialog = ({
     const [ratingsCount, setRatingsCount] = React.useState(item.ratingsCount);
     const [isOrderFormOpen, setIsOrderFormOpen] = React.useState(false);
     const { toast } = useToast();
-    
+
     const imageData = PlaceHolderImages.find(img => img.id === item.name);
     const discount = item.originalPrice ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100) : 0;
 
     const suggestedItems = React.useMemo(() => {
         if (!item) return [];
-        const currentCategory = menuData.find(category => 
+        const currentCategory = menuData.find(category =>
             category.items.some(menuItem => menuItem.name === item.name)
         );
         if (!currentCategory) return [];
         return currentCategory.items.filter(menuItem => menuItem.name !== item.name).slice(0, 4);
     }, [item]);
-    
+
     const handleRatingSubmit = (rating: number) => {
         const newTotalRatingPoints = (currentRating * ratingsCount) + rating;
         const newRatingsCount = ratingsCount + 1;
@@ -103,7 +103,7 @@ export const ProductDetailDialog = ({
                     <div className="w-full md:w-1/2 relative h-[40%] md:h-auto flex-shrink-0">
                         <div className="absolute inset-0">
                             {imageData ? (
-                                <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover md:rounded-l-lg" unoptimized={true}/>
+                                <Image src={imageData.imageUrl} alt={item.description} fill sizes="(max-width: 768px) 100vw, 50vw" data-ai-hint={imageData.imageHint} className="object-cover md:rounded-l-lg" quality={75} />
                             ) : (
                                 <div className="w-full h-full bg-secondary flex items-center justify-center md:rounded-l-lg">
                                     <span className="text-muted-foreground">No Image</span>
@@ -128,7 +128,7 @@ export const ProductDetailDialog = ({
                                 </div>
 
                                 <Separator />
-                                
+
                                 <div className="my-6 space-y-6">
                                     <div className="space-y-2">
                                         <h4 className="font-semibold text-lg">Ratings</h4>
@@ -163,7 +163,7 @@ export const ProductDetailDialog = ({
                                         </div>
                                     </div>
                                 </div>
-                                                                
+
                                 <div className="flex flex-col gap-3 pt-6 border-t">
                                     {cartItem ? (
                                         <div className="w-full flex items-center justify-between gap-2 p-2 border-2 bg-primary/10 rounded-lg">
@@ -187,12 +187,12 @@ export const ProductDetailDialog = ({
                                         <WhatsappIcon className="mr-2 h-5 w-5" /> Order on WhatsApp
                                     </Button>
                                     <Button size="lg" variant="outline" className="w-full" asChild>
-                                    <Link href="tel:8250104315">
-                                        <Phone className="mr-2 h-5 w-5" /> Call to Order
-                                    </Link>
+                                        <Link href="tel:8250104315">
+                                            <Phone className="mr-2 h-5 w-5" /> Call to Order
+                                        </Link>
                                     </Button>
                                 </div>
-                                
+
                                 {suggestedItems.length > 0 && (
                                     <div className="space-y-4 pt-8 mt-8 border-t">
                                         <h4 className="font-semibold text-lg">You might also like</h4>
@@ -203,7 +203,7 @@ export const ProductDetailDialog = ({
                                                     <button key={suggestedItem.name} onClick={() => onSelectItem(suggestedItem)} className="text-left w-full rounded-lg border bg-card text-card-foreground shadow-sm hover:bg-secondary transition-colors overflow-hidden">
                                                         <div className="relative aspect-square w-full">
                                                             {suggestedImageData ? (
-                                                                <Image src={suggestedImageData.imageUrl} alt={suggestedItem.name} fill className="object-cover" unoptimized={true} />
+                                                                <Image src={suggestedImageData.imageUrl} alt={suggestedItem.name} fill sizes="150px" className="object-cover" loading="lazy" quality={75} />
                                                             ) : (
                                                                 <div className="w-full h-full bg-muted rounded-t-lg" />
                                                             )}

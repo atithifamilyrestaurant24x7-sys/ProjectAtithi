@@ -6,10 +6,10 @@ import Image from 'next/image';
 import { type MenuItem } from "@/lib/menu";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  type CarouselApi,
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    type CarouselApi,
 } from "@/components/ui/carousel";
 import {
     Dialog,
@@ -26,15 +26,16 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-  } from "@/components/ui/select"
+} from "@/components/ui/select"
 import { cn } from '@/lib/utils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
-import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight, Menu, X } from 'lucide-react';
+import { Phone, Star, Filter, ShoppingCart, Plus, Minus, ChevronLeft, ChevronRight, Menu, X, Sparkles, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { type CartItem } from '@/app/page';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { chat } from "@/ai/flows/chat";
 
 
 const CategoryProductDialog = ({
@@ -56,6 +57,34 @@ const CategoryProductDialog = ({
     onCardClick: (item: MenuItem) => void;
     onCartClick: () => void;
 }) => {
+    // const [aiSuggestion, setAiSuggestion] = React.useState<string | null>(null);
+    // const [isAiLoading, setIsAiLoading] = React.useState(false);
+    // const [showAiCard, setShowAiCard] = React.useState(true);
+
+    // Reset AI suggestion when dialog opens with new category
+    // React.useEffect(() => {
+    //     if (isOpen) {
+    //         setAiSuggestion(null);
+    //         setShowAiCard(true);
+    //     }
+    // }, [isOpen, category?.name]);
+
+    // const handleGetAiSuggestion = async () => {
+    //     if (!category) return;
+    //     setIsAiLoading(true);
+    //     try {
+    //         const response = await chat({
+    //             message: `${category.name} category থেকে সবচেয়ে ভালো dish কোনটা? শুধু dish এর নাম এবং কেন ভালো সেটা বলো।`,
+    //             userLocale: typeof navigator !== "undefined" ? navigator.language : "bn-IN",
+    //         });
+    //         setAiSuggestion(response.response);
+    //     } catch (error) {
+    //         setAiSuggestion("দুঃখিত, এখন suggestion দিতে পারছি না।");
+    //     } finally {
+    //         setIsAiLoading(false);
+    //     }
+    // };
+
     if (!category) return null;
     const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -83,6 +112,7 @@ const CategoryProductDialog = ({
                 </DialogHeader>
                 <ScrollArea className="flex-grow bg-background">
                     <div className="p-4 space-y-4">
+
                         {category.items.map(item => (
                             <MobileProductCard
                                 key={item.name}
@@ -129,10 +159,10 @@ const useSyncCarousel = (apis: (CarouselApi | undefined)[], enabled: boolean) =>
                 isScrolling2 = false;
             }
         };
-        
+
         api1?.on("select", onSelect1);
         api2?.on("select", onSelect2);
-        
+
         const timeout = setTimeout(() => {
             if (api1 && api2 && api1.selectedScrollSnap() !== api2.selectedScrollSnap()) {
                 api2.scrollTo(api1.selectedScrollSnap(), true);
@@ -148,18 +178,18 @@ const useSyncCarousel = (apis: (CarouselApi | undefined)[], enabled: boolean) =>
     }, [apis, enabled]);
 };
 
-const FilteredProductDialog = ({ 
-    isOpen, 
-    onOpenChange, 
-    items, 
+const FilteredProductDialog = ({
+    isOpen,
+    onOpenChange,
+    items,
     categoryName,
     cart,
     onAddToCart,
     onRemoveFromCart
-}: { 
-    isOpen: boolean, 
-    onOpenChange: (open: boolean) => void, 
-    items: MenuItem[], 
+}: {
+    isOpen: boolean,
+    onOpenChange: (open: boolean) => void,
+    items: MenuItem[],
     categoryName: string,
     cart: CartItem[],
     onAddToCart: (item: MenuItem) => void,
@@ -216,17 +246,17 @@ const FilteredProductDialog = ({
     );
 }
 
-const ProductRow = React.memo(({ 
-    items, 
-    setApi, 
+const ProductRow = React.memo(({
+    items,
+    setApi,
     carouselId,
     cart,
     onAddToCart,
     onRemoveFromCart,
     isSyncEnabled,
     onCardClick,
-}: { 
-    items: MenuItem[], 
+}: {
+    items: MenuItem[],
     setApi: (api: CarouselApi) => void,
     carouselId: string,
     cart: CartItem[],
@@ -240,9 +270,9 @@ const ProductRow = React.memo(({
     const scrollIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
 
     React.useEffect(() => {
-      if (api) {
-        setApi(api);
-      }
+        if (api) {
+            setApi(api);
+        }
     }, [api, setApi]);
 
     const scrollPrev = React.useCallback(() => api && api.scrollPrev(), [api]);
@@ -265,7 +295,7 @@ const ProductRow = React.memo(({
             scrollIntervalRef.current = null;
         }
     }, []);
-    
+
     React.useEffect(() => {
         return () => stopScrolling();
     }, [stopScrolling]);
@@ -284,88 +314,89 @@ const ProductRow = React.memo(({
                         const discount = item.originalPrice ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100) : 0;
 
                         return (
-                            <CarouselItem 
+                            <CarouselItem
                                 key={`${carouselId}-${item.name}-${index}`}
                                 className="pl-4 basis-[80%] sm:basis-[33%]"
                             >
                                 <div className="p-1 transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer h-full"
-                                onClick={() => onCardClick(item)}
+                                    onClick={() => onCardClick(item)}
                                 >
-                                  <div className="w-full h-full bg-card rounded-[30px] border flex flex-col group">
-                                      <div className="relative w-full aspect-[4/3]">
-                                          {imageData ? (
-                                              <Image
-                                                  src={imageData.imageUrl}
-                                                  alt={item.description}
-                                                  fill
-                                                  sizes="(max-width: 640px) 80vw, 33vw"
-                                                  data-ai-hint={imageData.imageHint}
-                                                  className="object-cover rounded-t-[30px]"
-                                                  unoptimized={true}
-                                              />
-                                          ) : (
-                                              <div className="w-full h-full bg-secondary rounded-t-[30px] flex items-center justify-center">
-                                                  <span className="text-muted-foreground text-sm">No Image</span>
-                                              </div>
-                                          )}
-                                          {discount > 0 && <Badge variant="destructive" className="absolute top-2 right-2 sm:top-4 sm:right-4">{discount}% OFF</Badge>}
-                                      </div>
-                                      <div className="p-3 sm:p-5 flex flex-col flex-grow">
-                                          <div className='min-w-0 flex-grow'>
-                                              <h3 className="font-['Lucida_Sans'] text-sm sm:text-base font-semibold text-foreground">{item.name}</h3>
-                                              <p className="font-['Lucida_Sans'] text-[#999999] text-xs mt-1 min-h-[2rem]">{item.description}</p>
-                                              <div className="mt-2 flex items-center gap-2">
-                                                  <div className="flex items-center">
-                                                    {Array.from({ length: 5 }).map((_, i) => (
-                                                        <Star key={i} className={cn(
-                                                            "h-4 w-4",
-                                                            i < item.rating ? "text-accent fill-accent" : "text-muted-foreground"
-                                                        )} />
-                                                    ))}
-                                                  </div>
-                                                  <span className="text-xs text-muted-foreground">({item.ratingsCount})</span>
-                                              </div>
-                                              <div className="flex items-baseline gap-2 mt-2">
-                                                  <span className="font-bold text-base sm:text-lg">Rs. {item.price}</span>
-                                                  {item.originalPrice && <del className="text-sm text-muted-foreground">Rs. {item.originalPrice}</del>}
-                                              </div>
-                                          </div>
-
-                                          <div className="mt-auto pt-4 space-y-2">
-                                            {cartItem ? (
-                                                <div className="w-full flex items-center justify-between gap-2">
-                                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={(e) => {e.stopPropagation(); onRemoveFromCart(item.name);}}>
-                                                        <Minus className="h-4 w-4" />
-                                                    </Button>
-                                                    <span className="font-bold text-lg">{cartItem.quantity}</span>
-                                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={(e) => {e.stopPropagation(); onAddToCart(item);}}>
-                                                        <Plus className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
+                                    <div className="w-full h-full bg-card rounded-[30px] border flex flex-col group">
+                                        <div className="relative w-full aspect-[4/3]">
+                                            {imageData ? (
+                                                <Image
+                                                    src={imageData.imageUrl}
+                                                    alt={item.description}
+                                                    fill
+                                                    sizes="(max-width: 640px) 80vw, 33vw"
+                                                    data-ai-hint={imageData.imageHint}
+                                                    className="object-cover rounded-t-[30px]"
+                                                    loading="lazy"
+                                                    quality={75}
+                                                />
                                             ) : (
-                                                <Button size="sm" className="w-full bg-primary" onClick={(e) => {e.stopPropagation(); onAddToCart(item)}}>
-                                                    <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
-                                                </Button>
+                                                <div className="w-full h-full bg-secondary rounded-t-[30px] flex items-center justify-center">
+                                                    <span className="text-muted-foreground text-sm">No Image</span>
+                                                </div>
                                             )}
-                                            <Button size="sm" variant="outline" className="w-full bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground" asChild>
-                                                <Link href="tel:8250104315" onClick={(e) => e.stopPropagation()}>
-                                                    <Phone className="mr-2 h-4 w-4" /> Call to Order
-                                                </Link>
-                                            </Button>
-                                          </div>
-                                      </div>
-                                  </div>
+                                            {discount > 0 && <Badge variant="destructive" className="absolute top-2 right-2 sm:top-4 sm:right-4">{discount}% OFF</Badge>}
+                                        </div>
+                                        <div className="p-3 sm:p-5 flex flex-col flex-grow">
+                                            <div className='min-w-0 flex-grow'>
+                                                <h3 className="font-['Lucida_Sans'] text-sm sm:text-base font-semibold text-foreground">{item.name}</h3>
+                                                <p className="font-['Lucida_Sans'] text-[#999999] text-xs mt-1 min-h-[2rem]">{item.description}</p>
+                                                <div className="mt-2 flex items-center gap-2">
+                                                    <div className="flex items-center">
+                                                        {Array.from({ length: 5 }).map((_, i) => (
+                                                            <Star key={i} className={cn(
+                                                                "h-4 w-4",
+                                                                i < item.rating ? "text-accent fill-accent" : "text-muted-foreground"
+                                                            )} />
+                                                        ))}
+                                                    </div>
+                                                    <span className="text-xs text-muted-foreground">({item.ratingsCount})</span>
+                                                </div>
+                                                <div className="flex items-baseline gap-2 mt-2">
+                                                    <span className="font-bold text-base sm:text-lg">Rs. {item.price}</span>
+                                                    {item.originalPrice && <del className="text-sm text-muted-foreground">Rs. {item.originalPrice}</del>}
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-auto pt-4 space-y-2">
+                                                {cartItem ? (
+                                                    <div className="w-full flex items-center justify-between gap-2">
+                                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); onRemoveFromCart(item.name); }}>
+                                                            <Minus className="h-4 w-4" />
+                                                        </Button>
+                                                        <span className="font-bold text-lg">{cartItem.quantity}</span>
+                                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); onAddToCart(item); }}>
+                                                            <Plus className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                ) : (
+                                                    <Button size="sm" className="w-full bg-primary" onClick={(e) => { e.stopPropagation(); onAddToCart(item) }}>
+                                                        <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+                                                    </Button>
+                                                )}
+                                                <Button size="sm" variant="outline" className="w-full bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground" asChild>
+                                                    <Link href="tel:8250104315" onClick={(e) => e.stopPropagation()}>
+                                                        <Phone className="mr-2 h-4 w-4" /> Call to Order
+                                                    </Link>
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </CarouselItem>
                         )
                     })}
                 </CarouselContent>
             </Carousel>
-            
+
             <div className="absolute inset-y-0 left-0 hidden md:flex items-center">
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={scrollPrev}
                     className="h-12 w-12 rounded-full bg-black/20 text-white hover:bg-black/40 hover:text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 z-30 ml-4"
                 >
@@ -373,9 +404,9 @@ const ProductRow = React.memo(({
                 </Button>
             </div>
             <div className="absolute inset-y-0 right-0 hidden md:flex items-center">
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={scrollNext}
                     className="h-12 w-12 rounded-full bg-black/20 text-white hover:bg-black/40 hover:text-white opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 z-30 mr-4"
                 >
@@ -383,30 +414,30 @@ const ProductRow = React.memo(({
                 </Button>
             </div>
 
-            <div 
+            <div
                 className="absolute top-0 left-0 h-full w-1/4 z-20 hidden md:block"
                 onMouseEnter={() => startScrolling('prev')}
                 onMouseLeave={stopScrolling}
             />
-            <div 
+            <div
                 className="absolute top-0 right-0 h-full w-1/4 z-20 hidden md:block"
                 onMouseEnter={() => startScrolling('next')}
                 onMouseLeave={stopScrolling}
             />
-            
+
         </div>
     );
 });
 ProductRow.displayName = 'ProductRow';
 
 
-const ProductCategory = ({ 
-    category, 
-    cart, 
-    onAddToCart, 
+const ProductCategory = ({
+    category,
+    cart,
+    onAddToCart,
     onRemoveFromCart,
     onCardClick,
-}: { 
+}: {
     category: { name: string, items: MenuItem[] },
     cart: CartItem[],
     onAddToCart: (item: MenuItem) => void,
@@ -432,7 +463,7 @@ const ProductCategory = ({
 
     const apis = React.useMemo(() => [api1, api2], [api1, api2]);
     useSyncCarousel(apis, isSyncEnabled);
-    
+
     React.useEffect(() => {
         api1?.reInit();
         api2?.reInit();
@@ -463,15 +494,15 @@ const ProductCategory = ({
         } else if (value === 'offers') {
             newSortedItems = newSortedItems.filter(item => item.originalPrice);
         }
-        
+
         setDialogItems(newSortedItems);
         setDialogOpen(true);
     };
-    
+
     const midPoint = Math.ceil(sortedItems.length / 2);
     const row1Items = sortedItems.slice(0, midPoint);
     const row2Items = sortedItems.slice(midPoint);
-    
+
     return (
         <div>
             <div className="flex flex-col md:flex-row justify-end md:items-center mb-6">
@@ -490,22 +521,22 @@ const ProductCategory = ({
                     </Select>
                 </div>
             </div>
-            
+
             <div
-              onMouseEnter={() => {
-                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-                if (!isTouchDevice) setIsSyncEnabled(true);
-              }}
-              onMouseLeave={() => {
-                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-                if (!isTouchDevice) setIsSyncEnabled(true);
-              }}
+                onMouseEnter={() => {
+                    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                    if (!isTouchDevice) setIsSyncEnabled(true);
+                }}
+                onMouseLeave={() => {
+                    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                    if (!isTouchDevice) setIsSyncEnabled(true);
+                }}
             >
-              <ProductRow items={row1Items} setApi={setApi1} carouselId={`${category.name}-1`} cart={cart} onAddToCart={onAddToCart} onRemoveFromCart={onRemoveFromCart} isSyncEnabled={isSyncEnabled} onCardClick={onCardClick} />
-              {row2Items.length > 0 && <ProductRow items={row2Items} setApi={setApi2} carouselId={`${category.name}-2`} cart={cart} onAddToCart={onAddToCart} onRemoveFromCart={onRemoveFromCart} isSyncEnabled={isSyncEnabled} onCardClick={onCardClick} />}
+                <ProductRow items={row1Items} setApi={setApi1} carouselId={`${category.name}-1`} cart={cart} onAddToCart={onAddToCart} onRemoveFromCart={onRemoveFromCart} isSyncEnabled={isSyncEnabled} onCardClick={onCardClick} />
+                {row2Items.length > 0 && <ProductRow items={row2Items} setApi={setApi2} carouselId={`${category.name}-2`} cart={cart} onAddToCart={onAddToCart} onRemoveFromCart={onRemoveFromCart} isSyncEnabled={isSyncEnabled} onCardClick={onCardClick} />}
             </div>
 
-            <FilteredProductDialog 
+            <FilteredProductDialog
                 isOpen={dialogOpen}
                 onOpenChange={(open) => {
                     setDialogOpen(open);
@@ -533,28 +564,28 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
     const imageData = PlaceHolderImages.find(img => img.id === item.name);
     const isFeatured = item.name === 'Paneer Tikka (6 pcs)';
 
-    const AddButton = ({isSmall}: {isSmall?: boolean}) => (
-        <Button 
+    const AddButton = ({ isSmall }: { isSmall?: boolean }) => (
+        <Button
             className={cn(
                 "rounded-md bg-primary text-sm text-white hover:bg-primary/90",
                 isSmall ? "px-3 h-9" : "px-4 h-10"
-            )} 
-            onClick={(e) => {e.stopPropagation(); onAddToCart(item)}}
+            )}
+            onClick={(e) => { e.stopPropagation(); onAddToCart(item) }}
         >
             <ShoppingCart className="mr-2 h-4 w-4" /> Add
         </Button>
     );
 
-    const QuantityCounter = ({isSmall}: {isSmall?: boolean}) => (
+    const QuantityCounter = ({ isSmall }: { isSmall?: boolean }) => (
         <div className={cn(
             "flex items-center justify-between gap-1 bg-primary/10 rounded-md",
             isSmall ? "h-9 px-1" : "h-10 px-2"
         )}>
-            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-primary" onClick={(e) => {e.stopPropagation(); onRemoveFromCart(item.name);}}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-primary" onClick={(e) => { e.stopPropagation(); onRemoveFromCart(item.name); }}>
                 <Minus className="h-5 w-5" />
             </Button>
-            <span className={cn("font-bold text-center text-primary", isSmall ? "w-4 text-sm" : "w-6 text-base" )}>{cartItem?.quantity}</span>
-            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-primary" onClick={(e) => {e.stopPropagation(); onAddToCart(item);}}>
+            <span className={cn("font-bold text-center text-primary", isSmall ? "w-4 text-sm" : "w-6 text-base")}>{cartItem?.quantity}</span>
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-primary" onClick={(e) => { e.stopPropagation(); onAddToCart(item); }}>
                 <Plus className="h-5 w-5" />
             </Button>
         </div>
@@ -563,14 +594,14 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
     if (isFeatured) {
         // Large Card Layout (like Paneer Tikka)
         return (
-             <div className="w-full overflow-hidden bg-card rounded-xl shadow-product" onClick={() => onCardClick(item)}>
+            <div className="w-full overflow-hidden bg-card rounded-xl shadow-product" onClick={() => onCardClick(item)}>
                 <div className="relative aspect-video w-full">
-                    {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-t-xl" unoptimized={true} /> : <div className="bg-muted w-full h-full rounded-t-xl"/>}
+                    {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill sizes="(max-width: 768px) 100vw, 50vw" data-ai-hint={imageData.imageHint} className="object-cover rounded-t-xl" loading="lazy" quality={75} /> : <div className="bg-muted w-full h-full rounded-t-xl" />}
                 </div>
                 <div className="p-4">
                     <div className="flex justify-between items-start mb-1 gap-2">
                         <div className="flex-grow min-w-0">
-                           <h3 className="font-semibold text-lg text-foreground truncate">{item.name}</h3>
+                            <h3 className="font-semibold text-lg text-foreground truncate">{item.name}</h3>
                         </div>
                         <p className="font-bold text-lg text-foreground flex-shrink-0">Rs. {item.price}</p>
                     </div>
@@ -600,9 +631,9 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
         <div className="grid grid-cols-[80px_1fr] gap-3 w-full overflow-hidden bg-card rounded-xl shadow-product p-3 items-center" onClick={() => onCardClick(item)}>
             {/* Column 1: Image */}
             <div className="relative w-20 h-20 flex-shrink-0">
-                {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill data-ai-hint={imageData.imageHint} className="object-cover rounded-lg" unoptimized={true} /> : <div className="bg-muted w-full h-full rounded-lg"/>}
+                {imageData ? <Image src={imageData.imageUrl} alt={item.description} fill sizes="80px" data-ai-hint={imageData.imageHint} className="object-cover rounded-lg" loading="lazy" quality={75} /> : <div className="bg-muted w-full h-full rounded-lg" />}
             </div>
-            
+
             {/* Column 2: Content */}
             <div className="flex flex-col min-w-0 h-full">
                 <h3 className="font-semibold text-base text-foreground truncate">{item.name}</h3>
@@ -618,11 +649,11 @@ const MobileProductCard = ({ item, cartItem, onAddToCart, onRemoveFromCart, onCa
                     <p className="font-bold text-base text-foreground pr-2">Rs. {item.price}</p>
                     <div className="flex items-center gap-2 flex-shrink-0">
                         <Button asChild variant="outline" size="icon" className="h-9 w-9">
-                           <Link href="tel:8250104315" onClick={(e) => e.stopPropagation()}>
+                            <Link href="tel:8250104315" onClick={(e) => e.stopPropagation()}>
                                 <Phone className="h-4 w-4" />
                             </Link>
                         </Button>
-                         {cartItem ? <QuantityCounter isSmall /> : <AddButton isSmall />}
+                        {cartItem ? <QuantityCounter isSmall /> : <AddButton isSmall />}
                     </div>
                 </div>
             </div>
@@ -642,6 +673,12 @@ const MobileProductFilters = React.memo(({ allMenuItems, handleOpenCategoryDialo
                         if (value === 'all') {
                             return;
                         }
+                        if (value === 'ai-suggestion') {
+                            // Open AI Sheet by clicking the AI button in bottom nav
+                            const aiButton = document.querySelector('button:has(.lucide-sparkles)') as HTMLButtonElement;
+                            if (aiButton) aiButton.click();
+                            return;
+                        }
                         const category = allMenuItems.find(c => c.name.toLowerCase().replace(/\s+/g, '-') === value);
                         if (category) {
                             handleOpenCategoryDialog(category);
@@ -653,9 +690,12 @@ const MobileProductFilters = React.memo(({ allMenuItems, handleOpenCategoryDialo
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Categories</SelectItem>
+                            <SelectItem value="ai-suggestion" className="text-amber-600 font-medium">
+                                ✨ AI Suggestion
+                            </SelectItem>
                             {allMenuItems.map(category => (
-                                <SelectItem 
-                                    key={category.name} 
+                                <SelectItem
+                                    key={category.name}
                                     value={category.name.toLowerCase().replace(/\s+/g, '-')}
                                 >
                                     {category.name}
@@ -681,14 +721,14 @@ MobileProductFilters.displayName = 'MobileProductFilters';
 
 
 const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onCardClick, onRate, searchQuery, onCartClick }: {
-  allMenuItems: { name: string, items: MenuItem[] }[];
-  cart: CartItem[];
-  onAddToCart: (item: MenuItem) => void;
-  onRemoveFromCart: (itemName: string) => void;
-  onCardClick: (item: MenuItem) => void;
-  onRate: (itemName: string, rating: number) => void;
-  searchQuery?: string;
-  onCartClick: () => void;
+    allMenuItems: { name: string, items: MenuItem[] }[];
+    cart: CartItem[];
+    onAddToCart: (item: MenuItem) => void;
+    onRemoveFromCart: (itemName: string) => void;
+    onCardClick: (item: MenuItem) => void;
+    onRate: (itemName: string, rating: number) => void;
+    searchQuery?: string;
+    onCartClick: () => void;
 }) => {
     const [selectedCategory, setSelectedCategory] = React.useState<{ name: string; items: MenuItem[] } | null>(null);
     const [isCategoryDialogOpen, setIsCategoryDialogOpen] = React.useState(false);
@@ -698,97 +738,102 @@ const ProductSection = ({ allMenuItems, cart, onAddToCart, onRemoveFromCart, onC
         setIsCategoryDialogOpen(true);
     }, []);
 
-  return (
-    <section id="products" className="pb-6 md:py-32 bg-background overflow-hidden relative">
-        <div className="hidden md:block">
-            <div className="container mx-auto px-4">
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                        Explore Our Menu
-                    </h2>
-                    <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-                        A wide variety of dishes to satisfy every craving, from
-                        traditional flavors to modern delights.
-                    </p>
-                </div>
-                 <Tabs defaultValue={allMenuItems[0]?.name} className="w-full">
-                    <div className="flex justify-center mb-8">
-                        <TabsList className="h-auto flex-wrap justify-center">
-                            {allMenuItems.map((category) => (
-                                <TabsTrigger key={category.name} value={category.name}>
-                                    {category.name}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
+    return (
+        <section id="products" className="pb-6 md:py-32 bg-background overflow-hidden relative">
+            <div className="hidden md:block">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+                            Explore Our Menu
+                        </h2>
+                        <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+                            A wide variety of dishes to satisfy every craving, from
+                            traditional flavors to modern delights.
+                        </p>
                     </div>
-                    {allMenuItems.map((category) => (
-                        <TabsContent key={category.name} value={category.name}>
-                            <ProductCategory 
-                                category={category}
-                                cart={cart} 
-                                onAddToCart={onAddToCart} 
-                                onRemoveFromCart={onRemoveFromCart}
-                                onCardClick={onCardClick}
-                            />
-                        </TabsContent>
-                    ))}
-                </Tabs>
+                    <Tabs defaultValue={allMenuItems[0]?.name} className="w-full">
+                        <div className="flex justify-center mb-8">
+                            <TabsList className="h-auto flex-wrap justify-center">
+                                {allMenuItems.map((category) => (
+                                    <TabsTrigger key={category.name} value={category.name}>
+                                        {category.name}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </div>
+                        {allMenuItems.map((category) => (
+                            <TabsContent key={category.name} value={category.name}>
+                                <ProductCategory
+                                    category={category}
+                                    cart={cart}
+                                    onAddToCart={onAddToCart}
+                                    onRemoveFromCart={onRemoveFromCart}
+                                    onCardClick={onCardClick}
+                                />
+                            </TabsContent>
+                        ))}
+                    </Tabs>
+                </div>
             </div>
-        </div>
 
-        <div className='block md:hidden'>
-            <MobileProductFilters allMenuItems={allMenuItems} handleOpenCategoryDialog={handleOpenCategoryDialog} />
-            <div className='mx-4'>
-                <h2 className="text-xl font-semibold text-foreground mt-4 mx-4">Categories</h2>
+            <div className='block md:hidden'>
+                <MobileProductFilters allMenuItems={allMenuItems} handleOpenCategoryDialog={handleOpenCategoryDialog} />
+                <div className='mx-4'>
+                    <h2 className="text-xl font-semibold text-foreground mt-4 mx-4">Categories</h2>
                     <div className="mt-4 border-b border-border"></div>
-            </div>
-                <div className="grid grid-cols-2 gap-4 px-4 pt-4">
-                {allMenuItems.map((category) => {
+                </div>
+                <div className="grid grid-cols-2 gap-3 px-4 pt-4">
+
+                    {allMenuItems.map((category) => {
                         const firstItem = category.items[0];
                         const imageData = firstItem ? PlaceHolderImages.find(img => img.id === firstItem.name) : null;
                         const itemCount = category.items.length;
-                
-                    return (
-                        <button key={category.name} onClick={() => handleOpenCategoryDialog(category)} className="border-0 bg-card rounded-[14px] shadow-card-subtle overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-primary ring-offset-2 aspect-square" suppressHydrationWarning={true}>
-                            <div className="relative w-full h-full">
-                                <div className="absolute inset-0">
-                                    {imageData ? (
-                                        <Image
-                                            src={imageData.imageUrl}
-                                            alt={`Preview of ${category.name}`}
-                                            fill
-                                            className="object-cover"
-                                            unoptimized={true}
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-secondary flex items-center justify-center">
-                                            <Menu className="w-8 h-8 text-muted-foreground/50"/>
+
+                        return (
+                            <button key={category.name} onClick={() => handleOpenCategoryDialog(category)} className="border-0 bg-card rounded-2xl shadow-lg overflow-hidden text-left w-full focus:outline-none focus:ring-2 focus:ring-primary ring-offset-2 aspect-square group active:scale-[0.98] transition-transform" suppressHydrationWarning={true}>
+                                <div className="relative w-full h-full">
+                                    <div className="absolute inset-0">
+                                        {imageData ? (
+                                            <Image
+                                                src={imageData.imageUrl}
+                                                alt={`Preview of ${category.name}`}
+                                                fill
+                                                sizes="(max-width: 768px) 50vw, 25vw"
+                                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                loading="lazy"
+                                                quality={75}
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-secondary flex items-center justify-center">
+                                                <Menu className="w-8 h-8 text-muted-foreground/50" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                                    <div className="relative h-full flex flex-col justify-end p-3">
+                                        <h3 className="font-bold text-lg text-white drop-shadow-lg">{category.name}</h3>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className="text-xs text-white/90 bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">{itemCount} items</span>
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
-                                <div className="relative h-full flex flex-col justify-end p-3 drop-shadow-lg">
-                                    <h3 className="font-semibold text-xl text-white">{category.name}</h3>
-                                    <p className="text-[13px] text-white/90">{itemCount} items</p>
-                                </div>
-                            </div>
-                        </button>
-                    )
-                })}
+                            </button>
+                        )
+                    })}
+                </div>
+                <CategoryProductDialog
+                    isOpen={isCategoryDialogOpen}
+                    onOpenChange={setIsCategoryDialogOpen}
+                    category={selectedCategory}
+                    cart={cart}
+                    onAddToCart={onAddToCart}
+                    onRemoveFromCart={onRemoveFromCart}
+                    onCardClick={onCardClick}
+                    onCartClick={onCartClick}
+                />
             </div>
-            <CategoryProductDialog
-                isOpen={isCategoryDialogOpen}
-                onOpenChange={setIsCategoryDialogOpen}
-                category={selectedCategory}
-                cart={cart}
-                onAddToCart={onAddToCart}
-                onRemoveFromCart={onRemoveFromCart}
-                onCardClick={onCardClick}
-                onCartClick={onCartClick}
-            />
-        </div>
-    </section>
-  );
+        </section>
+    );
 };
 
 export default ProductSection;

@@ -33,19 +33,19 @@ const MobileHeroCarousel = ({ onCardClick, onAddToCart }: MobileHeroCarouselProp
   const allItems = menuData.flatMap(c => c.items);
   const carouselImages = carouselImageIds
     .map(id => {
-        const img = PlaceHolderImages.find(pImg => pImg.id === id);
-        if (!img) return { img: null, menuItem: null };
-        
-        let menuItem = allItems.find(item => item.name === id);
-        if (!menuItem) {
-            // For bestseller items, the ID is different from the name.
-            // We can match them using the image description.
-            if (id.startsWith('bestseller-')) {
-                menuItem = allItems.find(item => item.name === img.description);
-            }
+      const img = PlaceHolderImages.find(pImg => pImg.id === id);
+      if (!img) return { img: null, menuItem: null };
+
+      let menuItem = allItems.find(item => item.name === id);
+      if (!menuItem) {
+        // For bestseller items, the ID is different from the name.
+        // We can match them using the image description.
+        if (id.startsWith('bestseller-')) {
+          menuItem = allItems.find(item => item.name === img.description);
         }
-        
-        return { img, menuItem };
+      }
+
+      return { img, menuItem };
     })
     .filter((item): item is { img: NonNullable<typeof item.img>, menuItem: NonNullable<typeof item.menuItem> } => !!item.img && !!item.menuItem);
 
@@ -75,8 +75,8 @@ const MobileHeroCarousel = ({ onCardClick, onAddToCart }: MobileHeroCarouselProp
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
-                    priority
-                    unoptimized={true}
+                    priority={index === 0}
+                    quality={75}
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
