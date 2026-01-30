@@ -271,13 +271,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://ihpfajyotvzcdqagdslw.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://ihpfajyotvzcdqagdslw.supabase.co" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        {/* Preload LCP image for mobile */}
-        <link
-          rel="preload"
-          as="image"
-          href="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/banner-one.webp"
-          type="image/webp"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}
