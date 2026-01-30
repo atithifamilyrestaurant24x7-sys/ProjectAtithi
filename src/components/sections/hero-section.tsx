@@ -1,7 +1,5 @@
-
 "use client";
 
-import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { config } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,55 +16,8 @@ const socialLinks = [
 ];
 
 const HeroSection = () => {
-  const [isVideoLoading, setIsVideoLoading] = useState(true);
-  const [loadProgress, setLoadProgress] = useState(0);
-
-  useEffect(() => {
-    if (isVideoLoading) {
-      const interval = setInterval(() => {
-        setLoadProgress(prev => {
-          if (prev >= 99) {
-            clearInterval(interval);
-            return 99;
-          }
-          return prev + 1;
-        });
-      }, 40); // Simulate loading over ~4 seconds
-
-      return () => clearInterval(interval);
-    } else {
-      // When video is ready, complete the progress bar before fading out
-      const timer = setTimeout(() => setLoadProgress(100), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isVideoLoading]);
-
-  const handleVideoCanPlay = () => {
-    // Set a small delay before hiding the loader to ensure a smooth transition
-    setTimeout(() => {
-      setIsVideoLoading(false);
-    }, 500);
-  };
-
   return (
     <section id="home" className="relative h-screen w-full overflow-hidden">
-      {/* Loading Overlay */}
-      <div
-        className={cn(
-          "absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md transition-opacity duration-1000",
-          !isVideoLoading ? "opacity-0 pointer-events-none" : "opacity-100"
-        )}
-      >
-        <h2 className="text-white text-3xl font-serif mb-4 tracking-wider">Welcome to Atithi</h2>
-        <div className="w-56 h-1.5 bg-white/20 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-primary rounded-full transition-all duration-300"
-            style={{ width: `${loadProgress}%` }}
-          />
-        </div>
-        <p className="text-white/80 mt-2 text-sm font-mono">{loadProgress}%</p>
-      </div>
-
       {/* Background Video */}
       <div className="absolute inset-0 z-[-1] bg-black">
         <video
@@ -78,7 +29,6 @@ const HeroSection = () => {
           playsInline
           preload="auto"
           poster="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/banner-one.webp"
-          onCanPlay={handleVideoCanPlay}
         />
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
@@ -86,8 +36,7 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 h-full">
         <div className="relative z-10 flex h-full items-center justify-center text-white">
           <div className={cn(
-            "absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-6 w-full px-4 transition-opacity duration-1000 delay-500",
-            isVideoLoading ? "opacity-0" : "opacity-100"
+            "absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-6 w-full px-4"
           )}>
             {/* Hidden H1 for SEO */}
             <h1 className="sr-only">{config.fullName}</h1>
