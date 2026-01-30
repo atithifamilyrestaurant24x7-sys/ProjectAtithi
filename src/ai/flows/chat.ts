@@ -54,7 +54,8 @@ export async function chat(input: ChatInput): Promise<ChatOutput> {
             suggestedDish: localResult.suggestedDish,
             suggestedItems: localResult.suggestedItems,
             recommendedDishes: localResult.recommendedDishes,
-            actionType: (localResult.actionType || 'general') as ChatOutput['actionType']
+            actionType: (localResult.actionType || 'general') as ChatOutput['actionType'],
+            cartItems: localResult.cartItems // Pass cart items if present
         };
     }
 

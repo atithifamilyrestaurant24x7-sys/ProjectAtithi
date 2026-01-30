@@ -1,5 +1,8 @@
 'use server';
 
+
+import Fuse from 'fuse.js';
+import nlp from 'compromise';
 import { menuData, MenuItem, MenuCategory } from '@/lib/menu';
 import placeholderImagesData from '@/lib/placeholder-images.json';
 
@@ -94,24 +97,32 @@ const intentPatterns = {
     ]
 };
 
-// Fuzzy match item name - IMPROVED
+// Initialize Fuse instance
+const allItems = menuData.flatMap(cat => cat.items);
+const fuse = new Fuse(allItems, {
+    keys: ['name', 'description'],
+    threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything
+    distance: 100,
+    includeScore: true
+});
+
+// Fuzzy match item name - POWERED BY FUSE.JS
 function findMenuItem(query: string): MenuItem | null {
-    const q = query.toLowerCase().trim();
-    const allItems = menuData.flatMap(cat => cat.items);
+    const q = query.trim();
 
-    // Exact match first
-    let found = allItems.find(item => item.name.toLowerCase() === q);
-    if (found) return found;
+    // 1. Try Fuse.js search
+    const results = fuse.search(q);
 
-    // Partial match - BUT strict!
-    if (q.length < 4) return null;
+    if (results.length > 0) {
+        // Return best match if score is good (lower is better)
+        const bestMatch = results[0];
+        if (bestMatch.score && bestMatch.score < 0.4) {
+            return bestMatch.item;
+        }
+    }
 
-    // Query checks if Item Name contains it
-    found = allItems.find(item => item.name.toLowerCase().includes(q));
-    if (found) return found;
-
-    // Item Name checks if Query contains it
-    found = allItems.find(item => q.includes(item.name.toLowerCase()));
+    // 2. Fallback: Check if query contains item name (for "chicken biryani price")
+    const found = allItems.find(item => q.toLowerCase().includes(item.name.toLowerCase()));
     if (found) return found;
 
     return null;
@@ -224,21 +235,93 @@ export type LocalAIResponse = {
         image?: string;
     }[];
     actionType?: string;
+    cartItems?: {
+        name: string;
+        price: number;
+        quantity: number;
+    }[];
 };
+
+// Helper: Extract quantity from string (handles English "2", Bangla "২", text "two")
+function extractQuantity(text: string): number {
+    const t = text.toLowerCase();
+
+    // 1. Check for specific number words
+    const numberMap: Record<string, number> = {
+        'ek': 1, 'ekta': 1, 'acta': 1, 'akta': 1, 'one': 1, 'single': 1,
+        'du': 2, 'dui': 2, 'duita': 2, 'duto': 2, 'two': 2, 'double': 2,
+        'tin': 3, 'tinte': 3, 'three': 3,
+        'char': 4, 'charte': 4, 'four': 4,
+        'pach': 5, 'five': 5,
+        'choy': 6, 'six': 6,
+        'sat': 7, 'seven': 7,
+        'at': 8, 'eight': 8,
+        'noy': 9, 'nine': 9,
+        'dosh': 10, 'ten': 10
+    };
+
+    for (const [word, num] of Object.entries(numberMap)) {
+        if (t.includes(` ${word} `) || t.startsWith(`${word} `) || t.endsWith(` ${word}`)) return num;
+    }
+
+    // 2. Check for digits (English & Bangla)
+    const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    let normalized = t;
+    banglaDigits.forEach((digit, i) => {
+        normalized = normalized.replace(new RegExp(digit, 'g'), i.toString());
+    });
+
+    const match = normalized.match(/(\d+)/);
+    if (match) {
+        const num = parseInt(match[1]);
+        return num > 0 && num < 50 ? num : 1; // Reasonable limit
+    }
+
+    return 1; // Default to 1
+}
 
 // Main function: Try to handle locally - SIGNIFICANTLY EXPANDED
 export async function tryLocalResponse(message: string): Promise<LocalAIResponse> {
     const m = message.toLowerCase().trim();
 
-    // ORDERING KEYWORDS - Check FIRST! Route to Gemini for multi-step ordering
+    // ORDERING KEYWORDS - Check FIRST!
+    // Now we TRY to handle simple orders locally before falling back to Gemini
     const orderingKeywords = [
         'দাও', 'dao', 'নেব', 'nibo', 'neb', 'নেবো', 'order', 'add', 'লাগবে', 'lagbe',
-        'চাই', 'chai', 'দিন', 'din', 'দে', 'de', 'নিব', 'nib',
-        'total', 'টোটাল', 'checkout', 'cart', 'কার্ট', 'বিল', 'bill',
-        'আরো', 'more', 'হ্যাঁ', 'yes', 'ok', 'confirm', 'নিচ্ছি', 'nichhi'
+        'চাই', 'chai', 'দিন', 'din', 'দে', 'de', 'নিব', 'nib', 'khao', 'khabo', 'eats',
+        'niye ay', 'niye aso', 'send', 'pathao', 'niye eso'
     ];
 
     if (hasKeyword(m, orderingKeywords)) {
+        // [NLP CHECK] Is this a negative intent? (e.g., "Don't order", "Cancel order")
+        const doc = nlp(m);
+        if (doc.has('#Negative') || doc.has('cancel') || doc.has('remove') || doc.has('delete') || doc.has('na')) {
+            // Let Gemini handle complex cancellations for now, or handle specifically
+            return { handled: false };
+        }
+
+        // Attempt to parse the order locally
+        const quantity = extractQuantity(m);
+        const item = findMenuItem(m);
+
+        // If we found a HIGHER CONFIDENCE match (approximate check)
+        // We verify if the message is relatively short (to avoid complex sentences like "I want burger but not now")
+        if (item && m.length < 60) {
+            const totalPrice = item.price * quantity;
+            return {
+                handled: true,
+                response: `✅ ঠিক আছে! **${quantity}x ${item.name}** আপনার কার্টে যোগ করা হয়েছে।\n💰 মোট দাম: ₹${totalPrice}`,
+                actionType: 'item_added',
+                cartItems: [{
+                    name: item.name,
+                    price: item.price,
+                    quantity: quantity
+                }],
+                suggestedItems: ['আর কিছু লাগবে?', '🥤 ড্রিংকস', 'dessert']
+            };
+        }
+
+        // If keyword present but no clear item found, OR sentence too long/complex -> Fallback to Gemini
         return { handled: false };
     }
 
@@ -271,7 +354,68 @@ export async function tryLocalResponse(message: string): Promise<LocalAIResponse
         };
     }
 
-    // 3. Today's special / New items
+    // 3. Smart Filters (Veg, Spicy, Budget) - POWERED BY COMPROMISE & LOCAL LOGIC
+    // We check for combinations like "spicy chicken" or "veg under 100"
+    const doc = nlp(m);
+    const isVeg = doc.has('veg') || doc.has('vegetarian') || doc.has('niramish') || m.includes('sobji');
+    const isChicken = doc.has('chicken') || doc.has('murgi') || doc.has('mangsho');
+    const isSpicy = doc.has('spicy') || doc.has('jhal') || doc.has('hot');
+    const isBudget = doc.has('cheap') || doc.has('sosta') || doc.has('kom dam') || doc.has('budget') || doc.has('under');
+
+    // Filter Logic
+    if (isVeg || isChicken || isSpicy || isBudget) {
+        let filteredItems = allItems;
+
+        if (isVeg) filteredItems = filteredItems.filter(i =>
+            i.name.toLowerCase().includes('paneer') ||
+            i.name.toLowerCase().includes('veg') ||
+            i.name.toLowerCase().includes('mushroom') ||
+            i.name.toLowerCase().includes('dal') ||
+            i.name.toLowerCase().includes('sabji')
+        );
+
+        if (isChicken) filteredItems = filteredItems.filter(i =>
+            i.name.toLowerCase().includes('chicken') ||
+            i.name.toLowerCase().includes('egg')
+        );
+
+        if (isSpicy) filteredItems = filteredItems.filter(i =>
+            i.name.toLowerCase().includes('chilli') ||
+            i.name.toLowerCase().includes('masala') ||
+            i.name.toLowerCase().includes('jhal')
+        );
+
+        if (isBudget) {
+            // Try to find a price limit numbers
+            const priceLimit = extractQuantity(m); // Reusing extractQuantity might return small nums, let's look for larger numbers
+            const largeNumMatch = m.match(/(\d{2,3})/);
+            const limit = largeNumMatch ? parseInt(largeNumMatch[1]) : 150; // Default 150 if "cheap" is said without number
+            filteredItems = filteredItems.filter(i => i.price <= limit);
+            filteredItems.sort((a, b) => a.price - b.price); // Sort cheaper first
+        } else {
+            filteredItems.sort((a, b) => b.ratingsCount - a.ratingsCount); // Otherwise popularity sort
+        }
+
+        if (filteredItems.length > 0) {
+            const topResults = filteredItems.slice(0, 8);
+            return {
+                handled: true,
+                response: `🔍 আপনার পছন্দের **${isVeg ? 'Veg 🌱' : ''} ${isChicken ? 'Chicken 🍗' : ''} ${isSpicy ? 'Spicy 🌶️' : ''}** খাবারগুলি এখানে আছে:`,
+                recommendedDishes: topResults.map(i => ({
+                    name: i.name,
+                    price: i.price,
+                    description: i.description,
+                    rating: i.rating,
+                    ratingsCount: i.ratingsCount,
+                    image: getImageUrl(i.name)
+                })),
+                actionType: 'food_recommendation',
+                suggestedItems: ['আর কিছু?', '🥤 Drinks', '🍚 Rice']
+            };
+        }
+    }
+
+    // 4. Today's special / New items
     if (hasKeyword(m, intentPatterns.todaySpecial)) {
         const topItems = getTopItems(8);
         return {
