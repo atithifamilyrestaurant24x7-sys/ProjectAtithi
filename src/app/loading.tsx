@@ -1,8 +1,9 @@
+
 import Image from 'next/image';
 
 export default function Loading() {
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all duration-500">
+        <div className="h-screen w-screen flex items-center justify-center bg-[#1a1a1a]">
             <div className="relative flex flex-col items-center justify-center">
                 {/* Spinning External Ring */}
                 <div className="absolute h-40 w-40 rounded-full border-4 border-t-amber-500 border-r-transparent border-b-amber-500/30 border-l-transparent animate-[spin_3s_linear_infinite]" />
