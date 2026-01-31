@@ -215,7 +215,7 @@ export const metadata: Metadata = {
     siteName: "Atithi Family Restaurant",
     images: [
       {
-        url: `${siteUrl}/og-image.png`,
+        url: `${siteUrl}/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: 'Atithi Family Restaurant - Premium Dining',
@@ -228,10 +228,24 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `Atithi - Best Family Restaurant in Rampurhat | NH-14`,
     description: config.description,
-    images: [`${siteUrl}/og-image.png`],
+    images: [`${siteUrl}/og-image.jpg`],
   },
   alternates: {
     canonical: siteUrl,
+  },
+
+  // Favicon configuration for Google SERP compliance
+  icons: {
+    // Using PNG icons as primary since favicon.ico is not deploying correctly
+    icon: [
+      { url: '/icons/icon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/icons/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    shortcut: '/icons/icon-48x48.png',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
 
   manifest: '/manifest.json',
@@ -257,13 +271,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://ihpfajyotvzcdqagdslw.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://ihpfajyotvzcdqagdslw.supabase.co" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        {/* Preload LCP image for mobile */}
-        <link
-          rel="preload"
-          as="image"
-          href="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/banner-one.webp"
-          type="image/webp"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}

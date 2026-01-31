@@ -40,19 +40,80 @@ const toastVariants = cva(
   }
 )
 
+// Custom swipeable toast with bidirectional swipe support
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
-    VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
+  VariantProps<typeof toastVariants>
+>(({ className, variant, onOpenChange, ...props }, ref) => {
+  const touchStartX = React.useRef<number | null>(null);
+  const touchCurrentX = React.useRef<number | null>(null);
+  const toastRef = React.useRef<HTMLLIElement | null>(null);
+  const SWIPE_THRESHOLD = 80;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchCurrentX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchCurrentX.current = e.touches[0].clientX;
+    const deltaX = touchCurrentX.current - touchStartX.current;
+
+    if (toastRef.current) {
+      toastRef.current.style.transform = `translateX(${deltaX}px)`;
+      toastRef.current.style.transition = 'none';
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchCurrentX.current === null) return;
+
+    const deltaX = touchCurrentX.current - touchStartX.current;
+    const absX = Math.abs(deltaX);
+
+    if (absX > SWIPE_THRESHOLD) {
+      // Swipe threshold exceeded - dismiss the toast
+      if (toastRef.current) {
+        const direction = deltaX > 0 ? 1 : -1;
+        toastRef.current.style.transform = `translateX(${direction * 100}%)`;
+        toastRef.current.style.opacity = '0';
+        toastRef.current.style.transition = 'transform 200ms ease-out, opacity 200ms ease-out';
+      }
+
+      // Trigger dismiss after animation
+      setTimeout(() => {
+        onOpenChange?.(false);
+      }, 200);
+    } else {
+      // Reset position
+      if (toastRef.current) {
+        toastRef.current.style.transform = 'translateX(0)';
+        toastRef.current.style.transition = 'transform 200ms ease-out';
+      }
+    }
+
+    touchStartX.current = null;
+    touchCurrentX.current = null;
+  };
+
   return (
     <ToastPrimitives.Root
-      ref={ref}
+      ref={(node) => {
+        toastRef.current = node;
+        if (typeof ref === 'function') ref(node);
+        else if (ref) ref.current = node;
+      }}
       className={cn(toastVariants({ variant }), className)}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onOpenChange={onOpenChange}
       {...props}
     />
-  )
-})
+  );
+});
 Toast.displayName = ToastPrimitives.Root.displayName
 
 const ToastAction = React.forwardRef<

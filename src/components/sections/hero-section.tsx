@@ -28,7 +28,6 @@ const HeroSection = () => {
           muted
           playsInline
           preload="auto"
-          poster="https://ihpfajyotvzcdqagdslw.supabase.co/storage/v1/object/public/Banner/banner-one.webp"
         />
         <div className="absolute inset-0 bg-black/40"></div>
       </div>

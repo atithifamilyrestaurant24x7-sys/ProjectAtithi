@@ -449,7 +449,7 @@ const ProductCategory = ({
     const [sortedItems, setSortedItems] = React.useState([...category.items]);
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [dialogItems, setDialogItems] = React.useState<MenuItem[]>([]);
-    const [isSyncEnabled, setIsSyncEnabled] = React.useState(true);
+    const [isSyncEnabled, setIsSyncEnabled] = React.useState(false);
     const [selectedSort, setSelectedSort] = React.useState('default');
 
 
@@ -477,7 +477,6 @@ const ProductCategory = ({
     const handleSortChange = (value: string) => {
         setSelectedSort(value);
         if (value === 'default') {
-            setIsSyncEnabled(true);
             setSortedItems([...category.items]);
             setTimeout(() => {
                 api1?.reInit();
@@ -522,16 +521,7 @@ const ProductCategory = ({
                 </div>
             </div>
 
-            <div
-                onMouseEnter={() => {
-                    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-                    if (!isTouchDevice) setIsSyncEnabled(true);
-                }}
-                onMouseLeave={() => {
-                    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-                    if (!isTouchDevice) setIsSyncEnabled(true);
-                }}
-            >
+            <div>
                 <ProductRow items={row1Items} setApi={setApi1} carouselId={`${category.name}-1`} cart={cart} onAddToCart={onAddToCart} onRemoveFromCart={onRemoveFromCart} isSyncEnabled={isSyncEnabled} onCardClick={onCardClick} />
                 {row2Items.length > 0 && <ProductRow items={row2Items} setApi={setApi2} carouselId={`${category.name}-2`} cart={cart} onAddToCart={onAddToCart} onRemoveFromCart={onRemoveFromCart} isSyncEnabled={isSyncEnabled} onCardClick={onCardClick} />}
             </div>
