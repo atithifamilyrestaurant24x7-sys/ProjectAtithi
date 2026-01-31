@@ -65,7 +65,7 @@ export function MobileBottomNav({ cartCount, onCartClick, onMenuClick, onAIClick
               <button
                 key={item.label}
                 onClick={onAIClick}
-                className="flex flex-col items-center justify-center text-center text-amber-500 hover:text-amber-600 transition-colors group"
+                className="flex flex-col items-center justify-center text-center text-muted-foreground hover:text-primary transition-colors group"
                 suppressHydrationWarning={true}
               >
                 <item.icon className="h-6 w-6 mb-1 group-hover:scale-110 transition-transform" />
