@@ -18,6 +18,7 @@ import {
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -517,11 +518,19 @@ export function OrderFormDialog({ isOpen, onOpenChange, cart }: OrderFormDialogP
                     <AlertDialogHeader>
                         <AlertDialogTitle>🚫 Oops! Delivery Not Available</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Deliveries are available only within a {DELIVERY_RADIUS_KM} km radius from our restaurant.
+                            Your location is outside our {DELIVERY_RADIUS_KM} km delivery radius. You can still place an order for Take Away.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogAction onClick={() => setShowOutOfRangeDialog(false)}>OK</AlertDialogAction>
+                        <AlertDialogCancel>Stay on Page</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => {
+                setShowOutOfRangeDialog(false);
+                form.setValue('deliveryOption', 'take-away');
+                toast({
+                    title: "Order Option Changed",
+                    description: "Your order has been switched to Take Away.",
+                });
+            }}>Switch to Take Away</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
