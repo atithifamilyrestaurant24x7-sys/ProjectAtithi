@@ -28,5 +28,6 @@ export function usePersistedForm<T extends FieldValues>(
                 console.error('Failed to parse saved form data', e);
             }
         }
-    }, [form, key]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [key]);
 }
